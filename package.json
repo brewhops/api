@@ -7,11 +7,11 @@
     "node": ">10.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test mocha 'test/**/*.js'",
     "lint": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/'",
     "start": "node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
-    "prod": "docker-compose build && docker-compose up"
+    "prod": "NODE_ENV=production docker-compose -f docker-compose-prod.yaml up"
   },
   "repository": {
     "type": "git",
@@ -23,13 +23,18 @@
   },
   "homepage": "https://github.com/ConnorChristensen/NinkasiServer#readme",
   "devDependencies": {
+    "chai": "^4.1.2",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
-    "nodemon": "^1.17.5"
+    "knex": "^0.14.6",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.17.5",
+    "sinon": "^6.0.0",
+    "supertest": "^3.1.0"
   },
   "dependencies": {
     "bcrypt": "^2.0.1",

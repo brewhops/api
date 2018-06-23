@@ -2,6 +2,10 @@ require('dotenv').config()
 let app = require('express')()
 let bodyParser = require('body-parser')
 
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(process.env.PORT, () => console.log(`Server running at port ${process.env.PORT}`))
+}
+
 app.use(bodyParser.json())
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -19,3 +23,5 @@ app.use('/tanks', require('./components/tanks/routes')())
 app.use('/actions', require('./components/actions/routes')())
 app.use('/recipes', require('./components/recipes/routes')())
 app.use('/batches', require('./components/batches/routes')())
+
+module.exports = app
