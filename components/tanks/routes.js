@@ -24,7 +24,7 @@ module.exports = function () {
   router.delete('/id/:id', requireAuthentication, controller.deleteTank)
 
   router.use('*', (req, res) => res.json({
-    err: `Oh nose, ${req.originalUrl} doesn't exist`
+    err: `${req.originalUrl} doesn't exist`
   }))
 
   return router

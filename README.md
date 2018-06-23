@@ -22,10 +22,43 @@ Express uses the [pg](https://node-postgres.com/) package to interact with the p
 
 ## Startup
 
+Both development and production environments require the use of a *.env* file to get environment variables.
+This *.env* file should never be committed.
+
+The minimum requirements are as follows
+
+* PGUSER
+* PGDATABASE
+* PGPASSWORD
+* PGPORT
+* PGHOST
+* PORT
+
+Everything beginning with PG will be used to configure the postgreSQL docker container, and the Express connections to that container. For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
+
+The PORT is the port the express app will expose for the routes.
+
+Everything except for the PGPORT and PGHOST can be set to whatever you want it to.
+
 #### Development
+
+Your env file requires
+
+* PGPORT=32769
+* PGHOST=localhost
+
+Then
+
 1. `docker-compose up` will start the development database.
-1. `nodemon server.js` will start the API.
-1. After launching the database, visit `http://localhost:8080` to interact with the database through a web interface.
+1. `npm run dev` will start the API.
 
 #### Production
-1. `docker-compose -f docker-compose-prod.yaml up` will start the production databse and API.
+
+Your env file requires
+
+* PGPORT=5432
+* PGHOST=database
+
+Then
+
+1. `docker-compose -f docker-compose-prod.yaml up` will start the production database and API.

@@ -4,8 +4,8 @@ module.exports = class SQL extends crud {
   constructor (db, collName) {
     super(db, collName)
 
-    // Overwrite prod URL here
-    this.url = 'https://cs493-assignment1.herokuapp.com'
+    // Production URL
+    this.url = ''
   }
 
   /*
@@ -56,7 +56,7 @@ module.exports = class SQL extends crud {
     }
   }
 
-  // NOTE: This only works for one query right now.
+  // NOTE: This only works for one query.
   // NOT compounded AND/OR only use to get stuff by ID.
   buildQueryByID (key, value) {
     return `${key} = ${value}`

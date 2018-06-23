@@ -8,14 +8,10 @@ module.exports = class CRUD {
   }
 
   async connectToDB (db) {
-    if (process.env.ENVIRONMENT) { // if Prod
-      this.client = new Client()
-    } else {
-      this.client = new Client({ database: 'postgres' }) // for brandons local setup
-    }
+    this.client = new Client()
     this.client.connect()
-      .then(succ => console.log(`${this.table} connected to DB!`))
-      .catch(err => console.log(`Oh nose! Error! ${err}`))
+      .then(succ => console.log(`${this.table} connected to DB`))
+      .catch(err => console.log(`No Connection: ${err}`))
   }
 
   async create (columns, conditions, escaped, returns = '*') {
