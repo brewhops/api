@@ -1,0 +1,46 @@
+{
+  "name": "final-project-brewhops",
+  "version": "0.0.1",
+  "description": "An express based REST API for tracking brewing data",
+  "main": "index.js",
+  "engines": {
+    "node": "10.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/'",
+    "start": "node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "prod": "docker-compose build && docker-compose up"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OSU-CS493-Sp18/final-project-brewhops.git"
+  },
+  "author": "Connor Christensen, William Buffum, Brandon Dring, Anie Lei",
+  "bugs": {
+    "url": "https://github.com/OSU-CS493-Sp18/final-project-brewhops/issues"
+  },
+  "homepage": "https://github.com/OSU-CS493-Sp18/final-project-brewhops#readme",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "nodemon": "^1.17.5"
+  },
+  "dependencies": {
+    "bcrypt": "^2.0.1",
+    "boom": "^7.2.0",
+    "command-line-args": "^5.0.2",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "express-validation": "^1.0.2",
+    "joi": "^13.3.0",
+    "jsonwebtoken": "^8.2.1",
+    "pg": "^7.4.3",
+    "uuid": "^3.2.1"
+  }
+}
