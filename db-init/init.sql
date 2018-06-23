@@ -1,5 +1,8 @@
 -- Init script for database --
 
+-- Our database for running tests
+CREATE DATABASE test;
+
 -- DB: Postgres --
 -- Tables:
 --    employees
