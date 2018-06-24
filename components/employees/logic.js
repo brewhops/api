@@ -7,7 +7,7 @@ const { userMatchAuthToken } = require('../../util/auth')
 
 let self = null
 
-const databaseName = process.env.PGDATABASE
+const databaseName = process.env.NODE_ENV === 'test' ? 'test' : process.env.PGDATABASE
 const tableName = 'employees'
 const safeUserData = `id, first_name, last_name, username, phone, access_level`
 
@@ -35,12 +35,12 @@ module.exports = class userLogic extends postgres {
     const { keys, values, escapes } = self.splitObjectKeyVals(req.body)
 
     if (prevUser.rows.length !== 0) {
-      res.json(boom.badRequest('Username already taken'))
+      res.status(400).json(boom.badRequest('Username already taken'))
     } else {
       const { rows } = await self.create(keys, escapes, values, safeUserData)
       const returnedUser = rows[0]
       returnedUser.token = await generateAuthToken(returnedUser.username)
-      res.json(rows)
+      res.status(201).json(rows)
     }
   }
 
