@@ -39,6 +39,7 @@
   "dependencies": {
     "bcrypt": "^2.0.1",
     "boom": "^7.2.0",
+    "chai-as-promised": "^7.1.1",
     "command-line-args": "^5.0.2",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
