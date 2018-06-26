@@ -6,9 +6,11 @@ let validate = require('express-validation')
 module.exports = function(tableName) {
   let controller = new Controller(tableName)
 
-  controller.connectToDB()
-    .then(() => console.log('Actions route connected to database'))
-    .catch(e => console.log('Error! Connection refused', e))
+  if (process.env.NODE_ENV !== 'test') {
+    controller.connectToDB()
+      .then(() => console.log('Actions route connected to database'))
+      .catch(e => console.log('Error! Connection refused', e))
+  }
 
   router.use((req, res, next) => next()) // init
 

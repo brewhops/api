@@ -7,9 +7,11 @@ let { requireAuthentication } = require('./../../middleware/auth')
 module.exports = function(tableName) {
   let controller = new Controller(tableName)
 
-  controller.connectToDB()
-    .then(() => console.log('Tanks route connected to database'))
-    .catch(e => console.log('Error! Connection refused', e))
+  if (process.env.NODE_ENV !== 'test') {
+    controller.connectToDB()
+      .then(() => console.log('Tanks route connected to database'))
+      .catch(e => console.log('Error! Connection refused', e))
+  }
 
   router.use((req, res, next) => next()) // init
 
