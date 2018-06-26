@@ -39,8 +39,20 @@ describe('Database setup', function() {
   describe('copy the employee table schema from the production schema', function() {
     it('coppied the employee schema', function(done) {
       client.query(
-        `CREATE TABLE test.employees AS SELECT * FROM employees`
+        `CREATE TABLE test.employees (LIKE employees INCLUDING ALL)`
       ).should.be.fulfilled.and.notify(done)
+    })
+  })
+
+  describe('empty the employees table', function() {
+    it('succeded', function(done) {
+      client.query(`TRUNCATE test.employees CASCADE`).should.be.fulfilled.and.notify(done)
+    })
+  })
+
+  describe('check contents of employees table', function() {
+    it('is empty', function() {
+      return employeeCountEquals().should.eventually.equal('0')
     })
   })
 
