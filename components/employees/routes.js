@@ -7,6 +7,10 @@ const { requireAuthentication } = require('./../../middleware/auth')
 module.exports = function(tableName) {
   let controller = new Controller(tableName)
 
+  controller.connectToDB()
+    .then(() => console.log('Employees route connected to database'))
+    .catch(e => console.log('Error! Connection refused', e))
+
   router.use((req, res, next) => next()) // init
 
   // [GET] section

@@ -1,11 +1,9 @@
 let postgres = require('./../../postgres/pg')
 let self = null
 
-const databaseName = process.env.PGDATABASE
-const tableName = 'batches'
 module.exports = class batchesLogic extends postgres {
-  constructor() {
-    super(databaseName, tableName)
+  constructor(tableName) {
+    super(process.env.PGDATABASE, tableName)
     self = this
   }
 

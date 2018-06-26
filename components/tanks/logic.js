@@ -1,11 +1,9 @@
 let postgres = require('./../../postgres/pg')
 let self = null
 
-const databaseName = process.env.PGDATABASE
-const tableName = 'tanks'
 module.exports = class tankLogic extends postgres {
-  constructor() {
-    super(databaseName, tableName)
+  constructor(tableName) {
+    super(process.env.PGDATABASE, tableName)
     self = this
   }
 

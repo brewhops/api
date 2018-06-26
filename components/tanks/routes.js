@@ -4,8 +4,12 @@ let validator = require('./validator')
 let validate = require('express-validation')
 let { requireAuthentication } = require('./../../middleware/auth')
 
-module.exports = function() {
-  let controller = new Controller()
+module.exports = function(tableName) {
+  let controller = new Controller(tableName)
+
+  controller.connectToDB()
+    .then(() => console.log('Tanks route connected to database'))
+    .catch(e => console.log('Error! Connection refused', e))
 
   router.use((req, res, next) => next()) // init
 
