@@ -7,7 +7,7 @@
     "node": ">10.0.0"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --reporter spec 'test/**/*.js' --exit",
+    "test": "NODE_ENV=test mocha --reporter spec 'test/components/*.js' --file test/dbSetup.js --exit",
     "lint": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/'",
     "start": "node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
