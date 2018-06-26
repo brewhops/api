@@ -1,4 +1,4 @@
-const postgres = require('./../../postgres/pg')
+const Pg = require('./../../postgres/pg')
 const bcrypt = require('bcrypt')
 const boom = require('boom')
 const saltRounds = 8
@@ -7,13 +7,11 @@ const { userMatchAuthToken } = require('../../util/auth')
 
 let self = null
 
-const databaseName = process.env.NODE_ENV === 'test' ? 'test' : process.env.PGDATABASE
-const tableName = 'employees'
 const safeUserData = `id, first_name, last_name, username, phone, access_level`
 
-module.exports = class userLogic extends postgres {
-  constructor () {
-    super(databaseName, tableName)
+module.exports = class userLogic extends Pg {
+  constructor (tableName) {
+    super(process.env.PGDATABASE, tableName)
     self = this
   }
 

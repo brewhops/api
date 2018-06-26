@@ -1,16 +1,13 @@
-const crud = require('./CRUD')
+const Crud = require('./CRUD')
 
-module.exports = class SQL extends crud {
+module.exports = class Pg extends Crud {
   constructor (db, collName) {
     super(db, collName)
-
     // Production URL
     this.url = ''
   }
 
-  /*
-     Helper Functions
-  */
+  /* Helper Functions */
   respond (Result, Err, res, req) {
     if (Err) {
       res.json(Err)

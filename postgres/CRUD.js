@@ -3,15 +3,25 @@ const { Client } = require('pg')
 module.exports = class CRUD {
   constructor (db, tableName) {
     this.client = null
-    this.connectToDB(db)
     this.table = tableName
+    this.db = db
   }
 
-  async connectToDB (db) {
-    this.client = new Client()
-    this.client.connect()
-      .then(succ => console.log(`${this.table} connected to DB`))
-      .catch(err => console.log(`No Connection: ${err}`))
+  dbName () {
+    return this.db
+  }
+
+  tableName () {
+    return this.table
+  }
+
+  connectToDB () {
+    this.client = new Client({ database: this.db })
+    return this.client.connect()
+  }
+
+  disconnectFromDB () {
+    return this.client.end()
   }
 
   async create (columns, conditions, escaped, returns = '*') {

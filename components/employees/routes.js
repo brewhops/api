@@ -4,8 +4,8 @@ const validator = require('./validator')
 const validate = require('express-validation')
 const { requireAuthentication } = require('./../../middleware/auth')
 
-module.exports = function () {
-  let controller = new Controller()
+module.exports = function (tableName) {
+  let controller = new Controller(tableName)
 
   router.use((req, res, next) => next()) // init
 
