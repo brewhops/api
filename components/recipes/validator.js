@@ -1,7 +1,7 @@
 let Joi = require('joi')
 
 class RecipeValidator {
-  get createRecipe () {
+  get createRecipe() {
     return {
       body: Joi.object().keys({
         airplane_code: Joi.string().required(),
@@ -10,7 +10,7 @@ class RecipeValidator {
     }
   }
 
-  get updateRecipe () {
+  get updateRecipe() {
     return {
       body: Joi.object().keys({
         airplane_code: Joi.string(),

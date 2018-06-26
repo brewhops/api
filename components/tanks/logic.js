@@ -4,13 +4,13 @@ let self = null
 const databaseName = process.env.PGDATABASE
 const tableName = 'tanks'
 module.exports = class tankLogic extends postgres {
-  constructor () {
+  constructor() {
     super(databaseName, tableName)
     self = this
   }
 
   // GET
-  async getTanks (req, res) {
+  async getTanks(req, res) {
     try {
       const { rows } = await self.read()
       res.json(rows)
@@ -20,7 +20,7 @@ module.exports = class tankLogic extends postgres {
     }
   }
 
-  async getTank (req, res, next) {
+  async getTank(req, res, next) {
     try {
       // get the tank by that ID
       const { rows } = await self.readById(req.params.id)
@@ -37,7 +37,7 @@ module.exports = class tankLogic extends postgres {
     }
   }
 
-  async getTankData (req, res, next) {
+  async getTankData(req, res, next) {
     const id = parseInt(req.params.id)
 
     let query = `
@@ -77,7 +77,7 @@ module.exports = class tankLogic extends postgres {
   }
 
   // POST
-  async createTank (req, res) {
+  async createTank(req, res) {
     const { keys, values, escapes } = self.splitObjectKeyVals(req.body)
     try {
       const { rows } = await self.create(keys, escapes, values)
@@ -88,7 +88,7 @@ module.exports = class tankLogic extends postgres {
   }
 
   // PUT/PATCH
-  async updateTank (req, res) {
+  async updateTank(req, res) {
     const { keys, values } = self.splitObjectKeyVals(req.body)
     const { query, idx } = self.buildUpdateString(keys, values)
     values.push(req.params.id) // add last escaped value for where clause
@@ -98,7 +98,7 @@ module.exports = class tankLogic extends postgres {
   }
 
   // DELETE
-  async deleteTank (req, res) {
+  async deleteTank(req, res) {
     const id = parseInt(req.params.id)
     try {
       const { rows } = await self.deleteById(id)

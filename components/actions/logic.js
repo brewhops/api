@@ -4,31 +4,31 @@ let self = null
 const databaseName = process.env.PGDATABASE
 const tableName = 'actions'
 module.exports = class actionLogic extends postgres {
-  constructor () {
+  constructor() {
     super(databaseName, tableName)
     self = this
   }
 
   // GET
-  async getActions (req, res) {
+  async getActions(req, res) {
     const { rows } = await self.read()
     res.json(rows)
   }
 
-  async getAction (req, res) {
+  async getAction(req, res) {
     const { rows } = await self.readById(req.params.id)
     res.json(rows)
   }
 
   // POST
-  async createAction (req, res) {
+  async createAction(req, res) {
     const { keys, values, escapes } = self.splitObjectKeyVals(req.body)
     const { rows } = await self.create(keys, escapes, values)
     res.json(rows)
   }
 
   // PATCH/PUT
-  async updateAction (req, res) {
+  async updateAction(req, res) {
     let { keys, values } = self.splitObjectKeyVals(req.body)
     const { query, idx } = self.buildUpdateString(keys, values)
     values.push(req.params.id) // add last escaped value for where clause
@@ -38,7 +38,7 @@ module.exports = class actionLogic extends postgres {
   }
 
   // DELETE
-  async deleteAction (req, res) {
+  async deleteAction(req, res) {
     const { rows } = await self.deleteById(req.params.id)
     res.json(rows)
   }

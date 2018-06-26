@@ -10,24 +10,24 @@ let self = null
 const safeUserData = `id, first_name, last_name, username, phone, access_level`
 
 module.exports = class userLogic extends Pg {
-  constructor (tableName) {
+  constructor(tableName) {
     super(process.env.PGDATABASE, tableName)
     self = this
   }
 
   // GET
-  async getUsers (req, res) {
+  async getUsers(req, res) {
     const { rows } = await self.read(safeUserData)
     res.json(rows)
   }
 
-  async getUser (req, res) {
+  async getUser(req, res) {
     const { rows } = await self.readById(req.params.id)
     res.json(rows)
   }
 
   // POST
-  async createUser (req, res) {
+  async createUser(req, res) {
     const prevUser = await self.readByUsername(req.body.username)
     req.body.password = bcrypt.hashSync(req.body.password, saltRounds)
     const { keys, values, escapes } = self.splitObjectKeyVals(req.body)
@@ -42,7 +42,7 @@ module.exports = class userLogic extends Pg {
     }
   }
 
-  async login (req, res) {
+  async login(req, res) {
     const prevUser = await self.readByUsername(req.body.username)
 
     if (prevUser.rows.length === 0) {
@@ -59,7 +59,7 @@ module.exports = class userLogic extends Pg {
   }
 
   // PATCH/PUT
-  async updateUser (req, res) {
+  async updateUser(req, res) {
     let { keys, values } = self.splitObjectKeyVals(req.body)
     const { query, idx } = self.buildUpdateString(keys, values)
     values.push(req.params.id) // add last escaped value for where clause
@@ -74,7 +74,7 @@ module.exports = class userLogic extends Pg {
   }
 
   // DELETE
-  async deleteUser (req, res) {
+  async deleteUser(req, res) {
     const { rows } = await self.readById(req.params.id)
     if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
       res.json(boom.badRequest('Not Authorized'))

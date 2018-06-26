@@ -3,7 +3,7 @@ let Controller = require('./logic')
 let validator = require('./validator')
 let validate = require('express-validation')
 
-module.exports = function () {
+module.exports = function() {
   let controller = new Controller()
 
   router.use((req, res, next) => next()) // init

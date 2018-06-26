@@ -9,6 +9,7 @@
   "scripts": {
     "test": "NODE_ENV=test mocha --reporter spec 'test/components/*.js' --file test/dbSetup.js --exit",
     "lint": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/'",
+    "lint-fix": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/' --fix",
     "start": "node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
     "prod": "NODE_ENV=production docker-compose -f docker-compose-prod.yaml up"
