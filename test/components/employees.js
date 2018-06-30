@@ -23,55 +23,13 @@ async function employeeCountEquals(number) {
   return res.rows[0].count
 }
 
-describe('Database setup', function() {
-  it('connects to the database', function(done) {
-    client.connect().should.be.fulfilled.and.notify(done)
-  })
-
-  describe('drop test schema', function() {
-    it('dropped the test schema', function(done) {
-      client.query('DROP SCHEMA IF EXISTS test CASCADE')
-        .should.be.fulfilled.and.notify(done)
-    })
-  })
-
-  describe('create the test schema', function() {
-    it('created the test schema', function(done) {
-      client.query(`CREATE SCHEMA test`).should.be.fulfilled.and.notify(done)
-    })
-  })
-
-  describe('copy the employee table schema from the production schema', function() {
-    it('coppied the employee schema', function(done) {
-      client.query(
-        `CREATE TABLE test.employees (LIKE employees INCLUDING ALL)`
-      ).should.be.fulfilled.and.notify(done)
-    })
-  })
-
-  describe('empty the employees table', function() {
-    it('succeded', function(done) {
-      client.query(`TRUNCATE test.employees CASCADE`).should.be.fulfilled.and.notify(done)
-    })
-  })
-
-  describe('check contents of employees table', function() {
-    it('is empty', function() {
-      return employeeCountEquals().should.eventually.equal('0')
-    })
-  })
-
-  describe('check correct employees object setup', function() {
-    it('has the right db', function() {
-      expect(employees.dbName()).to.equal(process.env.PGDATABASE)
-    })
-    it('has the right table', function() {
-      expect(employees.tableName()).to.equal('test.employees')
-    })
-  })
-})
-
 describe('/employees', function() {
+  describe('Connect client', function() {
+    it('logged in', function(done) {
+      client.connect().should.be.fulfilled.and.notify(done)
+    })
+  })
+
   describe('Connect employees route', function() {
     it('connected to the database', function(done) {
       employees.connectToDB().should.be.fulfilled.and.notify(done)
