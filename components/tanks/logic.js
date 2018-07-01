@@ -79,7 +79,7 @@ module.exports = class tankLogic extends postgres {
     const { keys, values, escapes } = self.splitObjectKeyVals(req.body)
     try {
       const { rows } = await self.create(keys, escapes, values)
-      res.json(rows)
+      res.status(201).json(rows[0])
     } catch (e) {
       res.status(400).json(e)
     }

@@ -4,7 +4,6 @@ require('dotenv').config()
 
 const chai = require('chai')
 chai.use(require('chai-as-promised'))
-const expect = chai.expect
 chai.should()
 
 const request = require('supertest')

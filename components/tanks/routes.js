@@ -29,7 +29,7 @@ module.exports = function(tableName) {
   // DELETE
   router.delete('/id/:id', requireAuthentication, controller.deleteTank)
 
-  router.use('*', (req, res) => res.json({
+  router.use('*', (req, res) => res.status(400).json({
     err: `${req.originalUrl} doesn't exist`
   }))
 
