@@ -11,4 +11,13 @@ let test = new Test(
 
 describe('/' + test.getRoute(), function() {
   test.GETall()
+  test.POST({
+    'name': 'COOL',
+    'description': 'Cool it'
+  })
+  test.GETid()
+  test.PATCH({
+    'description': 'Cool it down'
+  })
+  test.DELETE()
 })

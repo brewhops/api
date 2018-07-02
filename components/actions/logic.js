@@ -1,4 +1,5 @@
 let postgres = require('./../../postgres/pg')
+const is = require('is')
 let self = null
 
 module.exports = class actionLogic extends postgres {
@@ -36,28 +37,32 @@ module.exports = class actionLogic extends postgres {
 
   // PATCH/PUT
   async updateAction(req, res, next) {
-    let { keys, values } = self.splitObjectKeyVals(req.body)
-    const { query, idx } = self.buildUpdateString(keys, values)
-    values.push(req.params.id) // add last escaped value for where clause
+    if (is.empty(req.body)) {
+      res.status(400).json({err: 'Request does not match valid form'})
+    } else {
+      let { keys, values } = self.splitObjectKeyVals(req.body)
+      const { query, idx } = self.buildUpdateString(keys, values)
+      values.push(req.params.id) // add last escaped value for where clause
 
-    try {
-      const { rows } = await self.update(query, `id = \$${idx}`, values) // eslint-disable-line
-      if (rows.length > 0) {
-        res.json(rows[0])
-      } else {
-        next()
+      try {
+        const { rows } = await self.update(query, `id = \$${idx}`, values) // eslint-disable-line
+        if (rows.length > 0) {
+          res.json(rows[0])
+        } else {
+          next()
+        }
+      } catch (e) {
+        res.status(500).json(e)
       }
-    } catch (e) {
-      res.status(500).json(e)
     }
   }
 
   // DELETE
   async deleteAction(req, res, next) {
     try {
-      const { rows } = await self.deleteById(req.params.id)
-      if (rows.length > 0) {
-        res.json(rows)
+      const response = await self.deleteById(req.params.id)
+      if (response.rowCount > 0) {
+        res.status(200).json()
       } else {
         next()
       }
