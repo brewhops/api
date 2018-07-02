@@ -137,7 +137,7 @@ module.exports = class CRUD {
 
       it('created an item', function(done) {
         agent.post('/' + self.route)
-          .send(input.valid)
+          .send(input)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(function(res) {
@@ -196,6 +196,15 @@ module.exports = class CRUD {
     describe('PATCH /' + self.route + '/id/', function() {
       it('rejects an invalid selection', function(done) {
         agent.patch('/' + self.route + '/id/-1')
+          .send(input)
+          .expect(400)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+      it('rejects an empty object', function(done) {
+        agent.patch('/' + self.route + '/id/' + self.itemID)
           .send({})
           .expect(400)
           .end(function(err, res) {
