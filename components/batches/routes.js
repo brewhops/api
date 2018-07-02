@@ -4,8 +4,14 @@ let validator = require('./validator')
 let validate = require('express-validation')
 let boom = require('boom')
 
-module.exports = function () {
-  let controller = new Controller()
+module.exports = function(tableName) {
+  let controller = new Controller(tableName)
+
+  if (process.env.NODE_ENV !== 'test') {
+    controller.connectToDB()
+      .then(() => console.log('Batches route connected to database'))
+      .catch(e => console.log('Error! Connection refused', e))
+  }
 
   router.use((req, res, next) => next())
 

@@ -1,21 +1,19 @@
 let postgres = require('./../../postgres/pg')
 let self = null
 
-const databaseName = process.env.PGDATABASE
-const tableName = 'batches'
 module.exports = class batchesLogic extends postgres {
-  constructor () {
-    super(databaseName, tableName)
+  constructor(tableName) {
+    super(process.env.PGDATABASE, tableName)
     self = this
   }
 
   // GET
-  async getBatches (req, res) {
+  async getBatches(req, res) {
     const { rows } = await self.read()
     res.json(rows)
   }
 
-  async getBatch (req, res, next) {
+  async getBatch(req, res, next) {
     const results = await self.readById(req.params.id)
     if (results.rowCount > 0) {
       res.json(results.rows[0])
@@ -24,7 +22,7 @@ module.exports = class batchesLogic extends postgres {
     }
   }
 
-  async getBatchHistory (req, res, next) {
+  async getBatchHistory(req, res, next) {
     const results = await self.readById(req.params.id)
     if (results.rowCount > 0) {
       const versions = await self.client.query(
@@ -41,7 +39,7 @@ module.exports = class batchesLogic extends postgres {
   }
 
   // POST
-  async createBatch (req, res) {
+  async createBatch(req, res) {
     // make a shorthand for out body so organizing is easier
     const input = req.body
 
@@ -138,7 +136,7 @@ module.exports = class batchesLogic extends postgres {
         // update the task
         self.client.query(
           `UPDATE tasks SET (${keys}) = (${escapes}) WHERE id = ${taskID} RETURNING *`, values
-        ).catch(function (e) {
+        ).catch(function(e) {
           console.error('Update Error', e)
           return res.status(400).json(e)
         })
@@ -153,7 +151,7 @@ module.exports = class batchesLogic extends postgres {
         } else {
           // insert a new task
           self.createInTable(keys, 'tasks', escapes, values)
-            .catch(function (e) {
+            .catch(function(e) {
               console.error('Create Error', e)
               return res.status(400).json(e)
             })
@@ -189,14 +187,14 @@ module.exports = class batchesLogic extends postgres {
       // send back the all ok
       .then(submittedValue => res.status(201).end())
       // log and return errors if we had a problem
-      .catch(function (error) {
+      .catch(function(error) {
         console.log(error)
         res.status(400).json(error)
       })
   }
 
   // PATCH
-  async updateBatch (req, res, next) {
+  async updateBatch(req, res, next) {
     const { keys, values } = self.splitObjectKeyVals(req.body)
     const { query, idx } = await self.buildUpdateString(keys, values)
     values.push(req.params.id)
@@ -210,7 +208,7 @@ module.exports = class batchesLogic extends postgres {
   }
 
   // DELETE
-  async deleteBatch (req, res, next) {
+  async deleteBatch(req, res, next) {
     // remove the versions tied to that batch
     const versions = await self.client.query(
       `DELETE FROM versions

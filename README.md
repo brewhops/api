@@ -62,3 +62,23 @@ Your env file requires
 Then
 
 1. `docker-compose -f docker-compose-prod.yaml up` will start the production database and API.
+
+### Checking the database
+
+To connect to the docker container and interact directly with the database, follow these steps
+
+1. Start up the postgreSQL docker container if it is not already running
+1. Open up a terminal window
+1. `docker ps` to get the name of the running DB docker container
+1. `docker exec -it {name of DB container} bash -l`
+1. `psql -U {PGUSER} -d {database name}`
+
+You should now be logged into the psql program on the docker container
+
+A few things to note:
+
+* every line must either start with a `\` or end with a `;`
+  * eg. `\dt` shows all database tables
+  * eg. `SELECT * FROM actions;` selects everything from the actions table
+* `\q` to quit the psql shell
+* `exit` to exit the docker container

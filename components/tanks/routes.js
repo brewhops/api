@@ -4,8 +4,14 @@ let validator = require('./validator')
 let validate = require('express-validation')
 let { requireAuthentication } = require('./../../middleware/auth')
 
-module.exports = function () {
-  let controller = new Controller()
+module.exports = function(tableName) {
+  let controller = new Controller(tableName)
+
+  if (process.env.NODE_ENV !== 'test') {
+    controller.connectToDB()
+      .then(() => console.log('Tanks route connected to database'))
+      .catch(e => console.log('Error! Connection refused', e))
+  }
 
   router.use((req, res, next) => next()) // init
 
@@ -23,7 +29,7 @@ module.exports = function () {
   // DELETE
   router.delete('/id/:id', requireAuthentication, controller.deleteTank)
 
-  router.use('*', (req, res) => res.json({
+  router.use('*', (req, res) => res.status(400).json({
     err: `${req.originalUrl} doesn't exist`
   }))
 

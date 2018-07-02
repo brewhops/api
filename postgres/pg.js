@@ -1,17 +1,14 @@
-const crud = require('./CRUD')
+const Crud = require('./CRUD')
 
-module.exports = class SQL extends crud {
-  constructor (db, collName) {
+module.exports = class Pg extends Crud {
+  constructor(db, collName) {
     super(db, collName)
-
     // Production URL
     this.url = ''
   }
 
-  /*
-     Helper Functions
-  */
-  respond (Result, Err, res, req) {
+  /* Helper Functions */
+  respond(Result, Err, res, req) {
     if (Err) {
       res.json(Err)
     }
@@ -23,7 +20,7 @@ module.exports = class SQL extends crud {
   }
 
   // parse array to send back sectioned off results
-  paginate (req, data, res) {
+  paginate(req, data, res) {
     let originalUrl = req.originalUrl.split('?')[0]
     let query = req.query
     data = data.slice(query.limit * (query.page - 1), query.limit * query.page)
@@ -35,7 +32,7 @@ module.exports = class SQL extends crud {
     res.json(respObj)
   }
 
-  splitObjectKeyVals (obj) {
+  splitObjectKeyVals(obj) {
     let keys = []
     let values = []
     let escapes = []
@@ -58,11 +55,11 @@ module.exports = class SQL extends crud {
 
   // NOTE: This only works for one query.
   // NOT compounded AND/OR only use to get stuff by ID.
-  buildQueryByID (key, value) {
+  buildQueryByID(key, value) {
     return `${key} = ${value}`
   }
 
-  buildUpdateString (keys, values) {
+  buildUpdateString(keys, values) {
     keys = keys.split(',')
     let query = ``
     let idx = 1

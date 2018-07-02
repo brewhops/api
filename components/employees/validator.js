@@ -1,7 +1,7 @@
 let Joi = require('joi')
 
 class UserValidator {
-  get createUser () {
+  get createUser() {
     return {
       body: Joi.object().keys({
         first_name: Joi.string().required(),
@@ -14,7 +14,7 @@ class UserValidator {
     }
   }
 
-  get updateUser () {
+  get updateUser() {
     return {
       body: Joi.object().keys({
         first_name: Joi.string(),
@@ -27,7 +27,7 @@ class UserValidator {
     }
   }
 
-  get login () {
+  get login() {
     return {
       body: Joi.object().keys({
         username: Joi.string().required(),

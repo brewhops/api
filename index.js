@@ -1,15 +1,27 @@
-const cluster = require('cluster')
-const numCPU = require('os').cpus().length
-let Server = require('./server')
 require('dotenv').config()
+let app = require('express')()
+let bodyParser = require('body-parser')
 
-if (process.env.NODE_ENV === 'production' && cluster.isMaster) {
-  for (var i = 0; i < numCPU; i++) {
-    cluster.fork()
-  }
-
-  cluster.on('online', (worker) => console.log('Worker ' + worker.process.pid + ' is online.'))
-  cluster.on('exit', (worker, code, signal) => console.log('worker ' + worker.process.pid + ' died.'))
-} else {
-  new Server() // start
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(process.env.PORT, () => console.log(`Server running at port ${process.env.PORT}`))
 }
+
+app.use(bodyParser.json())
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  next()
+})
+
+app.use(function(err, req, res, next) {
+  console.log(err)
+  res.status(400).json(err)
+}) // error handler for validator
+
+app.use('/employees', require('./components/employees/routes')('employees'))
+app.use('/tanks', require('./components/tanks/routes')('tanks'))
+app.use('/actions', require('./components/actions/routes')('actions'))
+app.use('/recipes', require('./components/recipes/routes')('recipes'))
+app.use('/batches', require('./components/batches/routes')('batches'))
+
+module.exports = app
