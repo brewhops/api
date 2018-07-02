@@ -52,14 +52,9 @@ module.exports = class CRUD {
   dbSetup() {
     describe(`${self.srcTable} setup`, function() {
       // connect the clients before the test
-      before(async function() {
-        prodClient = await prodPool.connect()
-      })
-
+      before(async function() { prodClient = await prodPool.connect() })
       // disconnect when done
-      after(function() {
-        prodClient.release()
-      })
+      after(function() { prodClient.release() })
 
       it(`dropped schema ${self.schemaName}`, function(done) {
         prodClient.query(`DROP SCHEMA IF EXISTS ${self.schemaName} CASCADE`)
@@ -98,8 +93,6 @@ module.exports = class CRUD {
       client = await testPool.connect()
       self.logic.connectToDB()
     })
-
-    // disconnect when done
     after(function() {
       client.release()
       self.logic.disconnectFromDB()
@@ -121,13 +114,9 @@ module.exports = class CRUD {
 
   POST(input) {
     before(async function() {
-      client = await testPool.connect()
       self.logic.connectToDB()
     })
-
-    // disconnect when done
     after(function() {
-      client.release()
       self.logic.disconnectFromDB()
     })
 
@@ -173,6 +162,9 @@ module.exports = class CRUD {
   }
 
   GETid() {
+    before(async function() { self.logic.connectToDB() })
+    after(function() { self.logic.disconnectFromDB() })
+
     describe('GET /' + self.route + '/id/', function() {
       it('rejects an invalid selection', function(done) {
         agent.get('/' + self.route + '/id/-1')
@@ -198,6 +190,9 @@ module.exports = class CRUD {
   }
 
   PATCH(input) {
+    before(async function() { self.logic.connectToDB() })
+    after(function() { self.logic.disconnectFromDB() })
+
     describe('PATCH /' + self.route + '/id/', function() {
       it('rejects an invalid selection', function(done) {
         agent.patch('/' + self.route + '/id/-1')
@@ -221,6 +216,9 @@ module.exports = class CRUD {
   }
 
   DELETE() {
+    before(async function() { self.logic.connectToDB() })
+    after(function() { self.logic.disconnectFromDB() })
+
     describe('DELETE /' + self.route + '/id/', function() {
       it('rejects an invalid selection', function(done) {
         agent.delete('/' + self.route + '/id/-1')
