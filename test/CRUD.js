@@ -1,4 +1,4 @@
-/* global describe it */
+/* global describe it before after */
 
 require('dotenv').config()
 
@@ -10,9 +10,9 @@ const request = require('supertest')
 const app = require('../index.js')
 const agent = request.agent(app)
 
-const { Client } = require('pg')
-const prodClient = new Client()
-let client
+const { Pool } = require('pg')
+const prodPool = new Pool()
+let testPool, client, prodClient
 
 let self = null
 
@@ -45,9 +45,19 @@ module.exports = class CRUD {
   //   valid: a valid object for a post
   routeTest(input) {
     describe(`${self.srcTable} setup`, function() {
-      it('connected to the prod db for setup', function(done) {
-        prodClient.connect().should.be.fulfilled.and.notify(done)
+      // connect the clients before the test
+      before(async function() {
+        testPool = new Pool({ table: self.table })
+        client = await testPool.connect()
+        prodClient = await prodPool.connect()
       })
+
+      // disconnect when done
+      after(function() {
+        prodClient.release()
+        client.release()
+      })
+
       it(`dropped schema ${self.schemaName}`, function(done) {
         prodClient.query(`DROP SCHEMA IF EXISTS ${self.schemaName} CASCADE`)
           .should.be.fulfilled.and.notify(done)
@@ -68,16 +78,9 @@ module.exports = class CRUD {
             .should.be.fulfilled.and.notify(done)
         })
       }
-      it('disconnected from the prod db', function(done) {
-        prodClient.end().should.be.fulfilled.and.notify(done)
-      })
     })
 
     describe('/' + self.route, function() {
-      it(`connected to ${self.table}`, function(done) {
-        client = new Client({ table: self.table })
-        client.connect().should.be.fulfilled.and.notify(done)
-      })
       describe('Connect employees route', function() {
         it(`logics table name is ${self.table}`, function() {
           self.logic.tableName().should.equal(self.table)
