@@ -188,7 +188,7 @@ module.exports = class CRUD {
       })
 
       describe('DELETE /' + self.route + '/id/', function() {
-        it('rejects an invalid selection with a token', function(done) {
+        it('rejects an invalid selection', function(done) {
           agent.delete('/' + self.route + '/id/-1')
             .expect(400)
             .end(function(err, res) {
