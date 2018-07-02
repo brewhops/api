@@ -1,3 +1,5 @@
+/* global describe */
+
 const Test = require('../CRUD')
 const tables = require('../tableNames')
 let test = new Test(
@@ -7,11 +9,6 @@ let test = new Test(
   tables
 )
 
-test.routeTest({
-  post: {
-    valid: {
-      'name': 'COOL',
-      'description': 'Cool it'
-    }
-  }
+describe('/' + test.getRoute(), function() {
+  test.GETall()
 })

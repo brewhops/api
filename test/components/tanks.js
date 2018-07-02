@@ -1,3 +1,5 @@
+/* global describe */
+
 const Test = require('../CRUD')
 const tables = require('../tableNames')
 let test = new Test(
@@ -7,12 +9,11 @@ let test = new Test(
   tables
 )
 
-test.routeTest({
-  post: {
-    valid: {
-      'name': 'F1',
-      'status': 'OK',
-      'in_use': true
-    }
-  }
+describe('/' + test.getRoute(), function() {
+  test.GETall()
+  // test.POST({
+  //   'name': 'F1',
+  //   'status': 'OK',
+  //   'in_use': true
+  // })
 })
