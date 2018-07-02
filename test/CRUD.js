@@ -14,8 +14,6 @@ const { Pool } = require('pg')
 const prodPool = new Pool()
 let testPool, client, prodClient
 
-let self = null
-
 module.exports = class CRUD {
   // table: Name of the table that it will connect to
   // logic: The logic that it will test
@@ -32,7 +30,6 @@ module.exports = class CRUD {
     this.logic = new Logic(this.table)
     this.route = routeName
     this.tables = tables
-    self = this
 
     this.itemID = null
 
@@ -41,15 +38,16 @@ module.exports = class CRUD {
   }
 
   getRoute() {
-    return self.route
+    return this.route
   }
 
   async tableCount() {
-    let res = await client.query(`SELECT COUNT(*) FROM ${self.table}`)
+    let res = await client.query(`SELECT COUNT(*) FROM ${this.table}`)
     return res.rows[0].count
   }
 
   dbSetup() {
+    let self = this
     describe(`${self.srcTable} setup`, function() {
       // connect the clients before the test
       before(async function() { prodClient = await prodPool.connect() })
@@ -85,10 +83,11 @@ module.exports = class CRUD {
   }
 
   testPoolInit() {
-    testPool = new Pool({ table: self.table })
+    testPool = new Pool({ table: this.table })
   }
 
   GETall() {
+    let self = this
     before(async function() {
       client = await testPool.connect()
       self.logic.connectToDB()
@@ -113,6 +112,7 @@ module.exports = class CRUD {
   }
 
   POST(input) {
+    let self = this
     before(async function() {
       self.logic.connectToDB()
     })
@@ -162,6 +162,7 @@ module.exports = class CRUD {
   }
 
   GETid() {
+    let self = this
     before(async function() { self.logic.connectToDB() })
     after(function() { self.logic.disconnectFromDB() })
 
@@ -190,6 +191,7 @@ module.exports = class CRUD {
   }
 
   PATCH(input) {
+    let self = this
     before(async function() { self.logic.connectToDB() })
     after(function() { self.logic.disconnectFromDB() })
 
@@ -225,6 +227,7 @@ module.exports = class CRUD {
   }
 
   DELETE() {
+    let self = this
     before(async function() { self.logic.connectToDB() })
     after(function() { self.logic.disconnectFromDB() })
 
