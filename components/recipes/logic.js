@@ -22,7 +22,7 @@ module.exports = class userLogic extends postgres {
   async createRecipe(req, res) {
     const { keys, values, escapes } = self.splitObjectKeyVals(req.body)
     const { rows } = await self.create(keys, escapes, values)
-    res.json(rows)
+    res.status(201).json(rows[0])
   }
 
   // PATCH/PUT
