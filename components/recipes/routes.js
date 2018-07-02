@@ -27,7 +27,7 @@ module.exports = function(tableName) {
   // [DELETE] section
   router.delete('/id/:id', controller.deleteRecipe)
 
-  router.use('*', (req, res) => res.json({
+  router.use('*', (req, res) => res.status(400).json({
     err: `${req.originalUrl} doesn't exist`
   }))
 
