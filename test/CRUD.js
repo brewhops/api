@@ -113,6 +113,7 @@ module.exports = class CRUD {
 
   POST(input) {
     let self = this
+    let tableCount = null
     before(async function() {
       self.logic.connectToDB()
     })
@@ -131,11 +132,8 @@ module.exports = class CRUD {
           })
       })
 
-      it('has an empty table', function() {
-        return self.tableCount().should.eventually.equal('0')
-      })
-
       it('created an item', function(done) {
+        self.tableCount().then(function(count) { tableCount = count })
         agent.post('/' + self.route)
           .send(input)
           .set('Accept', 'application/json')
@@ -155,8 +153,9 @@ module.exports = class CRUD {
         self.itemID.should.be.a('number')
       })
 
-      it('has one item in the table', function() {
-        return self.tableCount().should.eventually.equal('1')
+      it('has one more item in the table', function() {
+        tableCount = (parseInt(tableCount) + 1).toString()
+        return self.tableCount().should.eventually.equal(tableCount)
       })
     })
   }
