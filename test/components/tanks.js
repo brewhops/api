@@ -2,14 +2,14 @@
 
 const Test = require('../CRUD')
 const tables = require('../tableNames')
-let test = new Test(
-  'tanks',
-  require('../../components/tanks/logic'),
-  'tanks',
-  tables
-)
 
-describe('/' + test.getRoute(), async function() {
+describe('/tanks', async function() {
+  let test = new Test(
+    'tanks',
+    require('../../components/tanks/logic'),
+    'tanks',
+    tables
+  )
   test.GETall()
   test.POST({
     'name': 'F1',
@@ -20,6 +20,4 @@ describe('/' + test.getRoute(), async function() {
   test.PATCH({
     'status': 'Broken'
   })
-
-  // test.DELETE()
 })
