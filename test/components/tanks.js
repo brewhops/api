@@ -9,11 +9,17 @@ let test = new Test(
   tables
 )
 
-describe('/' + test.getRoute(), function() {
+describe('/' + test.getRoute(), async function() {
   test.GETall()
-  // test.POST({
-  //   'name': 'F1',
-  //   'status': 'OK',
-  //   'in_use': true
-  // })
+  test.POST({
+    'name': 'F1',
+    'status': 'OK',
+    'in_use': true
+  })
+  test.GETid()
+  test.PATCH({
+    'status': 'Broken'
+  })
+
+  // test.DELETE()
 })

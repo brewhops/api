@@ -24,7 +24,7 @@ module.exports = function(tableName) {
   router.post('/', validate(validator.createTank), controller.createTank)
 
   // PUT
-  router.put('/id/:id', validate(validator.updateTank), controller.updateTank)
+  router.patch('/id/:id', validate(validator.updateTank), controller.updateTank)
 
   // DELETE
   router.delete('/id/:id', requireAuthentication, controller.deleteTank)

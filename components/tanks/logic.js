@@ -1,4 +1,5 @@
 let postgres = require('./../../postgres/pg')
+const is = require('is')
 let self = null
 
 module.exports = class tankLogic extends postgres {
@@ -86,13 +87,21 @@ module.exports = class tankLogic extends postgres {
   }
 
   // PUT/PATCH
-  async updateTank(req, res) {
-    const { keys, values } = self.splitObjectKeyVals(req.body)
-    const { query, idx } = self.buildUpdateString(keys, values)
-    values.push(req.params.id) // add last escaped value for where clause
+  async updateTank(req, res, next) {
+    if (is.empty(req.body)) {
+      res.status(400).json({err: 'Request does not match valid form'})
+    } else {
+      const { keys, values } = self.splitObjectKeyVals(req.body)
+      const { query, idx } = self.buildUpdateString(keys, values)
+      values.push(req.params.id) // add last escaped value for where clause
 
-    const { rows } = await self.update(query, `id = \$${idx}`, values) // eslint-disable-line
-    res.json(rows)
+      const { rows } = await self.update(query, `id = \$${idx}`, values) // eslint-disable-line
+      if (rows.length > 0) {
+        res.json(rows)
+      } else {
+        next()
+      }
+    }
   }
 
   // DELETE
