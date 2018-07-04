@@ -189,6 +189,33 @@ module.exports = class CRUD {
     })
   }
 
+  GETidwithToken(token) {
+    let self = this
+    before(async function() { self.logic.connectToDB() })
+    after(function() { self.logic.disconnectFromDB() })
+
+    describe('GET /' + self.route + '/id/', function() {
+      it('rejects an invalid selection', function(done) {
+        agent.get('/' + self.route + '/id/-1')
+          .set('Authorization', 'Bearer ' + token)
+          .expect(400)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+      it('gets a valid selection', function(done) {
+        agent.get('/' + self.route + '/id/' + self.itemID)
+          .set('Authorization', 'Bearer ' + token)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+    })
+  }
+
   PATCH(input) {
     let self = this
     before(async function() { self.logic.connectToDB() })
@@ -225,6 +252,61 @@ module.exports = class CRUD {
     })
   }
 
+  PATCHwithToken(token, input) {
+    let self = this
+    before(async function() { self.logic.connectToDB() })
+    after(function() { self.logic.disconnectFromDB() })
+
+    describe('PATCH /' + self.route + '/id/', function() {
+      // create a element that we will edit
+      it('creates an element', function(done) {
+        agent.post('/' + self.route)
+          .send(input.post)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(function(res) {
+            res.body.id.should.be.a('number')
+            self.itemID = res.body.id
+          })
+          .expect(201)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+
+      it('rejects an invalid token', function(done) {
+        agent.patch('/' + self.route + '/id/' + self.itemID)
+          .send(input.patch)
+          .expect(401)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+      it('rejects an empty object', function(done) {
+        agent.patch('/' + self.route + '/id/' + self.itemID)
+          .set('Authorization', 'Bearer ' + input.token)
+          .send({})
+          .expect(400)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+      it('updates a valid selection', function(done) {
+        agent.patch('/' + self.route + '/id/' + self.itemID)
+          .set('Authorization', 'Bearer ' + input.token)
+          .send(input.patch)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+    })
+  }
+
   DELETE() {
     let self = this
     before(async function() { self.logic.connectToDB() })
@@ -241,6 +323,41 @@ module.exports = class CRUD {
       })
       it('accepts a valid selection', function(done) {
         agent.delete('/' + self.route + '/id/' + self.itemID)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+    })
+  }
+
+  DELETEwithToken(token, input) {
+    let self = this
+    before(async function() { self.logic.connectToDB() })
+    after(function() { self.logic.disconnectFromDB() })
+
+    describe('DELETE /' + self.route + '/id/', function() {
+      it('rejects an invalid token', function(done) {
+        agent.delete('/' + self.route + '/id/-1')
+          .expect(401)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+      it('rejects an invalid selection', function(done) {
+        agent.delete('/' + self.route + '/id/-1')
+          .set('Authorization', 'Bearer ' + token)
+          .expect(400)
+          .end(function(err, res) {
+            if (err) { console.log(res.body); return done(err) }
+            done()
+          })
+      })
+      it('accepts a valid selection', function(done) {
+        agent.delete('/' + self.route + '/id/' + self.itemID)
+          .set('Authorization', 'Bearer ' + token)
           .expect(200)
           .end(function(err, res) {
             if (err) { console.log(res.body); return done(err) }
