@@ -38,7 +38,7 @@ module.exports = class userLogic extends Pg {
       const { rows } = await self.create(keys, escapes, values, safeUserData)
       const returnedUser = rows[0]
       returnedUser.token = await generateAuthToken(returnedUser.username)
-      res.status(201).json(rows)
+      res.status(201).json(rows[0])
     }
   }
 
@@ -46,7 +46,7 @@ module.exports = class userLogic extends Pg {
     const prevUser = await self.readByUsername(req.body.username)
 
     if (prevUser.rows.length === 0) {
-      res.json(boom.badRequest('Not authorized'))
+      res.status(401).json(boom.badRequest('Not authorized'))
     } else {
       const password = bcrypt.compareSync(req.body.password, prevUser.rows[0].password)
       if (password) {
