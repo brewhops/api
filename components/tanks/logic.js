@@ -105,13 +105,16 @@ module.exports = class tankLogic extends postgres {
   }
 
   // DELETE
-  async deleteTank(req, res) {
-    const id = parseInt(req.params.id)
+  async deleteTank(req, res, next) {
     try {
-      const { rows } = await self.deleteById(id)
-      res.json(rows)
+      const { rows } = await self.deleteById(req.params.id)
+      if (rows.length > 0) {
+        res.status(200).json(rows)
+      } else {
+        next()
+      }
     } catch (e) {
-      res.status(400).json(e)
+      res.status(500).json(e)
     }
   }
 }
