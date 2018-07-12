@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS employees (
   username VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
   phone CHAR(12),
-  access_level SMALLINT NOT NULL
+  admin BOOLEAN NOT NULL
 );
 
 --

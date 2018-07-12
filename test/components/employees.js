@@ -14,9 +14,9 @@ describe('/employees', async function() {
   test.POST({
     'first_name': 'Connor',
     'last_name': 'Christensen',
-    'username': 'diffchriconn',
+    'username': 'chriconn',
     'password': 'thisisallyours',
     'phone': '972695553',
-    'access_level': 1
+    'admin': true
   })
 })

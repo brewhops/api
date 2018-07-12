@@ -9,7 +9,7 @@ class UserValidator {
         username: Joi.string().required(),
         password: Joi.string().required(),
         phone: Joi.string().required(),
-        access_level: Joi.number().required()
+        admin: Joi.boolean()
       }).unknown(false)
     }
   }
@@ -22,7 +22,7 @@ class UserValidator {
         username: Joi.string(),
         password: Joi.string(),
         phone: Joi.string(),
-        access_level: Joi.number()
+        admin: Joi.boolean()
       }).unknown(false)
     }
   }

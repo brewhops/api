@@ -7,7 +7,7 @@ const { userMatchAuthToken } = require('../../util/auth')
 
 let self = null
 
-const safeUserData = `id, first_name, last_name, username, phone, access_level`
+const safeUserData = `id, first_name, last_name, username, phone, admin`
 
 module.exports = class userLogic extends Pg {
   constructor(tableName) {
