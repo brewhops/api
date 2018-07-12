@@ -38,35 +38,26 @@ module.exports = class tankLogic extends postgres {
 
   async getTankData(req, res, next) {
     const id = parseInt(req.params.id)
-
+    /* get most recent:
+       * tank number
+       * pressure
+       * beer ID
+       * batch number
+       * action
+       * temperature
+    */
     let query = `
-      SELECT
-        t.status,
-        b.name,
-        b.volume,
-        b.bright,
-        b.generation,
-        v.temperature,
-        v.PH,
-        v.SG,
-        v.ABV,
-        v.pressure,
-        v.measured_on,
-        r.airplane_code,
-        r.instructions,
-        a.name,
-        a.description,
-        e.username
-      FROM tanks t, batches b,  recipes r, versions v, tasks ts, actions a, employees e
-      WHERE t.id = $1
-      AND b.tank_id = t.id
-      AND r.id = b.recipe_id
-      AND v.batch_id = b.id
-      AND v.completed = FALSE
-      AND ts.batch_id = b.id
-      AND ts.completed_on = NULL
-      AND a.id = ts.action_id
-      AND e.id = ts.employee_id`
+    SELECT action_name, open_tasks.batch_id, batch_name,
+    tank_name, tank_id, beer_name, pressure, temperature
+    FROM (
+      (
+        most_recent_batch_info RIGHT JOIN
+        open_tasks
+        ON open_tasks.batch_id = most_recent_batch_info.batch_id
+      )
+      RIGHT JOIN tank_open_batch
+      ON open_tasks.batch_id = tank_open_batch.batch_id
+    )`
     try {
       const results = await self.client.query(query, [ id ])
       res.json(results.rows)
