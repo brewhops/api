@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS employees (
   last_name VARCHAR(255) NOT NULL,
   username VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
-  phone CHAR(12),
+  phone CHAR(12) NULL,
   admin BOOLEAN NOT NULL
 );
 

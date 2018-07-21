@@ -8,7 +8,7 @@ class UserValidator {
         last_name: Joi.string().required(),
         username: Joi.string().required(),
         password: Joi.string().required(),
-        phone: Joi.string().required(),
+        phone: Joi.string(),
         admin: Joi.boolean()
       }).unknown(false)
     }
