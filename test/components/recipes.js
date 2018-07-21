@@ -11,6 +11,7 @@ describe('/recipes', function() {
   )
   test.GETall()
   test.POST({
+    'name': 'Pacific Rain',
     'airplane_code': 'RAIN',
     'instructions': {
       'hops': 1,

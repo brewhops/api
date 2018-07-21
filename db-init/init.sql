@@ -51,7 +51,9 @@ CREATE TABLE IF NOT EXISTS tanks (
 
 CREATE TABLE IF NOT EXISTS recipes (
   id SERIAL NOT NULL PRIMARY KEY,
+  name VARCHAR(30) NOT NULL,
   airplane_code VARCHAR(50) NOT NULL,
+  yeast INT NULL,
   instructions JSONB NOT NULL
 );
 
