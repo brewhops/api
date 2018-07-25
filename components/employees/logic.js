@@ -44,14 +44,17 @@ module.exports = class userLogic extends Pg {
 
   async login(req, res) {
     const prevUser = await self.readByUsername(req.body.username)
-
     if (prevUser.rows.length === 0) {
       res.status(401).json(boom.badRequest('Not authorized'))
     } else {
+      const userID = prevUser.rows[0].id
       const password = bcrypt.compareSync(req.body.password, prevUser.rows[0].password)
       if (password) {
         const token = await generateAuthToken(req.body.username)
-        res.json({ token: token })
+        res.json({
+          token: token,
+          userID: userID
+        })
       } else {
         res.json(boom.badRequest('Incorrect password'))
       }
