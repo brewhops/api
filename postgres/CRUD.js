@@ -11,7 +11,17 @@ module.exports = class CRUD {
   }
 
   connectToDB() {
-    this.client = new Client({ database: this.db })
+    if (process.env.NODE_ENV === 'test') {
+      this.client = new Client({
+        user: process.env.TEST_PG_USER,
+        database: process.env.TEST_PG_DATABASE,
+        password: process.env.TEST_PG_PASSWORD,
+        port: process.env.TEST_PG_PORT,
+        host: process.env.TEST_PG_HOST
+      })
+    } else {
+      this.client = new Client()
+    }
     return this.client.connect()
   }
 

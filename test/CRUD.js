@@ -1,3 +1,8 @@
+/*
+A redefinition of the CRUD class used in the production environment.
+This is redefined because it is geared towards testing.
+*/
+
 /* global describe it before after */
 
 require('dotenv').config()
@@ -11,7 +16,18 @@ const app = require('../index.js')
 const agent = request.agent(app)
 
 const { Pool } = require('pg')
-const prodPool = new Pool()
+let prodPool = null
+if (process.env.NODE_ENV === 'test') {
+  prodPool = new Pool({
+    user: process.env.TEST_PG_USER,
+    database: process.env.TEST_PG_DATABASE,
+    password: process.env.TEST_PG_PASSWORD,
+    port: process.env.TEST_PG_PORT,
+    host: process.env.TEST_PG_HOST
+  })
+} else {
+  prodPool = new Pool()
+}
 let testPool, client, prodClient
 
 module.exports = class CRUD {
