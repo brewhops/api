@@ -7,11 +7,11 @@ const chai = require('chai')
 const expect = chai.expect
 
 describe('Database connect', function() {
-  it('is using port 32769', function() {
-    expect(process.env.PGPORT).to.equal('32769')
+  it('is using port 45758', function() {
+    expect(process.env.TEST_PG_PORT).to.equal('45758')
   })
 
   it('is using host localhost', function() {
-    expect(process.env.PGHOST).to.equal('localhost')
+    expect(process.env.TEST_PG_HOST).to.equal('localhost')
   })
 })

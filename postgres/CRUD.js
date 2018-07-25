@@ -1,14 +1,9 @@
 const { Client } = require('pg')
 
 module.exports = class CRUD {
-  constructor(db, tableName) {
+  constructor(tableName) {
     this.client = null
     this.table = tableName
-    this.db = db
-  }
-
-  dbName() {
-    return this.db
   }
 
   tableName() {

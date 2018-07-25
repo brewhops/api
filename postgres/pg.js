@@ -1,8 +1,8 @@
 const Crud = require('./CRUD')
 
 module.exports = class Pg extends Crud {
-  constructor(db, collName) {
-    super(db, collName)
+  constructor(collName) {
+    super(collName)
     // Production URL
     this.url = ''
   }
