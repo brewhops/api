@@ -36,8 +36,7 @@ module.exports = class tankLogic extends postgres {
     }
   }
 
-  async getTankData(req, res, next) {
-    const id = parseInt(req.params.id)
+  async getTankMonitoring(req, res, next) {
     /* get most recent:
        * tank number
        * pressure
@@ -59,10 +58,10 @@ module.exports = class tankLogic extends postgres {
       ON open_tasks.batch_id = tank_open_batch.batch_id
     )`
     try {
-      const results = await self.client.query(query, [ id ])
-      res.json(results.rows)
+      const results = await self.client.query(query)
+      res.status(200).json(results.rows)
     } catch (e) {
-      res.json(e)
+      res.status(500).json(e)
     }
   }
 

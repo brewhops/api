@@ -18,7 +18,7 @@ module.exports = function(tableName) {
   // GET
   router.get('/', controller.getTanks)
   router.get('/id/:id', controller.getTank)
-  router.get('/id/:id/data', controller.getTankData)
+  router.get('/monitoring', controller.getTankMonitoring)
 
   // POST
   router.post('/', validate(validator.createTank), controller.createTank)
