@@ -1,18 +1,50 @@
 /* global describe it before after */
 
+/*
+A redefinition of the CRUD class used in the production environment.
+This is redefined because it is geared towards testing.
+
+The general flow of this class:
+1. It creates a connection pool to the database in the test docker environment
+2. It creates a connection to that DB using the connection pool
+3. It makes a copy of the database in that test docker environment
+  a. There is one copy of the DB for every table in the database
+  b. These coppies are tracked in a schema with the name of the route. This is
+    to keep any other tests from interfering with the test that is running.
+  c. The copy is left after the test is run, but is dropped when the test is
+    run again.
+4. It clears out any data that might exist in those tables.
+5. It runs some tests
+*/
+
 require('dotenv').config()
 
+// our framework for writing assertion testing
 const chai = require('chai')
 chai.use(require('chai-as-promised'))
 chai.should()
 
+// our framework for integration testing
 const request = require('supertest')
+// our express app
 const app = require('../index.js')
+// super test needs a copy of our app to test
 const agent = request.agent(app)
 
+// get our PG javascript wrapper pool
 const { Pool } = require('pg')
-const prodPool = new Pool()
-let testPool, client, prodClient
+
+// this is the pool that we will use to create test schemas
+const testPool = new Pool({
+  user: process.env.TEST_PG_USER,
+  database: process.env.TEST_PG_DATABASE,
+  password: process.env.TEST_PG_PASSWORD,
+  port: process.env.TEST_PG_PORT,
+  host: process.env.TEST_PG_HOST
+})
+
+// this is the client we connect and disconnect to the pool with
+let client
 
 module.exports = class CRUD {
   // table: Name of the table that it will connect to
@@ -34,43 +66,37 @@ module.exports = class CRUD {
     this.itemID = null
 
     this.dbSetup()
-    this.testPoolInit()
   }
 
   getRoute() {
     return this.route
   }
 
-  async tableCount() {
-    let res = await client.query(`SELECT COUNT(*) FROM ${this.table}`)
-    return res.rows[0].count
-  }
-
   dbSetup() {
     let self = this
     describe(`${self.srcTable} setup`, function() {
       // connect the clients before the test
-      before(async function() { prodClient = await prodPool.connect() })
+      before(async function() { client = await testPool.connect() })
       // disconnect when done
-      after(function() { prodClient.release() })
+      after(function() { client.release() })
 
       it(`dropped schema ${self.schemaName}`, function(done) {
-        prodClient.query(`DROP SCHEMA IF EXISTS ${self.schemaName} CASCADE`)
+        client.query(`DROP SCHEMA IF EXISTS ${self.schemaName} CASCADE`)
           .should.be.fulfilled.and.notify(done)
       })
       it(`created schema ${self.schemaName}`, function(done) {
-        prodClient.query(`CREATE SCHEMA ${self.schemaName}`)
+        client.query(`CREATE SCHEMA ${self.schemaName}`)
           .should.be.fulfilled.and.notify(done)
       })
       for (let table of self.tables) {
         it(`coppied ${table} to ${self.schemaName}.${table}`, function(done) {
-          prodClient.query(
+          client.query(
             `CREATE TABLE ${self.schemaName}.${table}
             (LIKE ${table} INCLUDING ALL)`
           ).should.be.fulfilled.and.notify(done)
         })
         it(`cleared out the ${self.schemaName}.${table} table`, function(done) {
-          prodClient.query(`TRUNCATE ${self.schemaName}.${table} CASCADE`)
+          client.query(`TRUNCATE ${self.schemaName}.${table} CASCADE`)
             .should.be.fulfilled.and.notify(done)
         })
       }
@@ -82,18 +108,12 @@ module.exports = class CRUD {
     })
   }
 
-  testPoolInit() {
-    testPool = new Pool({ table: this.table })
-  }
-
   GETall() {
     let self = this
     before(async function() {
-      client = await testPool.connect()
       self.logic.connectToDB()
     })
     after(function() {
-      client.release()
       self.logic.disconnectFromDB()
     })
 
@@ -113,7 +133,6 @@ module.exports = class CRUD {
 
   POST(input) {
     let self = this
-    let tableCount = null
     before(async function() {
       self.logic.connectToDB()
     })
@@ -133,7 +152,6 @@ module.exports = class CRUD {
       })
 
       it('created an item', function(done) {
-        self.tableCount().then(function(count) { tableCount = count })
         agent.post('/' + self.route)
           .send(input)
           .set('Accept', 'application/json')
@@ -153,9 +171,12 @@ module.exports = class CRUD {
         self.itemID.should.be.a('number')
       })
 
-      it('has one more item in the table', function() {
-        tableCount = (parseInt(tableCount) + 1).toString()
-        return self.tableCount().should.eventually.equal(tableCount)
+      it('has one more item in the table', function(done) {
+        agent.get('/' + self.route)
+          .expect(function(res) {
+            res.body.length.should.equal(1)
+          })
+          .expect(200, done)
       })
     })
   }

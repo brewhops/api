@@ -11,7 +11,7 @@ const safeUserData = `id, first_name, last_name, username, phone, admin`
 
 module.exports = class userLogic extends Pg {
   constructor(tableName) {
-    super(process.env.PGDATABASE, tableName)
+    super(tableName)
     self = this
   }
 

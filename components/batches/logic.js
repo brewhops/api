@@ -3,7 +3,7 @@ let self = null
 
 module.exports = class batchesLogic extends postgres {
   constructor(tableName) {
-    super(process.env.PGDATABASE, tableName)
+    super(tableName)
     self = this
   }
 

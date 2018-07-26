@@ -1,35 +1,10 @@
 const Crud = require('./CRUD')
 
 module.exports = class Pg extends Crud {
-  constructor(db, collName) {
-    super(db, collName)
+  constructor(collName) {
+    super(collName)
     // Production URL
     this.url = ''
-  }
-
-  /* Helper Functions */
-  respond(Result, Err, res, req) {
-    if (Err) {
-      res.json(Err)
-    }
-    if (Result.length !== 0 && req && req.query.page && req.query.limit) {
-      this.paginate(req, Result, res)
-    } else {
-      res.json(Result)
-    }
-  }
-
-  // parse array to send back sectioned off results
-  paginate(req, data, res) {
-    let originalUrl = req.originalUrl.split('?')[0]
-    let query = req.query
-    data = data.slice(query.limit * (query.page - 1), query.limit * query.page)
-    let respObj = {
-      prevPage: `${this.url}${originalUrl}/?limit=${query.limit}&page=${parseInt(query.page) - 1}`,
-      nextPage: `${this.url}${originalUrl}/?limit=${query.limit}&page=${parseInt(query.page) + 1}`,
-      data: data
-    }
-    res.json(respObj)
   }
 
   splitObjectKeyVals(obj) {

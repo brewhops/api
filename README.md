@@ -52,6 +52,15 @@ Then
 1. `docker-compose up` will start the development database.
 1. `npm run dev` will start the API.
 
+
+If you are going to do testing, you need the following in the *.env* file
+
+* TEST_PG_USER
+* TEST_PG_DATABASE
+* TEST_PG_PASSWORD
+* TEST_PG_PORT
+* TEST_PG_HOST
+
 #### Production
 
 Your env file requires

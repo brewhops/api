@@ -4,7 +4,7 @@ let self = null
 
 module.exports = class actionLogic extends postgres {
   constructor(tableName) {
-    super(process.env.PGDATABASE, tableName)
+    super(tableName)
     self = this
   }
 
