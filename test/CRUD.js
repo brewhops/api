@@ -33,19 +33,18 @@ const agent = request.agent(app)
 
 // get our PG javascript wrapper pool
 const { Pool } = require('pg')
-let prodPool = null
-if (process.env.NODE_ENV === 'test') {
-  prodPool = new Pool({
-    user: process.env.TEST_PG_USER,
-    database: process.env.TEST_PG_DATABASE,
-    password: process.env.TEST_PG_PASSWORD,
-    port: process.env.TEST_PG_PORT,
-    host: process.env.TEST_PG_HOST
-  })
-} else {
-  prodPool = new Pool()
-}
-let testPool, client, prodClient
+
+// this is the pool that we will use to create test schemas
+const testPool = new Pool({
+  user: process.env.TEST_PG_USER,
+  database: process.env.TEST_PG_DATABASE,
+  password: process.env.TEST_PG_PASSWORD,
+  port: process.env.TEST_PG_PORT,
+  host: process.env.TEST_PG_HOST
+})
+
+// this is the client we connect and disconnect to the pool with
+let client
 
 module.exports = class CRUD {
   // table: Name of the table that it will connect to
@@ -67,43 +66,37 @@ module.exports = class CRUD {
     this.itemID = null
 
     this.dbSetup()
-    this.testPoolInit()
   }
 
   getRoute() {
     return this.route
   }
 
-  async tableCount() {
-    let res = await client.query(`SELECT COUNT(*) FROM ${this.table}`)
-    return res.rows[0].count
-  }
-
   dbSetup() {
     let self = this
     describe(`${self.srcTable} setup`, function() {
       // connect the clients before the test
-      before(async function() { prodClient = await prodPool.connect() })
+      before(async function() { client = await testPool.connect() })
       // disconnect when done
-      after(function() { prodClient.release() })
+      after(function() { client.release() })
 
       it(`dropped schema ${self.schemaName}`, function(done) {
-        prodClient.query(`DROP SCHEMA IF EXISTS ${self.schemaName} CASCADE`)
+        client.query(`DROP SCHEMA IF EXISTS ${self.schemaName} CASCADE`)
           .should.be.fulfilled.and.notify(done)
       })
       it(`created schema ${self.schemaName}`, function(done) {
-        prodClient.query(`CREATE SCHEMA ${self.schemaName}`)
+        client.query(`CREATE SCHEMA ${self.schemaName}`)
           .should.be.fulfilled.and.notify(done)
       })
       for (let table of self.tables) {
         it(`coppied ${table} to ${self.schemaName}.${table}`, function(done) {
-          prodClient.query(
+          client.query(
             `CREATE TABLE ${self.schemaName}.${table}
             (LIKE ${table} INCLUDING ALL)`
           ).should.be.fulfilled.and.notify(done)
         })
         it(`cleared out the ${self.schemaName}.${table} table`, function(done) {
-          prodClient.query(`TRUNCATE ${self.schemaName}.${table} CASCADE`)
+          client.query(`TRUNCATE ${self.schemaName}.${table} CASCADE`)
             .should.be.fulfilled.and.notify(done)
         })
       }
@@ -115,18 +108,12 @@ module.exports = class CRUD {
     })
   }
 
-  testPoolInit() {
-    testPool = new Pool({ table: this.table })
-  }
-
   GETall() {
     let self = this
     before(async function() {
-      client = await testPool.connect()
       self.logic.connectToDB()
     })
     after(function() {
-      client.release()
       self.logic.disconnectFromDB()
     })
 
@@ -146,7 +133,6 @@ module.exports = class CRUD {
 
   POST(input) {
     let self = this
-    let tableCount = null
     before(async function() {
       self.logic.connectToDB()
     })
@@ -166,7 +152,6 @@ module.exports = class CRUD {
       })
 
       it('created an item', function(done) {
-        self.tableCount().then(function(count) { tableCount = count })
         agent.post('/' + self.route)
           .send(input)
           .set('Accept', 'application/json')
@@ -186,9 +171,12 @@ module.exports = class CRUD {
         self.itemID.should.be.a('number')
       })
 
-      it('has one more item in the table', function() {
-        tableCount = (parseInt(tableCount) + 1).toString()
-        return self.tableCount().should.eventually.equal(tableCount)
+      it('has one more item in the table', function(done) {
+        agent.get('/' + self.route)
+          .expect(function(res) {
+            res.body.length.should.equal(1)
+          })
+          .expect(200, done)
       })
     })
   }
