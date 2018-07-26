@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt')
 const boom = require('boom')
 const saltRounds = 8
 const { generateAuthToken } = require('./../../middleware/auth')
-const { userMatchAuthToken } = require('../../util/auth')
 
 let self = null
 
@@ -68,7 +67,7 @@ module.exports = class userLogic extends Pg {
     values.push(req.params.id) // add last escaped value for where clause
     const { rows } = await self.readById(req.params.id)
 
-    if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
+    if (rows.length === 0 || req.user !== rows[0].username) {
       res.json(boom.badRequest('Not Authorized'))
     } else {
       let results = await self.update(query, `id = \$${idx}`, values) // eslint-disable-line
@@ -79,7 +78,7 @@ module.exports = class userLogic extends Pg {
   // DELETE
   async deleteUser(req, res) {
     const { rows } = await self.readById(req.params.id)
-    if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
+    if (rows.length === 0 || req.user !== rows[0].username) {
       res.json(boom.badRequest('Not Authorized'))
     } else {
       let results = await self.deleteById(req.params.id)
