@@ -6,6 +6,7 @@ let validate = require('express-validation')
 module.exports = function(tableName) {
   let controller = new Controller(tableName)
 
+  // we want to connect to the DB automatically if we are not testing
   if (process.env.NODE_ENV !== 'test') {
     controller.connectToDB()
       .then(() => console.log('Actions route connected to database'))

@@ -11,6 +11,7 @@ module.exports = class CRUD {
   }
 
   connectToDB() {
+    // if we are testing the app, connect to the test db
     if (process.env.NODE_ENV === 'test') {
       this.client = new Client({
         user: process.env.TEST_PG_USER,
@@ -20,6 +21,7 @@ module.exports = class CRUD {
         host: process.env.TEST_PG_HOST
       })
     } else {
+      // connect to the prod db
       this.client = new Client()
     }
     return this.client.connect()

@@ -1,20 +1,37 @@
+/* global describe it before after */
+
 /*
 A redefinition of the CRUD class used in the production environment.
 This is redefined because it is geared towards testing.
-*/
 
-/* global describe it before after */
+The general flow of this class:
+1. It creates a connection pool to the database in the test docker environment
+2. It creates a connection to that DB using the connection pool
+3. It makes a copy of the database in that test docker environment
+  a. There is one copy of the DB for every table in the database
+  b. These coppies are tracked in a schema with the name of the route. This is
+    to keep any other tests from interfering with the test that is running.
+  c. The copy is left after the test is run, but is dropped when the test is
+    run again.
+4. It clears out any data that might exist in those tables.
+5. It runs some tests
+*/
 
 require('dotenv').config()
 
+// our framework for writing assertion testing
 const chai = require('chai')
 chai.use(require('chai-as-promised'))
 chai.should()
 
+// our framework for integration testing
 const request = require('supertest')
+// our express app
 const app = require('../index.js')
+// super test needs a copy of our app to test
 const agent = request.agent(app)
 
+// get our PG javascript wrapper pool
 const { Pool } = require('pg')
 let prodPool = null
 if (process.env.NODE_ENV === 'test') {
