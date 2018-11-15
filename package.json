@@ -12,7 +12,9 @@
     "lint-fix": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/' --fix",
     "start": "node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
-    "prod": "PGUSER=${PGUSER} PGDATABASE=${PGDATABASE} PGPASSWORD=${PGPASSWORD} docker-compose up --build"
+    "prod": "PGUSER=${PGUSER} PGDATABASE=${PGDATABASE} PGPASSWORD=${PGPASSWORD} docker-compose -f PROD.docker-compose.yaml up",
+    "prod-build": "PGUSER=${PGUSER} PGDATABASE=${PGDATABASE} PGPASSWORD=${PGPASSWORD} docker-compose -f PROD.docker-compose.yaml build",
+    "prod-clean": "docker-compose -f PROD.docker-compose.yaml rm -sf; docker volume rm ${PWD##*/}_postgres_data;"
   },
   "repository": {
     "type": "git",
