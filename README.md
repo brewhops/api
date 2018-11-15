@@ -91,3 +91,4 @@ A few things to note:
   * eg. `SELECT * FROM actions;` selects everything from the actions table
 * `\q` to quit the psql shell
 * `exit` to exit the docker container
+
