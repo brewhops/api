@@ -33,5 +33,6 @@ services:
 
 
 volumes:
-  postgres-data:
-    name: brewhops-postgress-data
+  postgres_data:
+     name: brewhops-postgres-data
+     driver: local

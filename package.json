@@ -11,10 +11,14 @@
     "lint": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/'",
     "lint-fix": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/' --fix",
     "start": "node index.js",
-    "dev": "NODE_ENV=development nodemon index.js",
-    "prod": "PGUSER=${PGUSER} PGDATABASE=${PGDATABASE} PGPASSWORD=${PGPASSWORD} docker-compose -f PROD.docker-compose.yaml up",
-    "prod-build": "PGUSER=${PGUSER} PGDATABASE=${PGDATABASE} PGPASSWORD=${PGPASSWORD} docker-compose -f PROD.docker-compose.yaml build",
-    "prod-clean": "docker-compose -f PROD.docker-compose.yaml rm -sf; docker volume rm ${PWD##*/}_postgres_data;"
+    "dev": "PGUSER=api PGDATABASE=brewhops PGPASSWORD=mypassword PORT=1234 docker-compose -f DEV.docker-compose.yaml up",
+    "dev-build": "PGUSER=api PGDATABASE=brewhops PGPASSWORD=mypassword PORT=1234 docker-compose -f DEV.docker-compose.yaml build",
+    "dev-clean": "PGUSER=api PGDATABASE=brewhops PGPASSWORD=mypassword PORT=1234 docker-compose -f DEV.docker-compose.yaml rm -sf; docker image rm brewhops-api_dev; docker volume rm brewhops-postgres-data_dev;",
+    "dev-psql": "PGUSER=api PGPASSWORD=mypassword PGDATABASE=brewhops; docker run -it --rm --network=${PWD##*/}_default -e PGUSER=${PGUSER} -e PGDATABASE=${PGDATABASE} -e PGPASSWORD=${PGPASSWORD} -e PGHOST=database postgres psql",
+    "prod": "PGUSER=${PGUSER:=api} PGDATABASE=${PGDATABASE:=brewhops} PGPASSWORD=${PGPASSWORD:=mypassword} docker-compose -f PROD.docker-compose.yaml up",
+    "prod-build": "PGUSER=${PGUSER:=api} PGDATABASE=${PGDATABASE:=brewhops} PGPASSWORD=${PGPASSWORD:=mypassword} docker-compose -f PROD.docker-compose.yaml build",
+    "prod-clean": "PGUSER=${PGUSER:=api} PGDATABASE=${PGDATABASE:=brewhops} PGPASSWORD=${PGPASSWORD:=mypassword} docker-compose -f PROD.docker-compose.yaml rm -sf; docker image rm brewhops-api; docker volume rm brewhops-postgres-data;",
+    "prod-psql": "PGUSER=${PGUSER:=api} PGPASSWORD=${PGPASSWORD:=mypassword} PGDATABASE=${PGDATABASE:=brewhops}; docker run -it --rm --network=${PWD##*/}_default -e PGUSER=${PGUSER} -e PGDATABASE=${PGDATABASE} -e PGPASSWORD=${PGPASSWORD} -e PGHOST=database postgres psql"
   },
   "repository": {
     "type": "git",
