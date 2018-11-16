@@ -1,5 +1,5 @@
 # using the node version 10 docker image
-FROM node:10
+FROM node:11
 
 # specify the work directory and tell docker
 # where to run future commands

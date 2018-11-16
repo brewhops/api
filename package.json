@@ -11,7 +11,7 @@
     "test": "NODE_ENV=test mocha --reporter spec 'src/test/components/*.js' --file src/test/dbSetup.js --exit",
     "lint": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/'",
     "lint-fix": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/' --fix",
-    "start": "node index.js",
+    "start": "node src/index.js",
     "dev": "NODE_ENV=development docker-compose -f DEV.docker-compose.yaml up database web-server",
     "dev-build": "NODE_ENV=development docker-compose -f DEV.docker-compose.yaml build",
     "dev-clean": "NODE_ENV=development docker-compose -f DEV.docker-compose.yaml rm -sf; docker image rm brewhops-api_dev; docker volume rm brewhops-postgres-data_dev;",

@@ -1,9 +1,9 @@
 # using the node version 10 docker image
-FROM node:10
+FROM node:11
 
 # specify the work directory and tell docker
 # where to run future commands
-WORKDIR /user/src/app
+WORKDIR /user/app
 
 # copy the package files into the work directory
 # keep it minimal on startup
@@ -14,10 +14,10 @@ RUN npm install
 
 # copy everything in this directory into our
 # docker container
-COPY ./src .
+COPY ./src ./src
 
 # expose the port on the docker container
-EXPOSE ${PORT}
+EXPOSE 1234
 
 # sets the default command for this image
 CMD ["npm", "start"]
