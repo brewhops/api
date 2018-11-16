@@ -1,25 +1,40 @@
-const Crud = require('./CRUD');
+import { Crud } from './CRUD';
 
-module.exports = class Pg extends Crud {
-  constructor(collName) {
+// tslint:disable:no-any no-unsafe-any
+
+/**
+ * A further extension of the Crud class for some reason. Stay tuned...
+ * @export
+ * @class Pg
+ * @extends {Crud}
+ */
+export class Pg extends Crud {
+  private url: string;
+
+  constructor(collName: string) {
     super(collName);
     // Production URL
     this.url = '';
   }
 
-  splitObjectKeyVals(obj) {
-    let keys = [];
+  /**
+   * Separates keys and values into two arrays and includes escape charaters. 
+   * Returns an object containing all of this info.
+   * @param {*} obj
+   * @returns
+   * @memberof Pg
+   */
+  splitObjectKeyVals(obj: any) {
+    const keys = [];
     const values = [];
-    let escapes = [];
+    const escapes = [];
     let idx = 1;
-    for (const key in obj) {
-      keys.push(key);
-      values.push(obj[key]);
+    for (const key of obj) {
+      keys.push(key.toString());
+      values.push(obj[key].toString());
       escapes.push(`\$${idx}`); // eslint-disable-line
       idx++;
     }
-    keys = keys.toString();
-    escapes = escapes.toString();
 
     return {
       keys,
@@ -28,26 +43,39 @@ module.exports = class Pg extends Crud {
     };
   }
 
-  // NOTE: This only works for one query.
-  // NOT compounded AND/OR only use to get stuff by ID.
-  buildQueryByID(key, value) {
+  /**
+   * NOTE: This only works for one query.
+   * NOT compounded AND/OR only used to get stuff by ID.
+   * @param {string} key
+   * @param {string} value
+   * @returns
+   * @memberof Pg
+   */
+  buildQueryByID(key: string, value: string) {
     return `${key} = ${value}`;
   }
 
-  buildUpdateString(keys, values) {
-    keys = keys.split(',');
+
+  /**
+   * Builds some sort of updates object out of a string
+   * @param {string} keys
+   * @param {*} values
+   * @returns {*}
+   * @memberof Pg
+   */
+  buildUpdateString(keys: string): any {
     let query = ``;
     let idx = 1;
-    for (const i in keys) {
-      const key = keys[i];
+    for (const key of keys.split(',')) {
       query += `${key} = \$${idx}, `; // eslint-disable-line
       idx++;
     } // match keys to the current escape index '$1'
 
     query = query.substring(0, query.length - 2); // remove trailing ', '
+
     return {
       query,
       idx
     };
   }
-};
+}
