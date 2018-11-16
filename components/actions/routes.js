@@ -3,8 +3,15 @@ let Controller = require('./logic')
 let validator = require('./validator')
 let validate = require('express-validation')
 
-module.exports = function () {
-  let controller = new Controller()
+module.exports = function(tableName) {
+  let controller = new Controller(tableName)
+
+  // we want to connect to the DB automatically if we are not testing
+  if (process.env.NODE_ENV !== 'test') {
+    controller.connectToDB()
+      .then(() => console.log('Actions route connected to database'))
+      .catch(e => console.log('Error! Connection refused', e))
+  }
 
   router.use((req, res, next) => next()) // init
 
@@ -21,8 +28,8 @@ module.exports = function () {
   // [DELETE] section
   router.delete('/id/:id', controller.deleteAction)
 
-  router.use('*', (req, res) => res.json({
-    err: `Oh nose, ${req.originalUrl} doesn't exist`
+  router.use('*', (req, res) => res.status(400).json({
+    err: `${req.originalUrl} doesn't exist`
   }))
 
   return router

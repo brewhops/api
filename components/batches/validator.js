@@ -1,7 +1,7 @@
 let Joi = require('joi')
 
 class BatchesValidator {
-  get createBatch () {
+  get createBatch() {
     return {
       body: Joi.object().keys({
         name: Joi.string().required(),
@@ -28,7 +28,7 @@ class BatchesValidator {
     }
   }
 
-  get updateBatch () {
+  get updateBatch() {
     return {
       body: Joi.object().keys({
         name: Joi.string(),

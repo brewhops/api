@@ -1,5 +1,5 @@
 {
-  "name": "final-project-brewhops",
+  "name": "NinkasiServer",
   "version": "0.0.1",
   "description": "An express based REST API for tracking brewing data",
   "main": "index.js",
@@ -7,39 +7,48 @@
     "node": "11.2.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test mocha --reporter spec 'test/components/*.js' --file test/dbSetup.js --exit",
     "lint": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/'",
+    "lint-fix": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/' --fix",
     "start": "node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
-    "prod": "docker-compose build && docker-compose up"
+    "prod": "NODE_ENV=production docker-compose -f docker-compose-prod.yaml up"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OSU-CS493-Sp18/final-project-brewhops.git"
+    "url": "git+https://github.com/ConnorChristensen/NinkasiServer.git"
   },
-  "author": "Connor Christensen, William Buffum, Brandon Dring, Anie Lei",
+  "author": "Connor Christensen",
   "bugs": {
-    "url": "https://github.com/OSU-CS493-Sp18/final-project-brewhops/issues"
+    "url": "https://github.com/ConnorChristensen/NinkasiServer/issues"
   },
-  "homepage": "https://github.com/OSU-CS493-Sp18/final-project-brewhops#readme",
+  "homepage": "https://github.com/ConnorChristensen/NinkasiServer#readme",
   "devDependencies": {
+    "chai": "^4.1.2",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
-    "nodemon": "^1.17.5"
+    "knex": "^0.14.6",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.17.5",
+    "sinon": "^6.0.0",
+    "supertest": "^3.1.0"
   },
   "dependencies": {
     "bcrypt": "^2.0.1",
     "boom": "^7.2.0",
+    "chai-as-promised": "^7.1.1",
     "command-line-args": "^5.0.2",
+    "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "express-validation": "^1.0.2",
-    "joi": "^13.3.0",
-    "jsonwebtoken": "^8.2.1",
+    "is": "^3.2.1",
+    "joi": "^13.4.0",
+    "jsonwebtoken": "^8.3.0",
     "pg": "^7.4.3",
     "uuid": "^3.2.1"
   }

@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS employees (
   last_name VARCHAR(255) NOT NULL,
   username VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
-  phone CHAR(12),
-  access_level SMALLINT NOT NULL
+  phone CHAR(12) NULL,
+  admin BOOLEAN NOT NULL
 );
 
 --
@@ -51,7 +51,9 @@ CREATE TABLE IF NOT EXISTS tanks (
 
 CREATE TABLE IF NOT EXISTS recipes (
   id SERIAL NOT NULL PRIMARY KEY,
+  name VARCHAR(30) NOT NULL,
   airplane_code VARCHAR(50) NOT NULL,
+  yeast INT NULL,
   instructions JSONB NOT NULL
 );
 
@@ -100,3 +102,56 @@ CREATE TABLE IF NOT EXISTS tasks (
   action_id SERIAL REFERENCES actions(id) NOT NULL,
   employee_id SERIAL REFERENCES employees(id)
 );
+
+
+--
+-- Views for easy querying of the DB
+--
+
+-- the batch ID and action name of all open tasks
+CREATE VIEW open_tasks AS
+SELECT actions.name AS action_name,
+tasks.batch_id
+FROM actions, tasks
+WHERE tasks.action_id=actions.id AND
+tasks.completed_on IS NULL;
+-- EXAMPLE:
+--  action_name | batch_id
+-- -------------+----------
+--  COOL        |        1
+
+
+
+-- shows all tanks that have a currently running batch in it
+CREATE VIEW tank_open_batch AS
+SELECT batches.name AS batch_name,
+batches.id AS batch_id,
+tanks.name AS tank_name,
+tanks.id AS tank_id,
+recipes.airplane_code AS beer_name
+FROM batches, tanks, recipes
+WHERE batches.tank_id=tanks.id AND
+batches.completed_on IS NULL
+AND recipes.id=batches.recipe_id;
+-- EXAMPLE:
+--  batch_name | batch_id | tank_name | tank_id | beer_name
+-- ------------+----------+-----------+---------+-----------
+--  6589-6593  |        1 | F1        |       1 | RAIN
+
+
+-- Gets the most recent info for each batch
+CREATE VIEW most_recent_batch_info AS
+SELECT pressure, temperature, SG, PH, ABV, batch_id
+FROM versions
+INNER JOIN (
+  SELECT Max(measured_on)
+  FROM versions
+  WHERE completed=false
+  GROUP BY batch_id
+) e
+ON versions.measured_on = e.max;
+-- EXAMPLE:
+--  pressure | temperature |   sg   |  ph  | abv | batch_id
+-- ----------+-------------+--------+------+-----+----------
+--       190 |          50 | 1.1008 | 3.45 | 6.5 |        1
+--       140 |          80 | 1.1025 | 3.89 | 6.1 |        2

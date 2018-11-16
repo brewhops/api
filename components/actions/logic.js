@@ -1,45 +1,73 @@
 let postgres = require('./../../postgres/pg')
+const is = require('is')
 let self = null
 
-const databaseName = process.env.PGDATABASE
-const tableName = 'actions'
 module.exports = class actionLogic extends postgres {
-  constructor () {
-    super(databaseName, tableName)
+  constructor(tableName) {
+    super(tableName)
     self = this
   }
 
   // GET
-  async getActions (req, res) {
+  async getActions(req, res) {
     const { rows } = await self.read()
     res.json(rows)
   }
 
-  async getAction (req, res) {
-    const { rows } = await self.readById(req.params.id)
-    res.json(rows)
+  async getAction(req, res, next) {
+    try {
+      const { rows } = await self.readById(req.params.id)
+      if (rows.length > 0) {
+        res.json(rows[0])
+      } else {
+        next()
+      }
+    } catch (e) {
+      console.log(e)
+      res.status(500).json(e)
+    }
   }
 
   // POST
-  async createAction (req, res) {
+  async createAction(req, res) {
     const { keys, values, escapes } = self.splitObjectKeyVals(req.body)
     const { rows } = await self.create(keys, escapes, values)
-    res.json(rows)
+    res.status(201).json(rows[0])
   }
 
   // PATCH/PUT
-  async updateAction (req, res) {
-    let { keys, values } = self.splitObjectKeyVals(req.body)
-    const { query, idx } = self.buildUpdateString(keys, values)
-    values.push(req.params.id) // add last escaped value for where clause
+  async updateAction(req, res, next) {
+    if (is.empty(req.body)) {
+      res.status(400).json({err: 'Request does not match valid form'})
+    } else {
+      let { keys, values } = self.splitObjectKeyVals(req.body)
+      const { query, idx } = self.buildUpdateString(keys, values)
+      values.push(req.params.id) // add last escaped value for where clause
 
-    const { rows } = await self.update(query, `id = \$${idx}`, values) // eslint-disable-line
-    res.json(rows)
+      try {
+        const { rows } = await self.update(query, `id = \$${idx}`, values) // eslint-disable-line
+        if (rows.length > 0) {
+          res.json(rows[0])
+        } else {
+          next()
+        }
+      } catch (e) {
+        res.status(500).json(e)
+      }
+    }
   }
 
   // DELETE
-  async deleteAction (req, res) {
-    const { rows } = await self.deleteById(req.params.id)
-    res.json(rows)
+  async deleteAction(req, res, next) {
+    try {
+      const response = await self.deleteById(req.params.id)
+      if (response.rowCount > 0) {
+        res.status(200).json()
+      } else {
+        next()
+      }
+    } catch (e) {
+      res.status(500).json(e)
+    }
   }
 }

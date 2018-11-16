@@ -1,7 +1,7 @@
 let Joi = require('joi')
 
 class ActionValidator {
-  get createAction () {
+  get createAction() {
     return {
       body: Joi.object().keys({
         name: Joi.string().required(),
@@ -10,7 +10,7 @@ class ActionValidator {
     }
   }
 
-  get updateAction () {
+  get updateAction() {
     return {
       body: Joi.object().keys({
         name: Joi.string(),

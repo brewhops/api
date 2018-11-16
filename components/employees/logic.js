@@ -1,4 +1,4 @@
-const postgres = require('./../../postgres/pg')
+const Pg = require('./../../postgres/pg')
 const bcrypt = require('bcrypt')
 const boom = require('boom')
 const saltRounds = 8
@@ -7,53 +7,54 @@ const { userMatchAuthToken } = require('../../util/auth')
 
 let self = null
 
-const databaseName = process.env.PGDATABASE
-const tableName = 'employees'
-const safeUserData = `id, first_name, last_name, username, phone, access_level`
+const safeUserData = `id, first_name, last_name, username, phone, admin`
 
-module.exports = class userLogic extends postgres {
-  constructor () {
-    super(databaseName, tableName)
+module.exports = class userLogic extends Pg {
+  constructor(tableName) {
+    super(tableName)
     self = this
   }
 
   // GET
-  async getUsers (req, res) {
+  async getUsers(req, res) {
     const { rows } = await self.read(safeUserData)
     res.json(rows)
   }
 
-  async getUser (req, res) {
+  async getUser(req, res) {
     const { rows } = await self.readById(req.params.id)
     res.json(rows)
   }
 
   // POST
-  async createUser (req, res) {
+  async createUser(req, res) {
     const prevUser = await self.readByUsername(req.body.username)
     req.body.password = bcrypt.hashSync(req.body.password, saltRounds)
     const { keys, values, escapes } = self.splitObjectKeyVals(req.body)
 
     if (prevUser.rows.length !== 0) {
-      res.json(boom.badRequest('Username already taken'))
+      res.status(400).json(boom.badRequest('Username already taken'))
     } else {
       const { rows } = await self.create(keys, escapes, values, safeUserData)
       const returnedUser = rows[0]
       returnedUser.token = await generateAuthToken(returnedUser.username)
-      res.json(rows)
+      res.status(201).json(rows[0])
     }
   }
 
-  async login (req, res) {
+  async login(req, res) {
     const prevUser = await self.readByUsername(req.body.username)
-
     if (prevUser.rows.length === 0) {
-      res.json(boom.badRequest('Not authorized'))
+      res.status(401).json(boom.badRequest('Not authorized'))
     } else {
+      const userID = prevUser.rows[0].id
       const password = bcrypt.compareSync(req.body.password, prevUser.rows[0].password)
       if (password) {
         const token = await generateAuthToken(req.body.username)
-        res.json({ token: token })
+        res.json({
+          token: token,
+          userID: userID
+        })
       } else {
         res.json(boom.badRequest('Incorrect password'))
       }
@@ -61,7 +62,7 @@ module.exports = class userLogic extends postgres {
   }
 
   // PATCH/PUT
-  async updateUser (req, res) {
+  async updateUser(req, res) {
     let { keys, values } = self.splitObjectKeyVals(req.body)
     const { query, idx } = self.buildUpdateString(keys, values)
     values.push(req.params.id) // add last escaped value for where clause
@@ -76,7 +77,7 @@ module.exports = class userLogic extends postgres {
   }
 
   // DELETE
-  async deleteUser (req, res) {
+  async deleteUser(req, res) {
     const { rows } = await self.readById(req.params.id)
     if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
       res.json(boom.badRequest('Not Authorized'))
