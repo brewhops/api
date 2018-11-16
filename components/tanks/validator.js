@@ -1,7 +1,7 @@
 let Joi = require('joi')
 
 class TankValidator {
-  get createTank () {
+  get createTank() {
     return {
       body: Joi.object().keys({
         name: Joi.string().required(),
@@ -11,7 +11,7 @@ class TankValidator {
     }
   }
 
-  get updateTank () {
+  get updateTank() {
     return {
       body: Joi.object().keys({
         name: Joi.string(),

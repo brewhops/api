@@ -1,20 +1,20 @@
 let Joi = require('joi')
 
 class UserValidator {
-  get createUser () {
+  get createUser() {
     return {
       body: Joi.object().keys({
         first_name: Joi.string().required(),
         last_name: Joi.string().required(),
         username: Joi.string().required(),
         password: Joi.string().required(),
-        phone: Joi.string().required(),
-        access_level: Joi.number().required()
+        phone: Joi.string(),
+        admin: Joi.boolean()
       }).unknown(false)
     }
   }
 
-  get updateUser () {
+  get updateUser() {
     return {
       body: Joi.object().keys({
         first_name: Joi.string(),
@@ -22,12 +22,12 @@ class UserValidator {
         username: Joi.string(),
         password: Joi.string(),
         phone: Joi.string(),
-        access_level: Joi.number()
+        admin: Joi.boolean()
       }).unknown(false)
     }
   }
 
-  get login () {
+  get login() {
     return {
       body: Joi.object().keys({
         username: Joi.string().required(),

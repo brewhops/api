@@ -22,10 +22,72 @@ Express uses the [pg](https://node-postgres.com/) package to interact with the p
 
 ## Startup
 
+Both development and production environments require the use of a *.env* file to get environment variables.
+This *.env* file should never be committed.
+
+The minimum requirements are as follows
+
+* PGUSER
+* PGDATABASE
+* PGPASSWORD
+* PGPORT
+* PGHOST
+* PORT
+
+Everything beginning with PG will be used to configure the postgreSQL docker container, and the Express connections to that container. For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
+
+The PORT is the port the express app will expose for the routes.
+
+Everything except for the PGPORT and PGHOST can be set to whatever you want it to.
+
 #### Development
+
+Your env file requires
+
+* PGPORT=32769
+* PGHOST=localhost
+
+Then
+
 1. `docker-compose up` will start the development database.
-1. `nodemon server.js` will start the API.
-1. After launching the database, visit `http://localhost:8080` to interact with the database through a web interface.
+1. `npm run dev` will start the API.
+
+
+If you are going to do testing, you need the following in the *.env* file
+
+* TEST_PG_USER
+* TEST_PG_DATABASE
+* TEST_PG_PASSWORD
+* TEST_PG_PORT
+* TEST_PG_HOST
 
 #### Production
-1. `docker-compose -f docker-compose-prod.yaml up` will start the production databse and API.
+
+Your env file requires
+
+* PGPORT=5432
+* PGHOST=database
+
+Then
+
+1. `docker-compose -f docker-compose-prod.yaml up` will start the production database and API.
+
+### Checking the database
+
+To connect to the docker container and interact directly with the database, follow these steps
+
+1. Start up the postgreSQL docker container if it is not already running
+1. Open up a terminal window
+1. `docker ps` to get the name of the running DB docker container
+1. `docker exec -it {name of DB container} bash -l`
+1. `psql -U {PGUSER} -d {database name}`
+
+You should now be logged into the psql program on the docker container
+
+A few things to note:
+
+* every line must either start with a `\` or end with a `;`
+  * eg. `\dt` shows all database tables
+  * eg. `SELECT * FROM actions;` selects everything from the actions table
+* `\q` to quit the psql shell
+* `exit` to exit the docker container
