@@ -30,8 +30,6 @@ The minimum requirements are as follows
 * PGUSER
 * PGDATABASE
 * PGPASSWORD
-* PGPORT
-* PGHOST
 * PORT
 
 Everything beginning with PG will be used to configure the postgreSQL docker container, and the Express connections to that container. For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
