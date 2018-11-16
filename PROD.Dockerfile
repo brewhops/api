@@ -14,7 +14,7 @@ RUN npm install
 
 # copy everything in this directory into our
 # docker container
-COPY . .
+COPY ./src .
 
 # expose the port on the docker container
 EXPOSE ${PORT}

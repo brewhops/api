@@ -13,7 +13,9 @@ services:
       ports:
         - 5432:5432
    web-server:
-      build: .
+      build:
+         context: .
+         dockerfile: PROD.Dockerfile
       image: brewhops-api
       restart: always
       links:

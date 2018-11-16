@@ -12,7 +12,7 @@
     "lint-fix": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/' --fix",
     "start": "node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
-    "prod": "NODE_ENV=production docker-compose -f docker-compose-prod.yaml up"
+    "prod": "PGUSER=${PGUSER} PGDATABASE=${PGDATABASE} PGPASSWORD=${PGPASSWORD} docker-compose up --build"
   },
   "repository": {
     "type": "git",
