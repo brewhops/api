@@ -8,8 +8,6 @@ WORKDIR /user/app
 # expose the port on the docker container
 EXPOSE 1234
 
-ENV NODE_ENV development
-
 # install nodemon globaly
 RUN npm install -g nodemon
 

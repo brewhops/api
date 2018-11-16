@@ -3,15 +3,24 @@ services:
    database:
       image: postgres
       restart: always
-      environment:
-         POSTGRES_PASSWORD: ${PGPASSWORD}
-         POSTGRES_USER: ${PGUSER}
-         POSTGRES_DB: ${PGDATABASE}
       volumes:
          - ./db-init:/docker-entrypoint-initdb.d
          - postgres_data:/var/lib/postgresql/data
       ports:
         - 5432:5432
+      env_file:
+         - ./.env
+
+   test-database:
+    image: postgres
+    restart: always
+    volumes:
+       - ./db-init:/docker-entrypoint-initdb.d
+    ports:
+        - 45758:5432
+    env_file:
+         - ./.env
+
    web-server:
       build:
          context: .
@@ -24,12 +33,14 @@ services:
         - ./:/user/app/api
       environment:
          PORT: 1234
-         PGPASSWORD: ${PGPASSWORD}
-         PGUSER: ${PGUSER}
-         PGDATABASE: ${PGDATABASE}
          PGHOST: 'database'
+         TEST_PG_PORT: 5432
+         TEST_PG_HOST: 'test-database'
+         NODE_ENV: '${NODE_ENV}'
       ports:
-         - ${PORT}:1234
+         - 1234:1234
+      env_file:
+         - ./.env
       depends_on:
          - database
 
