@@ -26,8 +26,6 @@ jobs:
           root: ~/project
           paths: 
             - node_modules
-      # - run: npm run tsc
-        
   unit_tests:
     <<: *node
     steps:
@@ -36,4 +34,4 @@ jobs:
           at: ~/project
       - run:
           name: Run unit tests
-          command: npm run test-ci
+          command: npm test
