@@ -7,7 +7,7 @@
     "node": "11.2.0"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --reporter spec 'test/components/*.js' --file test/dbSetup.js --exit",
+    "test": "NODE_ENV=test mocha --reporter spec 'src/test/components/*.js' --file src/test/dbSetup.js --exit",
     "lint": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/'",
     "lint-fix": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/' --fix",
     "start": "node index.js",
