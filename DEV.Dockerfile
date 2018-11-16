@@ -1,4 +1,4 @@
-# using the node version 10 docker image
+# using the node version 11 docker image
 FROM node:11
 
 # specify the work directory and tell docker
