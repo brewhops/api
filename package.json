@@ -7,23 +7,27 @@
     "node": "11.2.0"
   },
   "scripts": {
+    "build": "tsc",
     "test": "NODE_ENV=test mocha --reporter spec 'src/test/components/*.js' --file src/test/dbSetup.js --exit",
-    "lint": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/'",
-    "lint-fix": "./node_modules/.bin/eslint ./**/ --ext js --ignore-pattern 'node_modules/' --fix",
+    "lint": "tslint -c ./tslint.json -p ./tsconfig.json --fix",
     "start": "node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
-    "prod": "NODE_ENV=production docker-compose -f docker-compose-prod.yaml up"
+    "prod": "NODE_ENV=production docker-compose -f docker-compose-prod.yaml up",
+    "format": "prettier --single-quote --print-width 100 --write src/**/*.ts"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ConnorChristensen/NinkasiServer.git"
   },
   "author": "Connor Christensen",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ConnorChristensen/NinkasiServer/issues"
   },
   "homepage": "https://github.com/ConnorChristensen/NinkasiServer#readme",
   "devDependencies": {
+    "@osu-cass/tslint-config": "^2.0.0",
+    "@types/node": "^10.12.9",
     "chai": "^4.1.2",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
@@ -34,8 +38,12 @@
     "knex": "^0.14.6",
     "mocha": "^5.2.0",
     "nodemon": "^1.17.5",
+    "prettier": "^1.15.2",
     "sinon": "^6.0.0",
-    "supertest": "^3.1.0"
+    "supertest": "^3.1.0",
+    "tslint": "^5.11.0",
+    "tslint-language-service": "^0.9.9",
+    "typescript": "^3.1.6"
   },
   "dependencies": {
     "bcrypt": "^2.0.1",

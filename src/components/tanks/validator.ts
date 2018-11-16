@@ -1,4 +1,4 @@
-let Joi = require('joi')
+let Joi = require('joi');
 
 class TankValidator {
   get createTank() {
@@ -8,7 +8,7 @@ class TankValidator {
         status: Joi.string().required(),
         in_use: Joi.boolean().required()
       }).unknown(false)
-    }
+    };
   }
 
   get updateTank() {
@@ -18,8 +18,8 @@ class TankValidator {
         status: Joi.string(),
         in_use: Joi.boolean()
       }).unknown(false)
-    }
+    };
   }
 }
 
-module.exports = new TankValidator()
+module.exports = new TankValidator();

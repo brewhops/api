@@ -1,4 +1,4 @@
-let Joi = require('joi')
+let Joi = require('joi');
 
 class RecipeValidator {
   get createRecipe() {
@@ -9,7 +9,7 @@ class RecipeValidator {
         yeast: Joi.number(),
         instructions: Joi.object().unknown()
       }).unknown(false)
-    }
+    };
   }
 
   get updateRecipe() {
@@ -20,8 +20,8 @@ class RecipeValidator {
         yeast: Joi.number(),
         instructions: Joi.object().unknown()
       }).unknown(false)
-    }
+    };
   }
 }
 
-module.exports = new RecipeValidator()
+module.exports = new RecipeValidator();

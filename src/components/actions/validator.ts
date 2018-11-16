@@ -1,4 +1,4 @@
-let Joi = require('joi')
+let Joi = require('joi');
 
 class ActionValidator {
   get createAction() {
@@ -7,7 +7,7 @@ class ActionValidator {
         name: Joi.string().required(),
         description: Joi.string().required()
       }).unknown(false)
-    }
+    };
   }
 
   get updateAction() {
@@ -16,8 +16,8 @@ class ActionValidator {
         name: Joi.string(),
         description: Joi.string()
       }).unknown(false)
-    }
+    };
   }
 }
 
-module.exports = new ActionValidator()
+module.exports = new ActionValidator();

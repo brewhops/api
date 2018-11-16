@@ -1,4 +1,4 @@
-let Joi = require('joi')
+let Joi = require('joi');
 
 class BatchesValidator {
   get createBatch() {
@@ -25,7 +25,7 @@ class BatchesValidator {
           })
         })
       })
-    }
+    };
   }
 
   get updateBatch() {
@@ -44,8 +44,8 @@ class BatchesValidator {
         pressure: Joi.number(),
         measure_on: Joi.number()
       }).unknown(false)
-    }
+    };
   }
 }
 
-module.exports = new BatchesValidator()
+module.exports = new BatchesValidator();

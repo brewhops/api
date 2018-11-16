@@ -1,4 +1,4 @@
-let Joi = require('joi')
+let Joi = require('joi');
 
 class UserValidator {
   get createUser() {
@@ -11,7 +11,7 @@ class UserValidator {
         phone: Joi.string(),
         admin: Joi.boolean()
       }).unknown(false)
-    }
+    };
   }
 
   get updateUser() {
@@ -24,7 +24,7 @@ class UserValidator {
         phone: Joi.string(),
         admin: Joi.boolean()
       }).unknown(false)
-    }
+    };
   }
 
   get login() {
@@ -33,8 +33,8 @@ class UserValidator {
         username: Joi.string().required(),
         password: Joi.string().required()
       }).unknown(false)
-    }
+    };
   }
 }
 
-module.exports = new UserValidator()
+module.exports = new UserValidator();
