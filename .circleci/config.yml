@@ -1,37 +1,39 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
+node_defaults: &node
+  docker:
+    - image: circleci/node
+
+dev_filter: &devOnly
+  branches:
+    only: dev
+
+get_latest_version: &getVersion
+  name: Set TAG_VERSION and update PATH
+  command: >
+    echo 'export TAG_VERSION=$((git describe --tags $(git rev-list
+    --tags --max-count=1)) | cut -c 2-)' >> $BASH_ENV
+    source $BASH_ENV
+
 version: 2
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:11.2.0
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
-
+    <<: *node
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: npm ci
-
-      - save_cache:
-          paths:
+      - run:
+          name: Install Dependencies
+          command: npm ci
+      - persist_to_workspace:
+          root: ~/project
+          paths: 
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+      # - run: npm run tsc
         
-      # run tests!
-      # - run: npm tests
+  unit_tests:
+    <<: *node
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Run unit tests
+          command: npm run test-ci
