@@ -5,7 +5,7 @@ const tables = require('../tableNames')
 describe('/actions', function() {
   let test = new Test(
     'actions',
-    require('../../components/actions/logic'),
+    require('../../src/components/actions/logic'),
     'actions',
     tables
   )

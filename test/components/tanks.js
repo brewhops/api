@@ -6,7 +6,7 @@ const tables = require('../tableNames')
 describe('/tanks', async function() {
   let test = new Test(
     'tanks',
-    require('../../components/tanks/logic'),
+    require('../../src/components/tanks/logic'),
     'tanks',
     tables
   )
