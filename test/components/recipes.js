@@ -5,7 +5,7 @@ const Test = require('../CRUD')
 describe('/recipes', function() {
   let test = new Test(
     'recipes',
-    require('../../components/recipes/logic'),
+    require('../../src/components/recipes/logic'),
     'recipes',
     require('../tableNames')
   )

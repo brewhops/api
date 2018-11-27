@@ -6,7 +6,7 @@ const tables = require('../tableNames')
 describe('/employees', async function() {
   let test = new Test(
     'employees',
-    require('../../components/employees/logic'),
+    require('../../src/components/employees/logic'),
     'employees',
     tables
   )

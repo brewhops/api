@@ -27,7 +27,7 @@ chai.should()
 // our framework for integration testing
 const request = require('supertest')
 // our express app
-const app = require('../index.js')
+const app = require('../src/index.js')
 // super test needs a copy of our app to test
 const agent = request.agent(app)
 

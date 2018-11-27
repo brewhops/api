@@ -9,10 +9,17 @@
   "scripts": {
     "build": "tsc",
     "test": "NODE_ENV=test mocha --reporter spec 'src/test/components/*.js' --file src/test/dbSetup.js --exit",
+    "test-intg": "NODE_ENV=test docker-compose -f DEV.docker-compose.yaml up -d test-database; sleep 10; NODE_ENV=test TEST_PG_HOST=localhost TEST_PG_PORT=45758 mocha --reporter spec 'test/components/*.js' --file test/dbSetup.js --exit; NODE_ENV=test docker-compose -f DEV.docker-compose.yaml stop test-database;",
     "lint": "tslint -c ./tslint.json -p ./tsconfig.json --fix",
-    "start": "node index.js",
-    "dev": "NODE_ENV=development nodemon index.js",
-    "prod": "NODE_ENV=production docker-compose -f docker-compose-prod.yaml up",
+    "start": "node src/index.js",
+    "dev": "NODE_ENV=development docker-compose -f DEV.docker-compose.yaml up database web-server",
+    "dev-build": "NODE_ENV=development docker-compose -f DEV.docker-compose.yaml build",
+    "dev-clean": "NODE_ENV=development docker-compose -f DEV.docker-compose.yaml rm -sf; docker image rm brewhops-api_dev; docker volume rm brewhops-postgres-data_dev;",
+    "dev-psql": "docker run -it --rm --network=${PWD##*/}_default --env-file '.env' -e PGHOST=database postgres psql",
+    "prod": "PGUSER=${PGUSER:=api} PGDATABASE=${PGDATABASE:=brewhops} PGPASSWORD=${PGPASSWORD:=mypassword} docker-compose -f PROD.docker-compose.yaml up",
+    "prod-build": "PGUSER=${PGUSER:=api} PGDATABASE=${PGDATABASE:=brewhops} PGPASSWORD=${PGPASSWORD:=mypassword} docker-compose -f PROD.docker-compose.yaml build",
+    "prod-clean": "PGUSER=${PGUSER:=api} PGDATABASE=${PGDATABASE:=brewhops} PGPASSWORD=${PGPASSWORD:=mypassword} docker-compose -f PROD.docker-compose.yaml rm -sf; docker image rm brewhops-api; docker volume rm brewhops-postgres-data;",
+    "prod-psql": "PGUSER=${PGUSER:=api} PGPASSWORD=${PGPASSWORD:=mypassword} PGDATABASE=${PGDATABASE:=brewhops}; docker run -it --rm --network=${PWD##*/}_default -e PGUSER=${PGUSER} -e PGDATABASE=${PGDATABASE} -e PGPASSWORD=${PGPASSWORD} -e PGHOST=database postgres psql",
     "format": "prettier --single-quote --print-width 100 --write src/**/*.ts"
   },
   "repository": {

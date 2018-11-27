@@ -110,11 +110,11 @@ CREATE TABLE IF NOT EXISTS tasks (
 
 -- the batch ID and action name of all open tasks
 CREATE VIEW open_tasks AS
-SELECT actions.name AS action_name,
-tasks.batch_id
+SELECT  actions.name AS action_name,
+        tasks.batch_id
 FROM actions, tasks
 WHERE tasks.action_id=actions.id AND
-tasks.completed_on IS NULL;
+      tasks.completed_on IS NULL;
 -- EXAMPLE:
 --  action_name | batch_id
 -- -------------+----------
@@ -124,15 +124,15 @@ tasks.completed_on IS NULL;
 
 -- shows all tanks that have a currently running batch in it
 CREATE VIEW tank_open_batch AS
-SELECT batches.name AS batch_name,
-batches.id AS batch_id,
-tanks.name AS tank_name,
-tanks.id AS tank_id,
-recipes.airplane_code AS beer_name
+SELECT  batches.name AS batch_name,
+        batches.id AS batch_id,
+        tanks.name AS tank_name,
+        tanks.id AS tank_id,
+        recipes.airplane_code AS beer_name
 FROM batches, tanks, recipes
 WHERE batches.tank_id=tanks.id AND
-batches.completed_on IS NULL
-AND recipes.id=batches.recipe_id;
+      batches.completed_on IS NULL AND
+      recipes.id=batches.recipe_id;
 -- EXAMPLE:
 --  batch_name | batch_id | tank_name | tank_id | beer_name
 -- ------------+----------+-----------+---------+-----------
