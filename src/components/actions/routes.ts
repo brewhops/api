@@ -1,36 +1,47 @@
-let router = require('express').Router();
-let Controller = require('./logic');
-let validator = require('./validator');
-let validate = require('express-validation');
+import e, {Request, Response, NextFunction, Router} from 'express';
+import { ActionLogic } from './logic';
+import { ActionValidator } from './validator';
+// tslint:disable-next-line:no-var-requires no-require-imports
+const validate = require('express-validation');
 
-module.exports = function(tableName) {
-  const controller = new Controller(tableName);
+// tslint:disable:no-any no-unsafe-any
+
+export async function routes(tableName: string) {
+  const controller = new ActionLogic(tableName);
+  const router = Router();
 
   // we want to connect to the DB automatically if we are not testing
   if (process.env.NODE_ENV !== 'test') {
-    controller.connectToDB()
-      .then(() => console.log('Actions route connected to database'))
-      .catch(e => console.log('Error! Connection refused', e));
+    try {
+      await controller.connect();
+    } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.error('Error! Connection refused', e);
+    }
   }
 
-  router.use((req, res, next) => next()); // init
+  // tslint:disable-next-line:no-void-expression
+  router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
   // [GET] section
   router.get('/', controller.getActions);
   router.get('/id/:id', controller.getAction);
 
   // [POST] section
-  router.post('/', validate(validator.createAction), controller.createAction);
+  router.post('/', validate(ActionValidator.createAction), controller.createAction);
 
   // [PATCH] section
-  router.patch('/id/:id', validate(validator.updateAction), controller.updateAction);
+  router.patch('/id/:id', validate(ActionValidator.updateAction), controller.updateAction);
 
   // [DELETE] section
   router.delete('/id/:id', controller.deleteAction);
 
-  router.use('*', (req, res) => res.status(400).json({
-    err: `${req.originalUrl} doesn't exist`
-  }));
+  router.use('*', (req: Request, res: Response) => {
+    res.status(400);
+    res.json({
+      err: `${req.originalUrl} doesn't exist`
+    });
+  });
 
   return router;
-};
+}

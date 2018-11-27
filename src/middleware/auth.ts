@@ -1,10 +1,12 @@
 // Thanks Rob!
 
-const jwt = require('jsonwebtoken');
+import jwt, { VerifyErrors } from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
 
 const secretKey = 'SuperSecret';
 
-function generateAuthToken(userID) {
+// tslint:disable-next-line:no-any
+export async function generateAuthToken(userID: any) {
   return new Promise((resolve, reject) => {
     const payload = { sub: userID };
     jwt.sign(
@@ -13,7 +15,7 @@ function generateAuthToken(userID) {
       {
         expiresIn: '24h'
       },
-      function(err, token) {
+      (err, token) => {
         if (err) {
           reject(err);
         } else {
@@ -24,12 +26,16 @@ function generateAuthToken(userID) {
   });
 }
 
-function requireAuthentication(req, res, next) {
+export function requireAuthentication(req: Request, res: Response, next: NextFunction) {
+  // tslint:disable-next-line:no-backbone-get-set-outside-model
   const authHeader = req.get('Authorization') || '';
   const authHeaderParts = authHeader.split(' ');
-  const token = authHeaderParts[0] === 'Bearer' ? authHeaderParts[1] : null;
-  jwt.verify(token, secretKey, function(err, payload) {
+  const token = authHeaderParts[0] === 'Bearer' ? authHeaderParts[1] : '';
+
+  // tslint:disable-next-line:no-any
+  jwt.verify(token, secretKey, (err: VerifyErrors, payload: any) => {
     if (!err) {
+      // tslint:disable-next-line:no-unsafe-any
       req.user = payload.sub;
       next();
     } else {
@@ -39,6 +45,3 @@ function requireAuthentication(req, res, next) {
     }
   });
 }
-
-exports.generateAuthToken = generateAuthToken;
-exports.requireAuthentication = requireAuthentication;

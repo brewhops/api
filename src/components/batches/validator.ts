@@ -1,7 +1,13 @@
-let Joi = require('joi');
+import Joi from 'joi';
+import { JOIResult } from '../../types';
 
-class BatchesValidator {
-  get createBatch() {
+export interface IBatchesValidator {
+  createBatch: () => JOIResult;
+  updateBatch: () => JOIResult;
+}
+
+export const BatchesValidator: IBatchesValidator = {
+  createBatch() {
     return {
       body: Joi.object().keys({
         name: Joi.string().required(),
@@ -26,9 +32,8 @@ class BatchesValidator {
         })
       })
     };
-  }
-
-  get updateBatch() {
+  },
+  updateBatch() {
     return {
       body: Joi.object().keys({
         name: Joi.string(),
@@ -46,6 +51,4 @@ class BatchesValidator {
       }).unknown(false)
     };
   }
-}
-
-module.exports = new BatchesValidator();
+};

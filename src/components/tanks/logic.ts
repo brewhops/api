@@ -1,28 +1,48 @@
-let postgres = require('./../../postgres/pg');
-const is = require('is');
-let self = null;
+import { Pg } from './../../postgres/pg';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
+import is from 'is';
+import { RequestHandlerParams } from 'express-serve-static-core';
+import { ICrud } from '../../postgres/CRUD';
+import { IdParams } from '../../routes/index';
 
-module.exports = class tankLogic extends postgres {
-  constructor(tableName) {
+// tslint:disable:no-any no-unsafe-any
+export interface ITankController extends ICrud {
+  getTanks: RequestHandler;
+  getTank: RequestHandler;
+  getTankMonitoring: RequestHandler;
+  createTank: RequestHandler;
+  updateTank: RequestHandler;
+  deleteTank: RequestHandlerParams;
+}
+
+/**
+ * Logic for tanks
+ * @export
+ * @class tankLogic
+ * @extends {postgres}
+ */
+export class TankController extends Pg implements ITankController {
+  constructor(tableName: any) {
     super(tableName);
-    self = this;
+
   }
 
   // GET
-  async getTanks(req, res) {
+  async getTanks(req: Request, res: Response) {
     try {
-      const { rows } = await self.read();
+      const { rows } = await this.read();
       res.json(rows);
     } catch (e) {
+      // tslint:disable-next-line:no-console
       console.log(e);
       res.status(500).json(e);
     }
   }
 
-  async getTank(req, res, next) {
+  async getTank(req: Request, res: Response, next: NextFunction) {
     try {
       // get the tank by that ID
-      const { rows } = await self.readById(req.params.id);
+      const { rows } = await this.readById(req.params.id);
       // if it returns at least one tank
       if (rows.length > 0) {
         // return that tank
@@ -36,7 +56,7 @@ module.exports = class tankLogic extends postgres {
     }
   }
 
-  async getTankMonitoring(req, res, next) {
+  async getTankMonitoring(req: Request, res: Response, next: NextFunction) {
     /* get most recent:
        * tank number
        * pressure
@@ -58,7 +78,7 @@ module.exports = class tankLogic extends postgres {
       ON open_tasks.batch_id = tank_open_batch.batch_id
     )`;
     try {
-      const results = await self.client.query(query);
+      const results = await this.client.query(query);
       res.status(200).json(results.rows);
     } catch (e) {
       res.status(500).json(e);
@@ -66,10 +86,10 @@ module.exports = class tankLogic extends postgres {
   }
 
   // POST
-  async createTank(req, res) {
-    const { keys, values, escapes } = self.splitObjectKeyVals(req.body);
+  async createTank(req: Request, res: Response) {
+    const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
-      const { rows } = await self.create(keys, escapes, values);
+      const { rows } = await this.create(keys, escapes, values);
       res.status(201).json(rows[0]);
     } catch (e) {
       res.status(400).json(e);
@@ -77,15 +97,15 @@ module.exports = class tankLogic extends postgres {
   }
 
   // PUT/PATCH
-  async updateTank(req, res, next) {
+  async updateTank(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
       res.status(400).json({err: 'Request does not match valid form'});
     } else {
-      const { keys, values } = self.splitObjectKeyVals(req.body);
-      const { query, idx } = self.buildUpdateString(keys, values);
+      const { keys, values } = this.splitObjectKeyVals(req.body);
+      const { query, idx } = this.buildUpdateString(keys);
       values.push(req.params.id); // add last escaped value for where clause
 
-      const { rows } = await self.update(query, `id = \$${idx}`, values); // eslint-disable-line
+      const { rows } = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
       if (rows.length > 0) {
         res.json(rows);
       } else {
@@ -95,9 +115,9 @@ module.exports = class tankLogic extends postgres {
   }
 
   // DELETE
-  async deleteTank(req, res, next) {
+  async deleteTank(req: Request, res: Response, next: NextFunction) {
     try {
-      const { rows } = await self.deleteById(req.params.id);
+      const { rows } = await this.deleteById(req.params.id);
       if (rows.length > 0) {
         res.status(200).json(rows);
       } else {
@@ -107,4 +127,5 @@ module.exports = class tankLogic extends postgres {
       res.status(500).json(e);
     }
   }
-};
+
+}

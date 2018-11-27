@@ -1,6 +1,17 @@
-import { Crud } from './CRUD';
+import { Crud, ICrud } from './CRUD';
 
 // tslint:disable:no-any no-unsafe-any
+export interface IPg extends ICrud {
+  splitObjectKeyVals: (obj: any) => any;
+  buildQueryByID: (key: string, value: string) => string;
+  buildUpdateString: (keys: any) => any;
+}
+
+export type KeyValueResult = {
+  keys: string[];
+  values: string[];
+  escapes: string[];
+};
 
 /**
  * A further extension of the Crud class for some reason. Stay tuned...
@@ -18,13 +29,13 @@ export class Pg extends Crud {
   }
 
   /**
-   * Separates keys and values into two arrays and includes escape charaters. 
+   * Separates keys and values into two arrays and includes escape charaters.
    * Returns an object containing all of this info.
    * @param {*} obj
    * @returns
    * @memberof Pg
    */
-  splitObjectKeyVals(obj: any) {
+  splitObjectKeyVals(obj: any): KeyValueResult {
     const keys = [];
     const values = [];
     const escapes = [];
@@ -51,10 +62,9 @@ export class Pg extends Crud {
    * @returns
    * @memberof Pg
    */
-  buildQueryByID(key: string, value: string) {
+  buildQueryByID(key: string, value: string): string {
     return `${key} = ${value}`;
   }
-
 
   /**
    * Builds some sort of updates object out of a string
@@ -63,10 +73,10 @@ export class Pg extends Crud {
    * @returns {*}
    * @memberof Pg
    */
-  buildUpdateString(keys: string): any {
+  buildUpdateString(keys: string[]): any {
     let query = ``;
     let idx = 1;
-    for (const key of keys.split(',')) {
+    for (const key of keys) {
       query += `${key} = \$${idx}, `; // eslint-disable-line
       idx++;
     } // match keys to the current escape index '$1'

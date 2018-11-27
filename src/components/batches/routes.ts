@@ -1,19 +1,28 @@
-let router = require('express').Router();
-let Controller = require('./logic');
-let validator = require('./validator');
-let validate = require('express-validation');
-let boom = require('boom');
+import e, {Router, Request, Response, NextFunction} from 'express';
+import { BatchesLogic } from './logic';
+import {BatchesValidator} from './validator';
+import Boom from 'boom';
+// tslint:disable-next-line:no-var-requires no-require-imports
+const validate = require('express-validation');
 
-module.exports = function(tableName) {
-  const controller = new Controller(tableName);
+
+// tslint:disable:no-any no-unsafe-any
+
+export async function routes(tableName: string) {
+  const controller = new BatchesLogic(tableName);
+  const router = Router();
 
   if (process.env.NODE_ENV !== 'test') {
-    controller.connectToDB()
-      .then(() => console.log('Batches route connected to database'))
-      .catch(e => console.log('Error! Connection refused', e));
+    try {
+      await controller.connect();
+    } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.error(error);
+    }
   }
 
-  router.use((req, res, next) => next());
+  // tslint:disable-next-line:no-void-expression
+  router.use((req: Request, res: Response, next: NextFunction) => next());
 
   // [GET] section
   router.get('/', controller.getBatches);
@@ -21,17 +30,17 @@ module.exports = function(tableName) {
   router.get('/history/id/:id', controller.getBatchHistory);
 
   // [POST] section
-  router.post('/', validate(validator.createBatch), controller.createBatch);
+  router.post('/', validate(BatchesValidator.createBatch), controller.createBatch);
 
   // [PATCH] section
-  router.patch('/id/:id', validate(validator.updateBatch), controller.updateBatch);
+  router.patch('/id/:id', validate(BatchesValidator.updateBatch), controller.updateBatch);
 
   // [DELETE] section
   router.delete('/id/:id', controller.deleteBatch);
 
   router.use('*', (req, res) => res.status(404).json(
-    boom.notFound(`The route ${req.originalUrl} does not exist`)
+    Boom.notFound(`The route ${req.originalUrl} does not exist`)
   ));
 
   return router;
-};
+}

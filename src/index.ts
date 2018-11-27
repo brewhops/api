@@ -1,24 +1,39 @@
-require('dotenv').config();
-let app = require('express')();
-let bodyParser = require('body-parser');
+import dotenv from 'dotenv';
+import e, {Request, Response, NextFunction} from 'express';
+import bodyParser from 'body-parser';
+import { routes as EmployeesRoutes } from './components/employees/routes';
+import { routes as TanksRoutes } from './components/tanks/routes';
+import { routes as ActionsRoutes } from './components/actions/routes';
+import { routes as RecipesRoutes } from './components/recipes/routes';
+import { routes as BatchesRoutes } from './components/batches/routes';
+
+// tslint:disable:no-any no-unsafe-any
+
+// tslint:disable-next-line:no-var-requires no-require-imports
 const cors = require('cors');
 
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(process.env.PORT, () => console.log(`Server running at port ${process.env.PORT}`));
-}
+const app = e();
+
 
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(function(err, req, res, next) {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  // tslint:disable-next-line:no-console
   console.log(err);
   res.status(400).json(err);
 }); // error handler for validator
 
-app.use('/employees', require('./components/employees/routes')('employees'));
-app.use('/tanks', require('./components/tanks/routes')('tanks'));
-app.use('/actions', require('./components/actions/routes')('actions'));
-app.use('/recipes', require('./components/recipes/routes')('recipes'));
-app.use('/batches', require('./components/batches/routes')('batches'));
+app.use('/employees', EmployeesRoutes);
+app.use('/tanks', TanksRoutes);
+app.use('/actions', ActionsRoutes);
+app.use('/recipes', RecipesRoutes);
+app.use('/batches', BatchesRoutes);
 
-module.exports = app;
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(process.env.PORT, () => {
+    // tslint:disable-next-line:no-console
+    console.log(`Server running at port ${process.env.PORT}`);
+  });
+}

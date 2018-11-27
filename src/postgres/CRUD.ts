@@ -18,19 +18,10 @@ export interface ICrud {
     conditions: any,
     escaped: any[]
   ) => Promise<QueryResult>;
-  read: (
-    columns: string,
-    conditions: string,
-    escaped: any[]
-  ) => Promise<QueryResult>;
-  readById: (escaped: any) =>  Promise<QueryResult>;
+  read: (columns: string, conditions: string, escaped: any[]) => Promise<QueryResult>;
+  readById: (escaped: any) => Promise<QueryResult>;
   readByUsername: (username: any) => Promise<QueryResult>;
-  readInTable: (
-    columns: any,
-    table: any,
-    conditions: any,
-    escaped: any[]
-  ) => Promise<QueryResult>;
+  readInTable: (columns: any, table: any, conditions: any, escaped: any[]) => Promise<QueryResult>;
   update: (columns: any, conditions: any, escaped: any[]) => Promise<QueryResult>;
   // tslint:disable-next-line:no-reserved-keywords
   delete: (conditions: any, escaped: any[]) => Promise<QueryResult>;
@@ -47,7 +38,7 @@ export interface ICrud {
  * @implements {ICrud}
  */
 export class Crud implements ICrud {
-  private client!: Client;
+  public client!: Client;
   private table: string;
 
   constructor(tableName: string) {

@@ -1,32 +1,41 @@
-const router = require('express').Router();
-const Controller = require('./logic');
-const validator = require('./validator');
-const validate = require('express-validation');
-const { requireAuthentication } = require('./../../middleware/auth');
+import e, {Router, Request, Response, NextFunction} from 'express';
+import {UserValidator} from './validator';
+import {UserLogic} from './logic';
+import { requireAuthentication } from './../../middleware/auth';
 
-module.exports = function(tableName) {
-  const controller = new Controller(tableName);
+// tslint:disable:no-any no-unsafe-any
+
+// tslint:disable-next-line:no-var-requires no-require-imports
+const validate = require('express-validation');
+
+export async function routes(tableName: string) {
+  const controller = new UserLogic(tableName);
+  const router = Router();
 
   if (process.env.NODE_ENV !== 'test') {
-    controller.connectToDB()
-      .then(() => console.log('Employees route connected to database'))
-      .catch(e => console.log('Error! Connection refused', e));
+    try {
+      await controller.connect();
+    } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.error(error);
+    }
   }
 
-  router.use((req, res, next) => next()); // init
+  // tslint:disable-next-line:no-void-expression
+  router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
   // [GET] section
   router.get('/', controller.getUsers);
   router.get('/id/:id', requireAuthentication, controller.getUser);
 
   // [POST] section
-  router.post('/', validate(validator.createUser), controller.createUser);
-  router.post('/login', validate(validator.login), controller.login);
+  router.post('/', validate(UserValidator.createUser), controller.createUser);
+  router.post('/login', validate(UserValidator.login), controller.login);
 
   // [PATCH] section
   router.patch(
     '/id/:id',
-    validate(validator.updateUser), requireAuthentication,
+    validate(UserValidator.updateUser), requireAuthentication,
     controller.updateUser
   );
 
@@ -42,4 +51,4 @@ module.exports = function(tableName) {
   }));
 
   return router;
-};
+}

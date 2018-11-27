@@ -1,19 +1,27 @@
-let router = require('express').Router();
-let Controller = require('./logic');
-let validator = require('./validator');
-let validate = require('express-validation');
-let { requireAuthentication } = require('./../../middleware/auth');
+import { Router, Request, Response, NextFunction  } from 'express';
+import {TankController} from './logic';
+import { TankValidator } from './validator';
+import { requireAuthentication } from './../../middleware/auth';
 
-module.exports = function(tableName) {
-  const controller = new Controller(tableName);
+// tslint:disable:no-any no-unsafe-any no-console no-void-expression
+
+// tslint:disable-next-line:no-require-imports no-var-requires
+const validate = require('express-validation');
+
+
+// tslint:disable-next-line:no-any
+export function routes(tableName: any) {
+  const controller: TankController = new TankController(tableName);
+  const router = Router();
 
   if (process.env.NODE_ENV !== 'test') {
-    controller.connectToDB()
+    controller.connect()
       .then(() => console.log('Tanks route connected to database'))
       .catch(e => console.log('Error! Connection refused', e));
   }
 
-  router.use((req, res, next) => next()); // init
+  // tslint:disable-next-line: no-void-expression
+  router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
   // GET
   router.get('/', controller.getTanks);
@@ -21,10 +29,10 @@ module.exports = function(tableName) {
   router.get('/monitoring', controller.getTankMonitoring);
 
   // POST
-  router.post('/', validate(validator.createTank), controller.createTank);
+  router.post('/', validate(TankValidator.createTank), controller.createTank);
 
   // PUT
-  router.patch('/id/:id', validate(validator.updateTank), controller.updateTank);
+  router.patch('/id/:id', validate(TankValidator.updateTank), controller.updateTank);
 
   // DELETE
   router.delete('/id/:id', requireAuthentication, controller.deleteTank);
@@ -34,4 +42,4 @@ module.exports = function(tableName) {
   }));
 
   return router;
-};
+}

@@ -1,7 +1,14 @@
-let Joi = require('joi');
+import Joi from 'joi';
+import { JOIResult } from '../../types';
 
-class UserValidator {
-  get createUser() {
+export interface IUserValidator {
+  createUser: () => JOIResult;
+  updateUser: () => JOIResult;
+  login: () => JOIResult;
+}
+
+export const UserValidator: IUserValidator = {
+  createUser() {
     return {
       body: Joi.object().keys({
         first_name: Joi.string().required(),
@@ -12,9 +19,8 @@ class UserValidator {
         admin: Joi.boolean()
       }).unknown(false)
     };
-  }
-
-  get updateUser() {
+  },
+  updateUser() {
     return {
       body: Joi.object().keys({
         first_name: Joi.string(),
@@ -25,9 +31,8 @@ class UserValidator {
         admin: Joi.boolean()
       }).unknown(false)
     };
-  }
-
-  get login() {
+  },
+  login() {
     return {
       body: Joi.object().keys({
         username: Joi.string().required(),
@@ -35,6 +40,4 @@ class UserValidator {
       }).unknown(false)
     };
   }
-}
-
-module.exports = new UserValidator();
+};

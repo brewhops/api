@@ -1,20 +1,32 @@
-let postgres = require('./../../postgres/pg');
-let self = null;
+import {Pg} from './../../postgres/pg';
+import {Request, Response, NextFunction} from 'express';
 
-module.exports = class batchesLogic extends postgres {
-  constructor(tableName) {
+// tslint:disable:no-any no-unsafe-any no-console
+/**
+ * Logic for the 'batches' route
+ *
+ * @export
+ * @class BatchesLogic
+ * @extends {Pg}
+ */
+export class BatchesLogic extends Pg {
+  constructor(tableName: string) {
     super(tableName);
-    self = this;
   }
 
   // GET
-  async getBatches(req, res) {
-    const { rows } = await self.read();
-    res.json(rows);
+  async getBatches(req: Request, res: Response) {
+    try {
+      const { rows } = await this.read();
+      res.json(rows);
+    } catch (error) {
+      res.status(500);
+      res.send(error);
+    }
   }
 
-  async getBatch(req, res, next) {
-    const results = await self.readById(req.params.id);
+  async getBatch(req: Request, res: Response, next: NextFunction) {
+    const results = await this.readById(req.params.id);
     if (results.rowCount > 0) {
       res.json(results.rows[0]);
     } else {
@@ -22,10 +34,10 @@ module.exports = class batchesLogic extends postgres {
     }
   }
 
-  async getBatchHistory(req, res, next) {
-    const results = await self.readById(req.params.id);
+  async getBatchHistory(req: Request, res: Response, next: NextFunction) {
+    const results = await this.readById(req.params.id);
     if (results.rowCount > 0) {
-      const versions = await self.client.query(
+      const versions = await this.client.query(
         `SELECT * FROM versions
         WHERE batch_id = $1`,
         [req.params.id]
@@ -39,12 +51,13 @@ module.exports = class batchesLogic extends postgres {
   }
 
   // POST
-  async createBatch(req, res) {
+  // tslint:disable:max-func-body-length
+  async createBatch(req: Request, res: Response) {
     // make a shorthand for out body so organizing is easier
     const input = req.body;
 
     // check to see if the item already exists
-    let results = await self.read('id', 'name=$1', [req.body.name]);
+    let results = await this.read('id', 'name=$1', [req.body.name]);
 
     // ************************* //
     // ***** CREATE BATCH ****** //
@@ -60,14 +73,15 @@ module.exports = class batchesLogic extends postgres {
       recipe_id: input.recipe_id,
       tank_id: input.tank_id
     };
-    let { keys, values, escapes } = self.splitObjectKeyVals(batch);
+    let { keys, values, escapes } = this.splitObjectKeyVals(batch);
 
     // if the item does not exist
     if (results.rowCount === 0) {
       try {
-        results = await self.create(keys, escapes, values);
+        results = await this.create(keys, escapes, values);
       } catch (e) {
         res.status(400).json(e);
+
         return;
       }
       // add the batch
@@ -75,13 +89,14 @@ module.exports = class batchesLogic extends postgres {
       // get the id of the current batch
       const batchID = results.rows[0].id;
       // set an update
-      const { query, idx } = await self.buildUpdateString(keys, values);
+      const { query, idx } = await this.buildUpdateString(keys);
       values.push(batchID);
       // update the batch
       try {
-        results = await self.update(query, `id = \$${idx}`, values); // eslint-disable-line
+        results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
       } catch (e) {
         res.status(400).json(e);
+
         return;
       }
     }
@@ -96,7 +111,7 @@ module.exports = class batchesLogic extends postgres {
     // if there is an action
     if (input.action) {
       // build up our info to insert
-      const tasksInfo = {
+      const tasksInfo: any = {
         assigned: input.action.assigned,
         batch_id: batchID,
         action_id: input.action.id,
@@ -113,7 +128,7 @@ module.exports = class batchesLogic extends postgres {
       // check if task already exists
       let taskExists;
       try {
-        taskExists = await self.client.query(
+        taskExists = await this.client.query(
           `SELECT * FROM tasks
           WHERE completed_on IS NULL
           AND batch_id = $1`,
@@ -124,20 +139,21 @@ module.exports = class batchesLogic extends postgres {
       }
 
       // parse it out
-      split = self.splitObjectKeyVals(tasksInfo);
+      split = this.splitObjectKeyVals(tasksInfo);
       keys = split.keys;
       values = split.values;
       escapes = split.escapes;
 
-      if (taskExists.rowCount > 0) {
+      if (taskExists && taskExists.rowCount > 0) {
         // get the taskID
         const taskID = taskExists.rows[0].id;
 
         // update the task
-        self.client.query(
+        this.client.query(
           `UPDATE tasks SET (${keys}) = (${escapes}) WHERE id = ${taskID} RETURNING *`, values
-        ).catch(function(e) {
+        ).catch((e) => {
           console.error('Update Error', e);
+
           return res.status(400).json(e);
         });
       } else {
@@ -147,12 +163,12 @@ module.exports = class batchesLogic extends postgres {
             name: 'error',
             detail: 'You can not close a task that has not yet been opened'
           });
-          return;
         } else {
           // insert a new task
-          self.createInTable(keys, 'tasks', escapes, values)
-            .catch(function(e) {
+          this.createInTable(keys, 'tasks', escapes, values)
+            .catch((e) => {
               console.error('Create Error', e);
+
               return res.status(400).json(e);
             });
         }
@@ -177,29 +193,31 @@ module.exports = class batchesLogic extends postgres {
     };
 
     // rebuild the keys, values and escapes, but do it with the version object
-    split = self.splitObjectKeyVals(version);
+    split = this.splitObjectKeyVals(version);
     keys = split.keys;
     values = split.values;
     escapes = split.escapes;
 
     // put our version info in the versions table
-    self.createInTable(keys, 'versions', escapes, values)
+    this.createInTable(keys, 'versions', escapes, values)
       // send back the all ok
-      .then(submittedValue => res.status(201).end())
+      .then(submittedValue => {
+        res.status(201).end();
+      })
       // log and return errors if we had a problem
-      .catch(function(error) {
-        console.log(error);
+      .catch((error) => {
+        console.error(error);
         res.status(400).json(error);
       });
   }
 
   // PATCH
-  async updateBatch(req, res, next) {
-    const { keys, values } = self.splitObjectKeyVals(req.body);
-    const { query, idx } = await self.buildUpdateString(keys, values);
+  async updateBatch(req: Request, res: Response, next: NextFunction) {
+    const { keys, values } = this.splitObjectKeyVals(req.body);
+    const { query, idx } = await this.buildUpdateString(keys);
     values.push(req.params.id);
 
-    const results = await self.update(query, `id = \$${idx}`, values); // eslint-disable-line
+    const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
     if (results.rowCount > 0) {
       res.json(results.rows[0]);
     } else {
@@ -208,15 +226,15 @@ module.exports = class batchesLogic extends postgres {
   }
 
   // DELETE
-  async deleteBatch(req, res, next) {
+  async deleteBatch(req: Request, res: Response, next: NextFunction) {
     // remove the versions tied to that batch
-    const versions = await self.client.query(
+    const versions = await this.client.query(
       `DELETE FROM versions
       WHERE batch_id = $1`,
       [req.params.id]
     );
     // remove the batch
-    const batch = await self.deleteById(req.params.id);
+    const batch = await this.deleteById(req.params.id);
     if (batch.rowCount > 0) {
       res.json({
         msg: 'Success',
@@ -227,4 +245,4 @@ module.exports = class batchesLogic extends postgres {
       next();
     }
   }
-};
+}
