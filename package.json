@@ -60,7 +60,6 @@
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/boom": "^7.2.1",
-    "@types/cors": "^2.8.4",
     "@types/dotenv": "^6.1.0",
     "bcrypt": "^2.0.1",
     "boom": "^7.2.0",
