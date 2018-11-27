@@ -12,4 +12,4 @@ EXPOSE 1234
 RUN npm install -g nodemon
 
 # sets the default command for this image
-CMD ["nodemon", "api/src/index.js"]
+CMD ["nodemon", "api/dist/index.js"]

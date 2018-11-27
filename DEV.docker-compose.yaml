@@ -30,7 +30,7 @@ services:
       links:
          - 'database'
       volumes:
-        - ./:/user/app/api
+        - ./dist:/user/app/
       environment:
          PORT: 1234
          PGHOST: 'database'

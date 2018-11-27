@@ -8,6 +8,7 @@ import { routes as RecipesRoutes } from './components/recipes/routes';
 import { routes as BatchesRoutes } from './components/batches/routes';
 
 // tslint:disable:no-any no-unsafe-any
+dotenv.config();
 
 // tslint:disable-next-line:no-var-requires no-require-imports
 const cors = require('cors');
