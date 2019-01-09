@@ -4,23 +4,24 @@
   "description": "An express based REST API for tracking brewing data",
   "main": "./src/index.js",
   "engines": {
-    "node": "11.2.0"
+    "node": "11.6.0"
   },
   "scripts": {
     "build": "tsc",
-    "test": "NODE_ENV=test mocha --reporter spec 'src/test/components/*.js' --file src/test/dbSetup.js --exit",
-    "test-intg": "NODE_ENV=test docker-compose -f DEV.docker-compose.yaml up -d test-database; sleep 10; NODE_ENV=test TEST_PG_HOST=localhost TEST_PG_PORT=45758 mocha --reporter spec 'test/components/*.js' --file test/dbSetup.js --exit; NODE_ENV=test docker-compose -f DEV.docker-compose.yaml stop test-database;",
+    "test": "cross-env  NODE_ENV=test mocha --reporter spec 'src/test/components/*.js' --file src/test/dbSetup.js --exit",
+    "test-intg": "cross-env  NODE_ENV=test docker-compose -f DEV.docker-compose.yaml up -d test-database; sleep 10; cross-env NODE_ENV=test TEST_PG_HOST=localhost TEST_PG_PORT=45758 mocha --reporter spec 'test/components/*.js' --file test/dbSetup.js --exit; NODE_ENV=test docker-compose -f DEV.docker-compose.yaml stop test-database;",
     "lint": "tslint -c ./tslint.json -p ./tsconfig.json --fix",
-    "start": "node dist/index.js",
-    "dev": "NODE_ENV=development docker-compose -f DEV.docker-compose.yaml up database web-server",
-    "dev-build": "NODE_ENV=development docker-compose -f DEV.docker-compose.yaml build",
-    "dev-clean": "NODE_ENV=development docker-compose -f DEV.docker-compose.yaml rm -sf; docker image rm brewhops-api_dev; docker volume rm brewhops-postgres-data_dev;",
+    "start": "npm run build && node dist/index.js",
+    "dev": "cross-env NODE_ENV=development docker-compose -f DEV.docker-compose.yaml up database web-server",
+    "dev-build": "cross-env NODE_ENV=development docker-compose -f DEV.docker-compose.yaml build",
+    "dev-clean": "cross-env NODE_ENV=development docker-compose -f DEV.docker-compose.yaml rm -sf; docker image rm brewhops-api_dev; docker volume rm brewhops-postgres-data_dev;",
     "dev-psql": "docker run -it --rm --network=${PWD##*/}_default --env-file '.env' -e PGHOST=database postgres psql",
     "prod": "PGUSER=${PGUSER:=api} PGDATABASE=${PGDATABASE:=brewhops} PGPASSWORD=${PGPASSWORD:=mypassword} docker-compose -f PROD.docker-compose.yaml up",
     "prod-build": "PGUSER=${PGUSER:=api} PGDATABASE=${PGDATABASE:=brewhops} PGPASSWORD=${PGPASSWORD:=mypassword} docker-compose -f PROD.docker-compose.yaml build",
     "prod-clean": "PGUSER=${PGUSER:=api} PGDATABASE=${PGDATABASE:=brewhops} PGPASSWORD=${PGPASSWORD:=mypassword} docker-compose -f PROD.docker-compose.yaml rm -sf; docker image rm brewhops-api; docker volume rm brewhops-postgres-data;",
     "prod-psql": "PGUSER=${PGUSER:=api} PGPASSWORD=${PGPASSWORD:=mypassword} PGDATABASE=${PGDATABASE:=brewhops}; docker run -it --rm --network=${PWD##*/}_default -e PGUSER=${PGUSER} -e PGDATABASE=${PGDATABASE} -e PGPASSWORD=${PGPASSWORD} -e PGHOST=database postgres psql",
-    "format": "prettier --single-quote --print-width 100 --write src/**/*.ts"
+    "format": "prettier --single-quote --print-width 100 --write src/**/*.ts",
+    "watch-ts": "tsc -w -p ./tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -60,12 +61,15 @@
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/boom": "^7.2.1",
+    "@types/chai": "^4.1.7",
+    "@types/cors": "^2.8.4",
     "@types/dotenv": "^6.1.0",
-    "bcrypt": "^2.0.1",
+    "bcrypt": "^3.0.3",
     "boom": "^7.2.0",
     "chai-as-promised": "^7.1.1",
     "command-line-args": "^5.0.2",
     "cors": "^2.8.4",
+    "cross-env": "^5.2.0",
     "dotenv": "^5.0.1",
     "express": "^4.16.4",
     "express-validation": "^1.0.2",

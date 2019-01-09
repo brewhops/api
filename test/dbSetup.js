@@ -1,10 +1,9 @@
 /* global describe it */
 
 // import config info
-require('dotenv').config()
+import dotenv from 'dotenv';
+import chai, { expect } from 'chai';
 
-const chai = require('chai')
-const expect = chai.expect
 
 describe('Database connect', function() {
   it('is using port 45758', function() {

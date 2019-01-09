@@ -1,6 +1,6 @@
-import e, {Router, Request, Response, NextFunction} from 'express';
-import {UserValidator} from './validator';
-import {UserLogic} from './logic';
+import { Router, Request, Response, NextFunction } from 'express';
+import { UserValidator } from './validator';
+import { UserLogic } from './logic';
 import { requireAuthentication } from './../../middleware/auth';
 
 // tslint:disable:no-any no-unsafe-any
