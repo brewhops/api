@@ -1,9 +1,12 @@
-require('dotenv').config()
+require('dotenv').config();
+const bcrypt = require('bcrypt');
+const saltRounds = 8;
 const CryptoJS = require("crypto-js");
 const employees = require("../src/components/employees/logic");
 
 function encryptPassword(password, username) {
-	return CryptoJS.AES.encrypt(password, username).toString();
+	let hash = CryptoJS.AES.encrypt(password, username).toString();
+	return bcrypt.hashSync(hash, saltRounds);
 }
 
 async function insertData() {
