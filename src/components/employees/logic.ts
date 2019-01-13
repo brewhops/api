@@ -1,7 +1,7 @@
 import {Pg} from './../../postgres/pg';
 import {Request, Response} from 'express';
 import bcrypt from 'bcrypt';
-import Boom from 'Boom';
+import Boom from 'boom';
 import { generateAuthToken } from './../../middleware/auth';
 import { userMatchAuthToken } from '../../util/auth';
 
