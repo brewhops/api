@@ -1,6 +1,11 @@
-let Joi = require('joi')
+import * as Joi from 'joi';
 
-class TankValidator {
+/**
+ * Validates the tank information
+ * @export
+ * @class TankValidator
+ */
+export const TankValidator = {
   get createTank() {
     return {
       body: Joi.object().keys({
@@ -8,9 +13,8 @@ class TankValidator {
         status: Joi.string().required(),
         in_use: Joi.boolean().required()
       }).unknown(false)
-    }
-  }
-
+    };
+  },
   get updateTank() {
     return {
       body: Joi.object().keys({
@@ -18,8 +22,6 @@ class TankValidator {
         status: Joi.string(),
         in_use: Joi.boolean()
       }).unknown(false)
-    }
+    };
   }
-}
-
-module.exports = new TankValidator()
+};

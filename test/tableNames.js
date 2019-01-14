@@ -1,1 +1,1 @@
-module.exports = [ 'employees', 'actions', 'tanks', 'recipes', 'batches', 'versions', 'tasks' ]
+export const tableNames = [ 'employees', 'actions', 'tanks', 'recipes', 'batches', 'versions', 'tasks' ];

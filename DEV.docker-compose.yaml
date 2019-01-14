@@ -30,7 +30,7 @@ services:
       links:
          - 'database'
       volumes:
-        - ./:/user/app/api
+        - ./dist:/user/dist
       environment:
          PORT: 1234
          PGHOST: 'database'
@@ -39,6 +39,7 @@ services:
          NODE_ENV: '${NODE_ENV}'
       ports:
          - 1234:1234
+         - 9222:9222
       env_file:
          - ./.env
       depends_on:

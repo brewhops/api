@@ -1,7 +1,13 @@
-let Joi = require('joi')
+import Joi from 'joi';
+import { JOIResult } from '../../types/index';
 
-class RecipeValidator {
-  get createRecipe() {
+export interface RecipeValidator {
+  createRecipe: () => JOIResult;
+  updateRecipe: () => JOIResult;
+}
+
+export const RecipeValidator = {
+  createRecipe() {
     return {
       body: Joi.object().keys({
         name: Joi.string().required(),
@@ -9,10 +15,9 @@ class RecipeValidator {
         yeast: Joi.number(),
         instructions: Joi.object().unknown()
       }).unknown(false)
-    }
-  }
-
-  get updateRecipe() {
+    };
+  },
+  updateRecipe() {
     return {
       body: Joi.object().keys({
         name: Joi.string(),
@@ -20,8 +25,6 @@ class RecipeValidator {
         yeast: Joi.number(),
         instructions: Joi.object().unknown()
       }).unknown(false)
-    }
+    };
   }
-}
-
-module.exports = new RecipeValidator()
+};
