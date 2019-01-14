@@ -50,7 +50,9 @@ Then
 
 1. Make sure to use node version 10 as it needs to match the development docker container (which uses node 10).
 1. `npm install` will install all of the dependencies.
-1. `npm run dev` will start the development database and web server with nodemon running.
+1. `npm run watch-ts` will have the typescript compiler watch the source files for changes and re-transpile them 
+1. `npm run dev-build` will build a new Docker image for the api
+1. `npm run dev` will start the development database and web server in Docker.
 
 
 
