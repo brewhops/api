@@ -1,5 +1,5 @@
-import {Pg} from './../../postgres/pg';
-import {Request, Response, NextFunction} from 'express';
+import { Pg } from './../../postgres/pg';
+import { Request, Response, NextFunction } from 'express';
 
 // tslint:disable:no-any no-unsafe-any no-console
 /**
@@ -132,7 +132,7 @@ export class BatchesLogic extends Pg {
           `SELECT * FROM tasks
           WHERE completed_on IS NULL
           AND batch_id = $1`,
-          [ batchID ]
+          [batchID]
         );
       } catch (e) {
         res.status(400).json(e);
@@ -149,13 +149,16 @@ export class BatchesLogic extends Pg {
         const taskID = taskExists.rows[0].id;
 
         // update the task
-        this.client.query(
-          `UPDATE tasks SET (${keys}) = (${escapes}) WHERE id = ${taskID} RETURNING *`, values
-        ).catch((e) => {
-          console.error('Update Error', e);
+        this.client
+          .query(
+            `UPDATE tasks SET (${keys}) = (${escapes}) WHERE id = ${taskID} RETURNING *`,
+            values
+          )
+          .catch(e => {
+            console.error('Update Error', e);
 
-          return res.status(400).json(e);
-        });
+            return res.status(400).json(e);
+          });
       } else {
         // dont let the user try and finish a task that has not started
         if (input.action.completed) {
@@ -165,12 +168,11 @@ export class BatchesLogic extends Pg {
           });
         } else {
           // insert a new task
-          this.createInTable(keys, 'tasks', escapes, values)
-            .catch((e) => {
-              console.error('Create Error', e);
+          this.createInTable(keys, 'tasks', escapes, values).catch(e => {
+            console.error('Create Error', e);
 
-              return res.status(400).json(e);
-            });
+            return res.status(400).json(e);
+          });
         }
       }
     }
@@ -205,7 +207,7 @@ export class BatchesLogic extends Pg {
         res.status(201).end();
       })
       // log and return errors if we had a problem
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
         res.status(400).json(error);
       });

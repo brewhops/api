@@ -1,6 +1,6 @@
-import e, {Request, Response, NextFunction, Router} from 'express';
-import {RecipeLogic, IRecipeLogic} from './logic';
-import {RecipeValidator} from './validator';
+import e, { Request, Response, NextFunction, Router } from 'express';
+import { RecipeLogic, IRecipeLogic } from './logic';
+import { RecipeValidator } from './validator';
 // tslint:disable-next-line:no-var-requires no-require-imports
 const validate = require('express-validation');
 
@@ -35,9 +35,11 @@ export async function routes(tableName: string) {
   // [DELETE] section
   router.delete('/id/:id', controller.deleteRecipe);
 
-  router.use('*', (req, res) => res.status(400).json({
-    err: `${req.originalUrl} doesn't exist`
-  }));
+  router.use('*', (req, res) =>
+    res.status(400).json({
+      err: `${req.originalUrl} doesn't exist`
+    })
+  );
 
   return router;
 }

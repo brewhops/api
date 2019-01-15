@@ -24,7 +24,6 @@ export interface ITankController extends ICrud {
 export class TankController extends Pg implements ITankController {
   constructor(tableName: any) {
     super(tableName);
-
   }
 
   // GET
@@ -58,13 +57,13 @@ export class TankController extends Pg implements ITankController {
 
   async getTankMonitoring(req: Request, res: Response, next: NextFunction) {
     /* get most recent:
-       * tank number
-       * pressure
-       * beer ID
-       * batch number
-       * action
-       * temperature
-    */
+     * tank number
+     * pressure
+     * beer ID
+     * batch number
+     * action
+     * temperature
+     */
     const query = `
     SELECT action_name, open_tasks.batch_id, batch_name,
     tank_name, tank_id, beer_name, pressure, temperature
@@ -99,7 +98,7 @@ export class TankController extends Pg implements ITankController {
   // PUT/PATCH
   async updateTank(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
-      res.status(400).json({err: 'Request does not match valid form'});
+      res.status(400).json({ err: 'Request does not match valid form' });
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
@@ -127,5 +126,4 @@ export class TankController extends Pg implements ITankController {
       res.status(500).json(e);
     }
   }
-
 }

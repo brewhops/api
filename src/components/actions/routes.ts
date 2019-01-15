@@ -1,4 +1,4 @@
-import e, {Request, Response, NextFunction, Router} from 'express';
+import e, { Request, Response, NextFunction, Router } from 'express';
 import { ActionLogic } from './logic';
 import { ActionValidator } from './validator';
 // tslint:disable-next-line:no-var-requires no-require-imports

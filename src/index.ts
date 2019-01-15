@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import e, {Request, Response, NextFunction} from 'express';
+import e, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { routes as EmployeesRoutes } from './components/employees/routes';
 import { routes as TanksRoutes } from './components/tanks/routes';
@@ -15,7 +15,6 @@ const cors = require('cors');
 
 const app = e();
 
-
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -30,7 +29,6 @@ app.use('/tanks', TanksRoutes);
 app.use('/actions', ActionsRoutes);
 app.use('/recipes', RecipesRoutes);
 app.use('/batches', BatchesRoutes);
-
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(process.env.PORT, () => {

@@ -35,20 +35,22 @@ export const BatchesValidator: IBatchesValidator = {
   },
   updateBatch() {
     return {
-      body: Joi.object().keys({
-        name: Joi.string(),
-        volume: Joi.number(),
-        bright: Joi.number(),
-        generation: Joi.number(),
-        recipe_id: Joi.number(),
-        tank_id: Joi.number(),
-        SG: Joi.number(),
-        PH: Joi.number(),
-        ABV: Joi.number(),
-        temperature: Joi.number(),
-        pressure: Joi.number(),
-        measure_on: Joi.number()
-      }).unknown(false)
+      body: Joi.object()
+        .keys({
+          name: Joi.string(),
+          volume: Joi.number(),
+          bright: Joi.number(),
+          generation: Joi.number(),
+          recipe_id: Joi.number(),
+          tank_id: Joi.number(),
+          SG: Joi.number(),
+          PH: Joi.number(),
+          ABV: Joi.number(),
+          temperature: Joi.number(),
+          pressure: Joi.number(),
+          measure_on: Joi.number()
+        })
+        .unknown(false)
     };
   }
 };

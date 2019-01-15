@@ -1,5 +1,5 @@
-import {Pg} from './../../postgres/pg';
-import {Request, Response, NextFunction} from 'express';
+import { Pg } from './../../postgres/pg';
+import { Request, Response, NextFunction } from 'express';
 import is from 'is';
 
 // tslint:disable:no-floating-promises no-any no-unsafe-any
@@ -11,7 +11,6 @@ export interface IRecipeLogic {
   updateRecipe: () => Promise<void>;
   deleteRecipe: () => Promise<void>;
 }
-
 
 /**
  * Logic for the user
@@ -57,7 +56,7 @@ export class RecipeLogic extends Pg {
   // PATCH/PUT
   async updateRecipe(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
-      res.status(400).json({err: 'Request does not match valid form'});
+      res.status(400).json({ err: 'Request does not match valid form' });
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
