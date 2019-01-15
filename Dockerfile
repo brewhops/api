@@ -3,18 +3,19 @@ FROM node:11
 
 # specify the work directory and tell docker
 # where to run future commands
-WORKDIR /user/app
+WORKDIR /user
 
-# copy the package files into the work directory
-# keep it minimal on startup
-COPY package*.json ./
+# copy over package and package-lock files
+COPY ./package*.json ./
 
-# run the shell command
-RUN npm install
+# install dependencies
+RUN npm i
 
-# copy everything in this directory into our
-# docker container
-COPY ./src ./src
+# copy source
+COPY . .
+
+# kick off typescript transpilation
+RUN npm run build
 
 # expose the port on the docker container
 EXPOSE 1234
