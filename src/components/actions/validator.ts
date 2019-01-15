@@ -11,22 +11,25 @@ export interface IActionValidator {
  * @export
  * @class ActionValidator
  */
-export const  ActionValidator: IActionValidator = {
+export const ActionValidator: IActionValidator = {
   createAction(): JOIResult {
     return {
-      body: Joi.object().keys({
-        name: Joi.string().required(),
-        description: Joi.string().required()
-      }).unknown(false)
+      body: Joi.object()
+        .keys({
+          name: Joi.string().required(),
+          description: Joi.string().required()
+        })
+        .unknown(false)
     };
   },
   updateAction(): JOIResult {
     return {
-      body: Joi.object().keys({
-        name: Joi.string(),
-        description: Joi.string()
-      }).unknown(false)
+      body: Joi.object()
+        .keys({
+          name: Joi.string(),
+          description: Joi.string()
+        })
+        .unknown(false)
     };
   }
 };
-

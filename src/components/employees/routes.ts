@@ -35,20 +35,19 @@ export async function routes(tableName: string) {
   // [PATCH] section
   router.patch(
     '/id/:id',
-    validate(UserValidator.updateUser), requireAuthentication,
+    validate(UserValidator.updateUser),
+    requireAuthentication,
     controller.updateUser
   );
 
   // [DELETE] section
-  router.delete(
-    '/id/:id',
-    requireAuthentication,
-    controller.deleteUser
-  );
+  router.delete('/id/:id', requireAuthentication, controller.deleteUser);
 
-  router.use('*', (req, res) => res.status(400).json({
-    err: `${req.originalUrl} doesn't exist`
-  }));
+  router.use('*', (req, res) =>
+    res.status(400).json({
+      err: `${req.originalUrl} doesn't exist`
+    })
+  );
 
   return router;
 }

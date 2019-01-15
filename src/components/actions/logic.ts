@@ -1,5 +1,5 @@
 import { Pg } from './../../postgres/pg';
-import {Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import is from 'is';
 
 // tslint:disable:no-any no-unsafe-any
@@ -10,7 +10,6 @@ import is from 'is';
  * @extends {Pg}
  */
 export class ActionLogic extends Pg {
-
   constructor(tableName: string) {
     super(tableName);
   }
@@ -20,7 +19,7 @@ export class ActionLogic extends Pg {
     try {
       const { rows } = await this.read();
       res.json(rows);
-    } catch(error) {
+    } catch (error) {
       res.status(500);
       res.send(error);
     }
@@ -49,7 +48,7 @@ export class ActionLogic extends Pg {
   // PATCH/PUT
   async updateAction(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
-      res.status(400).json({err: 'Request does not match valid form'});
+      res.status(400).json({ err: 'Request does not match valid form' });
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);

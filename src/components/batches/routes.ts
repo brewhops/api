@@ -1,10 +1,9 @@
-import e, {Router, Request, Response, NextFunction} from 'express';
+import e, { Router, Request, Response, NextFunction } from 'express';
 import { BatchesLogic } from './logic';
-import {BatchesValidator} from './validator';
+import { BatchesValidator } from './validator';
 import Boom from 'boom';
 // tslint:disable-next-line:no-var-requires no-require-imports
 const validate = require('express-validation');
-
 
 // tslint:disable:no-any no-unsafe-any
 
@@ -38,9 +37,9 @@ export async function routes(tableName: string) {
   // [DELETE] section
   router.delete('/id/:id', controller.deleteBatch);
 
-  router.use('*', (req, res) => res.status(404).json(
-    Boom.notFound(`The route ${req.originalUrl} does not exist`)
-  ));
+  router.use('*', (req, res) =>
+    res.status(404).json(Boom.notFound(`The route ${req.originalUrl} does not exist`))
+  );
 
   return router;
 }

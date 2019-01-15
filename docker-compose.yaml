@@ -24,7 +24,7 @@ services:
    web-server:
       build:
          context: .
-         dockerfile: DEV.Dockerfile
+         dockerfile: Dockerfile
       image: brewhops-api_dev
       restart: always
       links:
