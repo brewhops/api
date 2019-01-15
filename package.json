@@ -13,7 +13,7 @@
     "lint": "tslint -c ./tslint.json -p ./tsconfig.json --fix",
     "start": "npm run build && npm run debug",
     "debug": "NODE_ENV=development nodemon --legacy-watch --watch ./dist --inspect=0.0.0.0:9222 --nolazy",
-    "dev": "cross-env NODE_ENV=development docker-compose up",
+    "dev": "cross-env NODE_ENV=development docker-compose up database web-server",
     "format": "prettier --single-quote --print-width 100 --write src/**/*.ts",
     "watch-ts": "tsc -w -p ./tsconfig.json"
   },
