@@ -6,6 +6,7 @@ import { routes as TanksRoutes } from './components/tanks/routes';
 import { routes as ActionsRoutes } from './components/actions/routes';
 import { routes as RecipesRoutes } from './components/recipes/routes';
 import { routes as BatchesRoutes } from './components/batches/routes';
+import { insertDevelopmentData } from './util/initial_data';
 
 // tslint:disable:no-any no-unsafe-any
 dotenv.config();
@@ -29,6 +30,10 @@ app.use('/tanks', TanksRoutes);
 app.use('/actions', ActionsRoutes);
 app.use('/recipes', RecipesRoutes);
 app.use('/batches', BatchesRoutes);
+
+if (process.env.NODE_ENV === 'development') {
+	insertDevelopmentData();
+}
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(process.env.PORT, () => {
