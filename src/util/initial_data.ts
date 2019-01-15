@@ -24,11 +24,20 @@ async function insertDevAdmin() {
 	user.password = encryptPassword("password", user.username);
 	
 	try {
-		const { keys, values, escapes } = employeeController.splitObjectKeyVals(user);
-		await employeeController.create(keys, escapes, values);
-		console.log(' + Added test admin user.');
+		// Check for existing user
+		const prevUser = await employeeController.readByUsername(user.username);
+
+		if (prevUser.rows.length === 0) {
+			// No existing user, add admin
+			const { keys, values, escapes } = employeeController.splitObjectKeyVals(user);
+			await employeeController.create(keys, escapes, values);
+			console.log(' + Added test admin user.');
+		} else {
+			// Existing user
+			console.log(' ✔️ Test admin exists.');
+		}
 	} catch(e) {
-		console.log(' ✔️ Test admin exists.');
+		console.log(' x Error inserting test admin user.', e);
 	}
 
 }
