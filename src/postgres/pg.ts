@@ -40,7 +40,7 @@ export class Pg extends Crud {
     const values = [];
     const escapes = [];
     let idx = 1;
-    for (const key of obj) {
+    for (let key in obj) {
       keys.push(key.toString());
       values.push(obj[key].toString());
       escapes.push(`\$${idx}`); // eslint-disable-line
