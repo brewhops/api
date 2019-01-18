@@ -32,7 +32,14 @@ app.use('/recipes', RecipesRoutes);
 app.use('/batches', BatchesRoutes);
 
 if (process.env.NODE_ENV === 'development') {
-	insertDevelopmentData();
+  app.post('/init', async (req: Request, res: Response) => {
+    try {
+      await insertDevelopmentData();
+      res.status(200).send('success');
+    } catch (error) {
+      res.status(500).send('failed');
+    }
+  });
 }
 
 if (process.env.NODE_ENV !== 'test') {

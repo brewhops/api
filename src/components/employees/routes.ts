@@ -9,7 +9,7 @@ import { requireAuthentication } from './../../middleware/auth';
 const validate = require('express-validation');
 
 export async function routes(tableName: string) {
-  const controller = new UserLogic(tableName);
+  const controller = new UserLogic('employees');
   const router = Router();
 
   if (process.env.NODE_ENV !== 'test') {

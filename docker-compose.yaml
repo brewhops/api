@@ -32,13 +32,13 @@ services:
       volumes:
         - ./dist:/user/dist
       environment:
-         PORT: 1234
+         PORT: 3000
          PGHOST: 'database'
          TEST_PG_PORT: 5432
          TEST_PG_HOST: 'test-database'
          NODE_ENV: '${NODE_ENV}'
       ports:
-         - 1234:1234
+         - 3000:3000
          - 9222:9222
       env_file:
          - ./.env
