@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { TankController } from './logic';
+import { TankController } from './controller';
 import { TankValidator } from './validator';
 import { requireAuthentication } from './../../middleware/auth';
 

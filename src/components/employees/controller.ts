@@ -2,7 +2,7 @@ import { PostgresController, IPg } from '../../dal/postgres';
 import { Request, Response, RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import Boom from 'boom';
-import { generateAuthToken } from './../../middleware/auth';
+import { generateAuthToken } from '../../middleware/auth';
 import { userMatchAuthToken } from '../../util/auth';
 
 const saltRounds = 8;

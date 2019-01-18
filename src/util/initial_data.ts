@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import CryptoJS from 'crypto-js';
-import { EmployeeController } from '../components/employees/logic';
+import { EmployeeController } from '../components/employees/controller';
 import { Employee } from '../components/employees/types';
 
 // tslint:disable: no-console

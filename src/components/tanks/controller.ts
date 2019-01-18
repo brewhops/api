@@ -33,7 +33,7 @@ export class TankController extends PostgresController implements ITankControlle
       const { rows } = await this.read();
       res.json(rows);
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -52,7 +52,7 @@ export class TankController extends PostgresController implements ITankControlle
         next();
       }
     } catch (err) {
-      res.json(Boom.badRequest(err));
+      res.send(Boom.badRequest(err));
     }
     await this.disconnect();
   }
@@ -83,7 +83,7 @@ export class TankController extends PostgresController implements ITankControlle
       const results = await this.client.query(query);
       res.status(200).json(results.rows);
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -96,7 +96,7 @@ export class TankController extends PostgresController implements ITankControlle
       const { rows } = await this.create(keys, escapes, values);
       res.status(201).json(rows[0]);
     } catch (err) {
-      res.json(Boom.badRequest(err));
+      res.send(Boom.badRequest(err));
     }
     await this.disconnect();
   }
@@ -104,7 +104,7 @@ export class TankController extends PostgresController implements ITankControlle
   // PUT/PATCH
   async updateTank(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
-      res.json(Boom.badRequest('Request does not match valid form'));
+      res.send(Boom.badRequest('Request does not match valid form'));
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
@@ -117,7 +117,7 @@ export class TankController extends PostgresController implements ITankControlle
           next();
         }
       } catch (err) {
-        res.json(Boom.badImplementation(err));
+        res.send(Boom.badImplementation(err));
       }
     }
   }
@@ -133,7 +133,7 @@ export class TankController extends PostgresController implements ITankControlle
         next();
       }
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }

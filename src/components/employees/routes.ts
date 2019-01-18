@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { UserValidator } from './validator';
-import { EmployeeController } from './logic';
+import { EmployeeController } from './controller';
 import { requireAuthentication } from './../../middleware/auth';
 
 // tslint:disable:no-any no-unsafe-any

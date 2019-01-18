@@ -1,5 +1,5 @@
 import e, { Router, Request, Response, NextFunction } from 'express';
-import { BatchesLogic } from './logic';
+import { BatchesLogic } from './controller';
 import { BatchesValidator } from './validator';
 import Boom from 'boom';
 // tslint:disable-next-line:no-var-requires no-require-imports
