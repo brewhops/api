@@ -1,0 +1,398 @@
+{
+	"info": {
+		"_postman_id": "3b5ae75d-9da7-4f63-9a90-1284fdb53b78",
+		"name": "brewhops-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Employees Routes",
+			"item": [
+				{
+					"name": "/ (get users)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/employees/",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"employees",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (get user by id)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/employees/id/{{employee-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"employees",
+								"id",
+								"{{employee-id}}"
+							]
+						},
+						"description": "Get an employee by id"
+					},
+					"response": []
+				},
+				{
+					"name": "/login/ (get auth token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "42d3edb7-93ed-4ef8-8a6e-fb0a32bf88b6",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"console.log(json)",
+									"pm.environment.set(\"auth-token\", json.token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{api-domain}}/employees/login",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"employees",
+								"login"
+							]
+						},
+						"description": "Generates a token that can be used to authenticate requests."
+					},
+					"response": []
+				},
+				{
+					"name": "/ (add user)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"Darth\",\n    \"last_name\": \"Vader\",\n    \"username\": \"general_user\",\n    \"password\": \"somePASSword\",\n    \"phone\": \"1234567890\",\n    \"admin\": false\n}"
+						},
+						"url": {
+							"raw": "{{api-domain}}/employees/",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"employees",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (update a user)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/employees/id/{{employee-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"employees",
+								"id",
+								"{{employee-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (delete by id)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/employees/id/{{employee-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"employees",
+								"id",
+								"{{employee-id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tanks Routes",
+			"item": [
+				{
+					"name": "tanks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/tanks",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tanks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Actions Routes",
+			"item": [
+				{
+					"name": "actions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/actions",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"actions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recipes Routes",
+			"item": [
+				{
+					"name": "recipes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/recipes",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Batches Routes",
+			"item": [
+				{
+					"name": "batches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/batches",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"batches"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "init",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api-domain}}/init",
+					"host": [
+						"{{api-domain}}"
+					],
+					"path": [
+						"init"
+					]
+				},
+				"description": "route for adding test data to the database"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1e1abbf1-6bff-4bd1-9db8-44ee3c34e21f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "e0b28ffe-141f-4eea-9e0d-b1c368843790",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "133a9409-8576-4648-8308-f6b1ecd6924f",
+			"key": "api-domain",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"id": "fd5bde39-3a4a-4011-bad8-95cd0fceff26",
+			"key": "employee-id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"id": "2e5aca1c-4419-48ab-abd4-eee58ddad77e",
+			"key": "auth-token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
