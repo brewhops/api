@@ -1,24 +1,30 @@
-import e, { Request, Response, NextFunction, Router } from 'express';
-import { ActionController } from './controller';
+import { Request, Response, NextFunction, Router } from 'express';
+import { ActionController, IActionController } from './controller';
+import Boom from 'boom';
 import { ActionValidator } from './validator';
 // tslint:disable-next-line:no-var-requires no-require-imports
 const validate = require('express-validation');
 
-// tslint:disable:no-any no-unsafe-any
+// tslint:disable: no-unsafe-any
 
-export function routes() {
-  const controller = new ActionController('actions');
-  const router = Router();
+/**
+ * Initializes the 'actions' route handlers and returns an Express.Router
+ * @export
+ * @returns {Router}
+ */
+export function routes(): Router {
+  const controller: IActionController = new ActionController('actions');
+  const router: Router = Router();
 
-  // tslint:disable-next-line:no-void-expression
+  // tslint:disable-next-line: no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
   // [GET] section
-  router.get('/', async (req, res) => controller.getActions(req, res));
+  router.get('/', async (req, res, next) => controller.getActions(req, res, next));
   router.get('/id/:id', async (req, res, next) => controller.getAction(req, res, next));
 
   // [POST] section
-  router.post('/', validate(ActionValidator.createAction), async (req, res) => controller.createAction(req, res));
+  router.post('/', validate(ActionValidator.createAction), async (req, res, next) => controller.createAction(req, res, next));
 
   // [PATCH] section
   router.patch('/id/:id', validate(ActionValidator.updateAction), async (req, res, next) => controller.updateAction(req, res, next));
@@ -26,12 +32,7 @@ export function routes() {
   // [DELETE] section
   router.delete('/id/:id', async (req, res, next) => controller.deleteAction(req, res, next));
 
-  router.use('*', (req: Request, res: Response) => {
-    res.status(400);
-    res.json({
-      err: `${req.originalUrl} doesn't exist`
-    });
-  });
+  router.use('*', (req: Request, res: Response) => res.send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
 
   return router;
 }

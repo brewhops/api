@@ -1,7 +1,7 @@
 import { CrudController, ICrudController } from './crud';
 
 // tslint:disable:no-any no-unsafe-any
-export interface IPg extends ICrudController {
+export interface IPostgresController extends ICrudController {
   splitObjectKeyVals: (obj: any) => any;
   buildQueryByID: (key: string, value: string) => string;
   buildUpdateString: (keys: any) => any;
@@ -19,7 +19,7 @@ export type KeyValueResult = {
  * @class PostgresController
  * @extends {CrudController}
  */
-export class PostgresController extends CrudController {
+export class PostgresController extends CrudController implements IPostgresController {
   private url: string;
 
   constructor(collName: string) {
@@ -35,7 +35,7 @@ export class PostgresController extends CrudController {
    * @returns
    * @memberof PostgresController
    */
-  splitObjectKeyVals(obj: any): KeyValueResult {
+  splitObjectKeyVals(obj: { [index: string]: string }): KeyValueResult {
     const keys = [];
     const values = [];
     const escapes = [];
