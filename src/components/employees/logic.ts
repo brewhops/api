@@ -1,5 +1,5 @@
-import { Pg } from './../../postgres/pg';
-import { Request, Response } from 'express';
+import { PostgresController, IPg } from '../../dal/postgres';
+import { Request, Response, RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import Boom from 'boom';
 import { generateAuthToken } from './../../middleware/auth';
@@ -7,90 +7,136 @@ import { userMatchAuthToken } from '../../util/auth';
 
 const saltRounds = 8;
 
-const safeUserData = `id, first_name, last_name, username, phone, admin`;
+const safeUserData = 'id, first_name, last_name, username, phone, admin';
 
 // tslint:disable:no-any no-unsafe-any
+interface IEmployeeController extends IPg {
+  getUsers: RequestHandler;
+  getUser: RequestHandler;
+  createUser: RequestHandler;
+  login: RequestHandler;
+  updateUser: RequestHandler;
+  deleteUser: RequestHandler;
+}
+
 
 /**
  * Class that defined the logic for the 'user' route
  * @export
  * @class UserLogic
- * @extends {Pg}
+ * @extends {PostgresController}
  */
-export class UserLogic extends Pg {
+export class EmployeeController extends PostgresController implements IEmployeeController {
   constructor(tableName: string) {
     super(tableName);
   }
 
   // GET
   async getUsers(req: Request, res: Response) {
-    const { rows } = await this.read(safeUserData);
-    res.json(rows);
+    try {
+      await this.connect();
+      const { rows } = await this.read(safeUserData, '$1', [true]);
+      res.status(200).json(rows);
+      await this.disconnect();
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
 
   async getUser(req: Request, res: Response) {
-    const { rows } = await this.readById(req.params.id);
-    res.json(rows);
+    try {
+      await this.connect();
+      const { rows } = await this.readById(req.params.id);
+      res.status(200).json(rows);
+      await this.disconnect();
+    } catch(err) {
+      res.status(400).json(err);
+    }
   }
 
   // POST
   async createUser(req: Request, res: Response) {
-    const prevUser = await this.readByUsername(req.body.username);
-    req.body.password = bcrypt.hashSync(req.body.password, saltRounds);
-    const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
+    const { username, password: pw } = req.body;
+    try {
+      await this.connect();
+      const prevUser = await this.readByUsername(username);
+      const password = bcrypt.hashSync(pw, saltRounds);
+      const { keys, values, escapes } = this.splitObjectKeyVals({...req.body, password});
 
-    if (prevUser.rows.length !== 0) {
-      res.status(400).json(Boom.badRequest('Username already taken'));
-    } else {
-      const { rows } = await this.create(keys, escapes, values, safeUserData);
-      const returnedUser = rows[0];
-      returnedUser.token = await generateAuthToken(returnedUser.username);
-      res.status(201).json(rows[0]);
+      if (prevUser.rows.length !== 0) {
+        res.json(Boom.badRequest('Username already taken'));
+      } else {
+        const { rows } = await this.create(keys, escapes, values, safeUserData);
+        const returnedUser = rows[0];
+        returnedUser.token = await generateAuthToken(returnedUser.username);
+        res.status(201).json(rows[0]);
+      }
+    } catch (err) {
+      res.status(500).json(err);
     }
+    await this.disconnect();
   }
 
   async login(req: Request, res: Response) {
-    const prevUser = await this.readByUsername(req.body.username);
-    if (prevUser.rows.length === 0) {
-      res.status(401).json(Boom.badRequest('Not authorized'));
-    } else {
-      const userID = prevUser.rows[0].id;
-      const password = bcrypt.compareSync(req.body.password, prevUser.rows[0].password);
-      if (password) {
-        const token = await generateAuthToken(req.body.username);
-        res.json({
-          token,
-          userID
-        });
+    const { username, password } = req.body;
+    try {
+      await this.connect();
+      const prevUser = await this.readByUsername(username);
+      if (prevUser.rows.length === 0) {
+        res.status(401).json(Boom.badRequest('Not authorized'));
       } else {
-        res.json(Boom.badRequest('Incorrect password'));
+        const userID = prevUser.rows[0].id;
+        const match = bcrypt.compareSync(password, prevUser.rows[0].password);
+        if (match) {
+          const token = await generateAuthToken(req.body.username);
+          res.status(200).json({
+            token,
+            userID
+          });
+        } else {
+          res.status(400).json(Boom.badRequest('Incorrect password'));
+        }
       }
+    } catch (err) {
+      res.status(500).json(err);
     }
+    await this.disconnect();
   }
 
   // PATCH/PUT
   async updateUser(req: Request, res: Response) {
-    const { keys, values } = this.splitObjectKeyVals(req.body);
-    const { query, idx } = this.buildUpdateString(keys);
-    values.push(req.params.id); // add last escaped value for where clause
-    const { rows } = await this.readById(req.params.id);
-
-    if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
-      res.json(Boom.badRequest('Not Authorized'));
-    } else {
-      const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
-      res.json(results.rows);
+    try {
+      await this.connect();
+      const { keys, values } = this.splitObjectKeyVals(req.body);
+      const { query, idx } = this.buildUpdateString(keys);
+      values.push(req.params.id); // add last escaped value for where clause
+      const { rows } = await this.readById(req.params.id);
+      if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
+        res.json(Boom.badRequest('Not Authorized'));
+      } else {
+        const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
+        res.json(results.rows);
+      }
+    } catch (err) {
+      res.json(Boom.serverUnavailable(err));
     }
+    await this.disconnect();
   }
 
   // DELETE
   async deleteUser(req: Request, res: Response) {
-    const { rows } = await this.readById(req.params.id);
-    if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
-      res.json(Boom.badRequest('Not Authorized'));
-    } else {
-      const results = await this.deleteById(req.params.id);
-      res.json(results.rows);
+    try {
+      await this.connect();
+      const { rows } = await this.readById(req.params.id);
+      if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
+        res.json(Boom.badRequest('Not Authorized'));
+      } else {
+        const results = await this.deleteById(req.params.id);
+        res.json(results.rows);
+      }
+    } catch (err) {
+      res.json(Boom.serverUnavailable(err));
     }
+    await this.disconnect();
   }
 }

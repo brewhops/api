@@ -1,12 +1,12 @@
-import { Pg } from './../../postgres/pg';
+import { PostgresController } from '../../dal/postgres';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import is from 'is';
 import { RequestHandlerParams } from 'express-serve-static-core';
-import { ICrud } from '../../postgres/CRUD';
+import { ICrudController } from '../../dal/crud';
 import { IdParams } from '../../routes/index';
 
 // tslint:disable:no-any no-unsafe-any
-export interface ITankController extends ICrud {
+export interface ITankController extends ICrudController {
   getTanks: RequestHandler;
   getTank: RequestHandler;
   getTankMonitoring: RequestHandler;
@@ -21,7 +21,7 @@ export interface ITankController extends ICrud {
  * @class tankLogic
  * @extends {postgres}
  */
-export class TankController extends Pg implements ITankController {
+export class TankController extends PostgresController implements ITankController {
   constructor(tableName: any) {
     super(tableName);
   }

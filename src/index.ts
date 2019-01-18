@@ -25,7 +25,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(400).json(err);
 }); // error handler for validator
 
-app.use('/employees', EmployeesRoutes);
+app.use('/employees', EmployeesRoutes());
 app.use('/tanks', TanksRoutes);
 app.use('/actions', ActionsRoutes);
 app.use('/recipes', RecipesRoutes);

@@ -1,4 +1,4 @@
-import { Pg } from './../../postgres/pg';
+import { PostgresController } from '../../dal/postgres';
 import { Request, Response, NextFunction } from 'express';
 import is from 'is';
 
@@ -16,9 +16,9 @@ export interface IRecipeLogic {
  * Logic for the user
  * @export
  * @class UserLogic
- * @extends {Pg}
+ * @extends {PostgresController}
  */
-export class RecipeLogic extends Pg {
+export class RecipeLogic extends PostgresController {
   constructor(tableName: string) {
     super(tableName);
   }

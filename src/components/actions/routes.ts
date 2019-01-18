@@ -1,5 +1,5 @@
 import e, { Request, Response, NextFunction, Router } from 'express';
-import { ActionLogic } from './logic';
+import { ActionController } from './logic';
 import { ActionValidator } from './validator';
 // tslint:disable-next-line:no-var-requires no-require-imports
 const validate = require('express-validation');
@@ -7,7 +7,7 @@ const validate = require('express-validation');
 // tslint:disable:no-any no-unsafe-any
 
 export async function routes(tableName: string) {
-  const controller = new ActionLogic(tableName);
+  const controller = new ActionController(tableName);
   const router = Router();
 
   // we want to connect to the DB automatically if we are not testing

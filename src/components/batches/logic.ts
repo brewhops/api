@@ -1,4 +1,4 @@
-import { Pg } from './../../postgres/pg';
+import { PostgresController } from '../../dal/postgres';
 import { Request, Response, NextFunction } from 'express';
 
 // tslint:disable:no-any no-unsafe-any no-console
@@ -7,9 +7,9 @@ import { Request, Response, NextFunction } from 'express';
  *
  * @export
  * @class BatchesLogic
- * @extends {Pg}
+ * @extends {PostgresController}
  */
-export class BatchesLogic extends Pg {
+export class BatchesLogic extends PostgresController {
   constructor(tableName: string) {
     super(tableName);
   }

@@ -1,4 +1,4 @@
-import { Pg } from './../../postgres/pg';
+import { PostgresController } from '../../dal/postgres';
 import { Request, Response, NextFunction } from 'express';
 import is from 'is';
 
@@ -6,10 +6,10 @@ import is from 'is';
 /**
  * Defines the logic for the 'action' route
  * @export
- * @class ActionLogic
- * @extends {Pg}
+ * @class ActionController
+ * @extends {PostgresController}
  */
-export class ActionLogic extends Pg {
+export class ActionController extends PostgresController {
   constructor(tableName: string) {
     super(tableName);
   }
