@@ -3,7 +3,7 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import is from 'is';
 import { RequestHandlerParams } from 'express-serve-static-core';
 import { ICrudController } from '../../dal/crud';
-import { IdParams } from '../../routes/index';
+import Boom from 'boom';
 
 // tslint:disable:no-any no-unsafe-any
 export interface ITankController extends ICrudController {
@@ -29,17 +29,18 @@ export class TankController extends PostgresController implements ITankControlle
   // GET
   async getTanks(req: Request, res: Response) {
     try {
+      await this.connect();
       const { rows } = await this.read();
       res.json(rows);
-    } catch (e) {
-      // tslint:disable-next-line:no-console
-      console.log(e);
-      res.status(500).json(e);
+    } catch (err) {
+      res.json(Boom.badImplementation(err));
     }
+    await this.disconnect();
   }
 
   async getTank(req: Request, res: Response, next: NextFunction) {
     try {
+      await this.connect();
       // get the tank by that ID
       const { rows } = await this.readById(req.params.id);
       // if it returns at least one tank
@@ -50,9 +51,10 @@ export class TankController extends PostgresController implements ITankControlle
         // let the user know that tank does not exist
         next();
       }
-    } catch (e) {
-      res.status(400).json(e);
+    } catch (err) {
+      res.json(Boom.badRequest(err));
     }
+    await this.disconnect();
   }
 
   async getTankMonitoring(req: Request, res: Response, next: NextFunction) {
@@ -77,38 +79,45 @@ export class TankController extends PostgresController implements ITankControlle
       ON open_tasks.batch_id = tank_open_batch.batch_id
     )`;
     try {
+      await this.connect();
       const results = await this.client.query(query);
       res.status(200).json(results.rows);
-    } catch (e) {
-      res.status(500).json(e);
+    } catch (err) {
+      res.json(Boom.badImplementation(err));
     }
+    await this.disconnect();
   }
 
   // POST
   async createTank(req: Request, res: Response) {
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
+      await this.connect();
       const { rows } = await this.create(keys, escapes, values);
       res.status(201).json(rows[0]);
-    } catch (e) {
-      res.status(400).json(e);
+    } catch (err) {
+      res.json(Boom.badRequest(err));
     }
+    await this.disconnect();
   }
 
   // PUT/PATCH
   async updateTank(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
-      res.status(400).json({ err: 'Request does not match valid form' });
+      res.json(Boom.badRequest('Request does not match valid form'));
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
       values.push(req.params.id); // add last escaped value for where clause
-
-      const { rows } = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
-      if (rows.length > 0) {
-        res.json(rows);
-      } else {
-        next();
+      try {
+        const { rows } = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
+        if (rows.length > 0) {
+          res.json(rows);
+        } else {
+          next();
+        }
+      } catch (err) {
+        res.json(Boom.badImplementation(err));
       }
     }
   }
@@ -116,14 +125,16 @@ export class TankController extends PostgresController implements ITankControlle
   // DELETE
   async deleteTank(req: Request, res: Response, next: NextFunction) {
     try {
+      await this.connect();
       const { rows } = await this.deleteById(req.params.id);
       if (rows.length > 0) {
         res.status(200).json(rows);
       } else {
         next();
       }
-    } catch (e) {
-      res.status(500).json(e);
+    } catch (err) {
+      res.json(Boom.badImplementation(err));
     }
+    await this.disconnect();
   }
 }

@@ -13,29 +13,22 @@ export function routes(tableName: any) {
   const controller: TankController = new TankController(tableName);
   const router = Router();
 
-  if (process.env.NODE_ENV !== 'test') {
-    controller
-      .connect()
-      .then(() => console.log('Tanks route connected to database'))
-      .catch(e => console.log('Error! Connection refused', e));
-  }
-
   // tslint:disable-next-line: no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
   // GET
-  router.get('/', controller.getTanks);
-  router.get('/id/:id', controller.getTank);
-  router.get('/monitoring', controller.getTankMonitoring);
+  router.get('/', async (req, res) => controller.getTanks(req, res));
+  router.get('/id/:id', async (req, res, next) => controller.getTank(req, res, next));
+  router.get('/monitoring', async (req, res, next) => controller.getTankMonitoring(req, res, next));
 
   // POST
-  router.post('/', validate(TankValidator.createTank), controller.createTank);
+  router.post('/', validate(TankValidator.createTank), async (req, res) => controller.createTank(req, res));
 
   // PUT
-  router.patch('/id/:id', validate(TankValidator.updateTank), controller.updateTank);
+  router.patch('/id/:id', validate(TankValidator.updateTank), async (req, res, next) => controller.updateTank(req, res, next));
 
   // DELETE
-  router.delete('/id/:id', requireAuthentication, controller.deleteTank);
+  router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteTank(req, res, next));
 
   router.use('*', (req, res) =>
     res.status(400).json({

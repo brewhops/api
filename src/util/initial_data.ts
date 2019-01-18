@@ -38,16 +38,13 @@ async function insertDevAdmin() {
       // Existing user
       console.log(' ✔️ Test admin exists.');
     }
-  } catch(e) {
+  } catch (e) {
     console.log(' x Error inserting test admin user.', e);
   }
-
 }
 
 export async function insertDevelopmentData() {
-
   console.log('Inserting development data...');
 
   await insertDevAdmin();
-
 }

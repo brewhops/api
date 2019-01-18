@@ -39,7 +39,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       res.status(200).json(rows);
       await this.disconnect();
     } catch (err) {
-      res.status(500).json(err);
+      res.json(Boom.badImplementation(err));
     }
   }
 
@@ -50,7 +50,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       res.status(200).json(rows);
       await this.disconnect();
     } catch(err) {
-      res.status(400).json(err);
+      res.json(Boom.badRequest(err));
     }
   }
 
@@ -72,7 +72,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
         res.status(201).json(rows[0]);
       }
     } catch (err) {
-      res.status(500).json(err);
+      res.json(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -83,7 +83,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       await this.connect();
       const prevUser = await this.readByUsername(username);
       if (prevUser.rows.length === 0) {
-        res.status(401).json(Boom.badRequest('Not authorized'));
+        res.json(Boom.unauthorized('Not authorized'));
       } else {
         const userID = prevUser.rows[0].id;
         const match = bcrypt.compareSync(password, prevUser.rows[0].password);
@@ -94,11 +94,11 @@ export class EmployeeController extends PostgresController implements IEmployeeC
             userID
           });
         } else {
-          res.status(400).json(Boom.badRequest('Incorrect password'));
+          res.json(Boom.badRequest('Incorrect password'));
         }
       }
     } catch (err) {
-      res.status(500).json(err);
+      res.json(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -118,7 +118,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
         res.json(results.rows);
       }
     } catch (err) {
-      res.json(Boom.serverUnavailable(err));
+      res.json(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -135,7 +135,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
         res.json(results.rows);
       }
     } catch (err) {
-      res.json(Boom.serverUnavailable(err));
+      res.json(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
