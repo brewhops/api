@@ -6,18 +6,9 @@ const validate = require('express-validation');
 
 // tslint:disable:no-any no-unsafe-any
 
-export async function routes(tableName: string) {
-  const controller: RecipeLogic = new RecipeLogic(tableName);
+export function routes() {
+  const controller: RecipeLogic = new RecipeLogic('recipes');
   const router: Router = Router();
-
-  if (process.env.NODE_ENV !== 'test') {
-    try {
-      await controller.connect();
-    } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.error(error);
-    }
-  }
 
   // tslint:disable-next-line:no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next()); // init

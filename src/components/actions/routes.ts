@@ -6,19 +6,9 @@ const validate = require('express-validation');
 
 // tslint:disable:no-any no-unsafe-any
 
-export async function routes(tableName: string) {
+export function routes(tableName: string) {
   const controller = new ActionController(tableName);
   const router = Router();
-
-  // we want to connect to the DB automatically if we are not testing
-  if (process.env.NODE_ENV !== 'test') {
-    try {
-      await controller.connect();
-    } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.error('Error! Connection refused', e);
-    }
-  }
 
   // tslint:disable-next-line:no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next()); // init

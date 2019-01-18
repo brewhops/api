@@ -9,8 +9,8 @@ import { requireAuthentication } from './../../middleware/auth';
 const validate = require('express-validation');
 
 // tslint:disable-next-line:no-any
-export function routes(tableName: any) {
-  const controller: TankController = new TankController(tableName);
+export function routes() {
+  const controller: TankController = new TankController('tanks');
   const router = Router();
 
   // tslint:disable-next-line: no-void-expression

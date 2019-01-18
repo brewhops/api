@@ -7,18 +7,9 @@ const validate = require('express-validation');
 
 // tslint:disable:no-any no-unsafe-any
 
-export async function routes(tableName: string) {
-  const controller = new BatchesLogic(tableName);
+export function routes() {
+  const controller = new BatchesLogic('batches');
   const router = Router();
-
-  if (process.env.NODE_ENV !== 'test') {
-    try {
-      await controller.connect();
-    } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.error(error);
-    }
-  }
 
   // tslint:disable-next-line:no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next());

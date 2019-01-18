@@ -26,10 +26,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 }); // error handler for validator
 
 app.use('/employees', EmployeesRoutes());
-app.use('/tanks', TanksRoutes);
-app.use('/actions', ActionsRoutes);
-app.use('/recipes', RecipesRoutes);
-app.use('/batches', BatchesRoutes);
+app.use('/tanks', TanksRoutes());
+app.use('/actions', ActionsRoutes());
+app.use('/recipes', RecipesRoutes());
+app.use('/batches', BatchesRoutes());
 
 if (process.env.NODE_ENV === 'development') {
   app.post('/init', async (req: Request, res: Response) => {
