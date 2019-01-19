@@ -21,7 +21,7 @@ export function routes(): Router {
   router.get('/id/:id', requireAuthentication, async (req, res, next) => controller.getEmployee(req, res, next));
 
   // [POST] section
-  router.post('/', validate(EmployeeValidator.createEmployee), async (req, res, next) => controller.createEmployee(req, res, next));
+  router.post('/', validate(EmployeeValidator.createEmployee), requireAuthentication, async (req, res, next) => controller.createEmployee(req, res, next));
   router.post('/login', validate(EmployeeValidator.login), async (req, res, next) => controller.login(req, res, next));
 
   // [PATCH] section
