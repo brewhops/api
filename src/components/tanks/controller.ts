@@ -12,41 +12,55 @@ export interface ITankController extends ICrudController {
   getTankMonitoring: RequestHandler;
   createTank: RequestHandler;
   updateTank: RequestHandler;
-  deleteTank: RequestHandlerParams;
+  deleteTank: RequestHandler;
 }
 
 /**
- * Logic for tanks
+ * Controller class for the tanks route
  * @export
- * @class tankLogic
- * @extends {postgres}
+ * @class TankController
+ * @extends {PostgresController}
+ * @implements {ITankController}
  */
 export class TankController extends PostgresController implements ITankController {
   constructor(tableName: any) {
     super(tableName);
   }
 
-  // GET
+  /**
+   * Returns an array of tanks
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof TankController
+   */
   async getTanks(req: Request, res: Response) {
     try {
       await this.connect();
-      const { rows } = await this.read();
-      res.json(rows);
+      const { rows } = await this.read('*', '$1', [true]);
+      res.status(200).json(rows);
     } catch (err) {
       res.send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
 
+  /**
+   * Returns a single tank by id
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof TankController
+   */
   async getTank(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
     try {
       await this.connect();
       // get the tank by that ID
-      const { rows } = await this.readById(req.params.id);
+      const { rows } = await this.readById(id);
       // if it returns at least one tank
       if (rows.length > 0) {
         // return that tank
-        res.json(rows[0]);
+        res.status(200).json(rows[0]);
       } else {
         // let the user know that tank does not exist
         next();
@@ -57,6 +71,13 @@ export class TankController extends PostgresController implements ITankControlle
     await this.disconnect();
   }
 
+  /**
+   * Returns the last measurment and action for a tank by id
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof TankController
+   */
   async getTankMonitoring(req: Request, res: Response, next: NextFunction) {
     /* get most recent:
      * tank number
@@ -88,7 +109,12 @@ export class TankController extends PostgresController implements ITankControlle
     await this.disconnect();
   }
 
-  // POST
+  /**
+   * Creates a new tank
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof TankController
+   */
   async createTank(req: Request, res: Response) {
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
@@ -101,34 +127,50 @@ export class TankController extends PostgresController implements ITankControlle
     await this.disconnect();
   }
 
-  // PUT/PATCH
+  /**
+   * Updates a tank
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof TankController
+   */
   async updateTank(req: Request, res: Response, next: NextFunction) {
+    const {id} = req.params;
     if (is.empty(req.body)) {
       res.send(Boom.badRequest('Request does not match valid form'));
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
-      values.push(req.params.id); // add last escaped value for where clause
+      values.push(id); // add last escaped value for where clause
       try {
-        const { rows } = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
+        await this.connect();
+        const { rows } = await this.update(query, `id = $${idx}`, values); // eslint-disable-line
         if (rows.length > 0) {
-          res.json(rows);
+          res.status(200).json(rows);
         } else {
           next();
         }
       } catch (err) {
         res.send(Boom.badImplementation(err));
       }
+      await this.disconnect();
     }
   }
 
-  // DELETE
+  /**
+   * Deletes a tank
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof TankController
+   */
   async deleteTank(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
     try {
       await this.connect();
-      const { rows } = await this.deleteById(req.params.id);
-      if (rows.length > 0) {
-        res.status(200).json(rows);
+      const { rowCount } = await this.deleteById(id);
+      if (rowCount > 0) {
+        res.status(200).json(`Successfully deleted tank (id=${id})`);
       } else {
         next();
       }
