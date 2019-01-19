@@ -35,7 +35,7 @@ export class PostgresController extends CrudController implements IPostgresContr
    * @returns
    * @memberof PostgresController
    */
-  splitObjectKeyVals(obj: { [index: string]: string }): KeyValueResult {
+  splitObjectKeyVals(obj: { [index: string]: any }): KeyValueResult {
     const keys = [];
     const values = [];
     const escapes = [];

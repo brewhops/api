@@ -150,7 +150,7 @@ export class CrudController implements ICrudController {
    */
   async readById(escaped: any): Promise<QueryResult> {
     return this.client.query(
-      `SELECT id, first_name, last_name, username, phone, admin FROM ${this.table} WHERE id = $1`,
+      `SELECT * FROM ${this.table} WHERE id = $1`,
       [escaped]
     );
   }
