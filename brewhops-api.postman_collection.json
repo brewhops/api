@@ -143,7 +143,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"first_name\": \"Darth\",\n    \"last_name\": \"Vader\",\n    \"username\": \"general_user\",\n    \"password\": \"somePASSword\",\n    \"phone\": \"1234567890\",\n    \"admin\": false\n}"
+							"raw": "{\n    \"first_name\": \"Darth\",\n    \"last_name\": \"Vader\",\n    \"username\": \"general_user\",\n    \"password\": \"somePASSword\",\n    \"phone\": \"123-456-7890\",\n    \"admin\": false\n}"
 						},
 						"url": {
 							"raw": "{{api-domain}}/employees/",
@@ -172,20 +172,27 @@
 							]
 						},
 						"method": "PATCH",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "    {\n        \"first_name\": \"Mace\",\n        \"last_name\": \"Windu\",\n        \"username\": \"jediMaster123\",\n        \"phone\": \"123-456-7890\",\n        \"admin\": false\n    }"
 						},
 						"url": {
-							"raw": "{{api-domain}}/employees/id/{{employee-id}}",
+							"raw": "{{api-domain}}/employees/id/2",
 							"host": [
 								"{{api-domain}}"
 							],
 							"path": [
 								"employees",
 								"id",
-								"{{employee-id}}"
+								"2"
 							]
 						}
 					},
@@ -211,14 +218,14 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{api-domain}}/employees/id/{{employee-id}}",
+							"raw": "{{api-domain}}/employees/id/2",
 							"host": [
 								"{{api-domain}}"
 							],
 							"path": [
 								"employees",
 								"id",
-								"{{employee-id}}"
+								"2"
 							]
 						}
 					},
@@ -230,7 +237,7 @@
 			"name": "Tanks Routes",
 			"item": [
 				{
-					"name": "tanks",
+					"name": "/ (get all tanks)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -239,14 +246,166 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{api-domain}}/tanks",
+							"raw": "{{api-domain}}/tanks/",
 							"host": [
 								"{{api-domain}}"
 							],
 							"path": [
-								"tanks"
+								"tanks",
+								""
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (get tank by id)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/tanks/id/{{tank-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tanks",
+								"id",
+								"{{tank-id}}"
+							]
+						},
+						"description": "Gets a tank by it's id"
+					},
+					"response": []
+				},
+				{
+					"name": "/monitoring",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/tanks/monitoring",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tanks",
+								"monitoring"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ (create a tank)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Tank 1\",\n\t\"status\": \"status\",\n\t\"in_use\": false\n}"
+						},
+						"url": {
+							"raw": "{{api-domain}}/tanks/",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tanks",
+								""
+							]
+						},
+						"description": "Creates a tank"
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (update tank)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n \n        \"name\": \"Tank 3\",\n        \"status\": \"status\",\n        \"in_use\": false\n    }"
+						},
+						"url": {
+							"raw": "{{api-domain}}/tanks/id/{{tank-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tanks",
+								"id",
+								"{{tank-id}}"
+							]
+						},
+						"description": "Updates tank information"
+					},
+					"response": []
+				},
+				{
+					"name": "id/:id (delete by id)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/tanks/id/{{tank-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tanks",
+								"id",
+								"{{tank-id}}"
+							]
+						},
+						"description": "Deletes an existing tank by id"
 					},
 					"response": []
 				}
@@ -256,7 +415,7 @@
 			"name": "Actions Routes",
 			"item": [
 				{
-					"name": "actions",
+					"name": "/ (get actions)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -275,6 +434,145 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/id/:id (get action by id)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/actions/id/{{action-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"actions",
+								"id",
+								"{{action-id}}"
+							]
+						},
+						"description": "Gets a specific action by it's id"
+					},
+					"response": []
+				},
+				{
+					"name": "/ (create action)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Dry Hop\",\n\t\"description\": \"Put some dry hops into the tank\"\n}"
+						},
+						"url": {
+							"raw": "{{api-domain}}/actions/",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"actions",
+								""
+							]
+						},
+						"description": "Creates a new action"
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (update action)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Dry Hop\",\n\t\"description\": \"Put VERY dry hops into the tank\"\n}"
+						},
+						"url": {
+							"raw": "{{api-domain}}/actions/id/{{action-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"actions",
+								"id",
+								"{{action-id}}"
+							]
+						},
+						"description": "Update an existing action"
+					},
+					"response": []
+				},
+				{
+					"name": "id/:id (delete by id)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/actions/id/{{action-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"actions",
+								"id",
+								"{{action-id}}"
+							]
+						},
+						"description": "deletes and existing action from the db by id"
+					},
+					"response": []
 				}
 			]
 		},
@@ -282,7 +580,7 @@
 			"name": "Recipes Routes",
 			"item": [
 				{
-					"name": "recipes",
+					"name": "/ (get recipes)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -298,6 +596,145 @@
 							"path": [
 								"recipes"
 							]
+						},
+						"description": "Returns all available recipes"
+					},
+					"response": []
+				},
+				{
+					"name": "id/:id (get recipe by id)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/recipes/id/{{recipe-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"recipes",
+								"id",
+								"{{recipe-id}}"
+							]
+						},
+						"description": "Returns a recipe by it's id"
+					},
+					"response": []
+				},
+				{
+					"name": "/ (create recipe)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Total Domination IPA\",\r\n  \"airplane_code\": \"TDI\",\r\n  \"yeast\": 12,\r\n  \"instructions\": \"{\\\"directions\\\": \\\"Use the yeast, the water and some hops and brew it nicely.\\\"}\"\r\n}"
+						},
+						"url": {
+							"raw": "{{api-domain}}/recipes/",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"recipes",
+								""
+							]
+						},
+						"description": "Creates a new recipe"
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (update recipe)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Tricerahops\",\r\n  \"airplane_code\": \"TRI\",\r\n  \"yeast\": 19,\r\n  \"instructions\": \"{\\\"directions\\\": \\\"Use the yeast, the water and some hops and brew it pretty well.\\\"}\"\r\n}"
+						},
+						"url": {
+							"raw": "{{api-domain}}/recipes/id/{{recipe-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"recipes",
+								"id",
+								"{{recipe-id}}"
+							]
+						},
+						"description": "updates an existing recipe"
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (delete by id)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/recipes/id/{{reciipe-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"recipes",
+								"id",
+								"{{reciipe-id}}"
+							]
 						}
 					},
 					"response": []
@@ -308,7 +745,7 @@
 			"name": "Batches Routes",
 			"item": [
 				{
-					"name": "batches",
+					"name": "/ (get batches)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -327,11 +764,161 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/id/:id (get batch by id)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/batches/id/{{batch-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"batches",
+								"id",
+								"{{batch-id}}"
+							]
+						},
+						"description": "Returns a specific batch by it's id"
+					},
+					"response": []
+				},
+				{
+					"name": "/history/id/:id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/batches/history/id/{{batch-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"batches",
+								"history",
+								"id",
+								"{{batch-id}}"
+							]
+						},
+						"description": "Gets the history of a batch by id"
+					},
+					"response": []
+				},
+				{
+					"name": "/ (create batch)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/batches/",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"batches",
+								""
+							]
+						},
+						"description": "Creates a new batch"
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (update batch)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/batches/id/{{batch-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"batches",
+								"id",
+								"{{batch-id}}"
+							]
+						},
+						"description": "Updates an existing batch by id"
+					},
+					"response": []
+				},
+				{
+					"name": "/id/:id (delete by id)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/batches/id/{{batch-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"batches",
+								"id",
+								"{{batch-id}}"
+							]
+						},
+						"description": "Deletes and existing batch by id"
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"name": "init",
+			"name": "Initialize Data",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -377,21 +964,39 @@
 	],
 	"variable": [
 		{
-			"id": "133a9409-8576-4648-8308-f6b1ecd6924f",
+			"id": "3dfbdf3d-7d2f-409a-8261-fea809fcf089",
 			"key": "api-domain",
 			"value": "http://localhost:3000",
 			"type": "string"
 		},
 		{
-			"id": "fd5bde39-3a4a-4011-bad8-95cd0fceff26",
+			"id": "4179ff86-5a66-404c-a9d7-8c3d74bfbb06",
 			"key": "employee-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "2e5aca1c-4419-48ab-abd4-eee58ddad77e",
-			"key": "auth-token",
-			"value": "",
+			"id": "d1187804-0778-45c2-aa54-0538dfd75378",
+			"key": "tank-id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"id": "17bf9c70-3877-41c0-9b09-2472ed35a7e8",
+			"key": "action-id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"id": "1a673f2e-9054-487d-aba8-e77a61161838",
+			"key": "recipe-id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"id": "f92c33c0-d592-457c-979a-2f1d73c6ec8e",
+			"key": "batch-id",
+			"value": "1",
 			"type": "string"
 		}
 	]
