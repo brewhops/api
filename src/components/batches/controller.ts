@@ -33,7 +33,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
   async getBatches(req: Request, res: Response) {
     try {
       await this.connect();
-      const { rows } = await this.read();
+      const { rows } = await this.read('*', '$1', [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.send(Boom.badImplementation(err));
