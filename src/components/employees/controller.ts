@@ -17,6 +17,7 @@ export interface IEmployeeController extends IPostgresController {
   login: RequestHandler;
   updateEmployee: RequestHandler;
   deleteEmployee: RequestHandler;
+  isAdmin: (id: string) => Promise<boolean>;
 }
 
 
@@ -139,11 +140,16 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       const { query, idx } = this.buildUpdateString(keys);
       values.push(req.params.id); // add last escaped value for where clause
       const { rows } = await this.readById(req.params.id);
-      if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
-        res.json(Boom.badRequest('Not Authorized'));
+
+      if(rows.length > 0 ) {
+        if(await this.isAdmin(req.user) && !userMatchAuthToken(req.user, rows[0].username)) {
+          const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
+          res.status(200).json(results.rows);
+        } else {
+          res.send(Boom.unauthorized('Not authorized.'));
+        }
       } else {
-        const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
-        res.json(results.rows);
+        res.send(Boom.badImplementation(`User down not exist`));
       }
     } catch (err) {
       res.json(Boom.badImplementation(err));
@@ -161,15 +167,31 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     try {
       await this.connect();
       const { rows } = await this.readById(req.params.id);
-      if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
-        res.json(Boom.badRequest('Not Authorized'));
+      if(rows.length > 0 ) {
+        if(await this.isAdmin(req.user) && !userMatchAuthToken(req.user, rows[0].username)) {
+          const results = await this.deleteById(req.params.id);
+          res.json(results.rows);
+        } else {
+          res.send(Boom.unauthorized('Not authorized.'));
+        }
       } else {
-        const results = await this.deleteById(req.params.id);
-        res.json(results.rows);
+        res.send(Boom.badImplementation(`User down not exist`));
       }
     } catch (err) {
       res.json(Boom.badImplementation(err));
     }
     await this.disconnect();
+  }
+
+  async isAdmin(username: string) {
+    let isAdmin: boolean = false;
+    try {
+      const { rows } = await this.readByUsername(username);
+      isAdmin = rows[0].admin;
+    } catch (err) {
+      throw err;
+    }
+
+    return isAdmin;
   }
 }
