@@ -34,7 +34,7 @@ export class ActionController extends PostgresController implements IActionContr
     try {
       await this.connect();
       const { rows } = await this.read();
-      res.json(rows);
+      res.status(200).json(rows);
     } catch (err) {
       res.send(Boom.badImplementation(err));
     }
@@ -52,7 +52,7 @@ export class ActionController extends PostgresController implements IActionContr
       await this.connect();
       const { rows } = await this.readById(req.params.id);
       if (rows.length > 0) {
-        res.json(rows[0]);
+        res.status(200).json(rows[0]);
       } else {
         next();
       }
