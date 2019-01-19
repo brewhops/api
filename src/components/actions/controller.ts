@@ -33,7 +33,7 @@ export class ActionController extends PostgresController implements IActionContr
   async getActions(req: Request, res: Response) {
     try {
       await this.connect();
-      const { rows } = await this.read();
+      const { rows } = await this.read('*', '$1', [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.send(Boom.badImplementation(err));
@@ -70,6 +70,7 @@ export class ActionController extends PostgresController implements IActionContr
   async createAction(req: Request, res: Response) {
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
+      await this.connect();
       const { rows } = await this.create(keys, escapes, values);
       res.status(201).json(rows[0]);
     } catch (err) {
