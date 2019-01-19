@@ -19,7 +19,7 @@ async function insertDevAdmin() {
     first_name: 'General',
     last_name: 'Kenobi',
     username: 'admin',
-    phone: '5555555555',
+    phone: '555-867-5309',
     admin: true,
     password: 'password'
   };

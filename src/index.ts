@@ -7,6 +7,7 @@ import { routes as ActionsRoutes } from './components/actions/routes';
 import { routes as RecipesRoutes } from './components/recipes/routes';
 import { routes as BatchesRoutes } from './components/batches/routes';
 import { insertDevelopmentData } from './util/initial_data';
+import Boom from 'boom';
 
 // tslint:disable:no-any no-unsafe-any
 dotenv.config();
@@ -19,11 +20,7 @@ const app = e();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  // tslint:disable-next-line:no-console
-  console.log(err);
-  res.status(400).json(err);
-}); // error handler for validator
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => res.json(Boom.badRequest(err.message)));
 
 app.use('/employees', EmployeesRoutes());
 app.use('/tanks', TanksRoutes());
@@ -37,7 +34,7 @@ if (process.env.NODE_ENV === 'development') {
       await insertDevelopmentData();
       res.status(200).send('success');
     } catch (error) {
-      res.status(500).send('failed');
+      res.send(Boom.badImplementation('failed'));
     }
   });
 }
