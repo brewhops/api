@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express';
 import { ActionController, IActionController } from './controller';
 import Boom from 'boom';
 import { ActionValidator } from './validator';
+import { requireAuthentication } from '../../middleware/auth';
 // tslint:disable-next-line:no-var-requires no-require-imports
 const validate = require('express-validation');
 
@@ -24,13 +25,13 @@ export function routes(): Router {
   router.get('/id/:id', async (req, res, next) => controller.getAction(req, res, next));
 
   // [POST] section
-  router.post('/', validate(ActionValidator.createAction), async (req, res, next) => controller.createAction(req, res, next));
+  router.post('/', validate(ActionValidator.createAction), requireAuthentication, async (req, res, next) => controller.createAction(req, res, next));
 
   // [PATCH] section
-  router.patch('/id/:id', validate(ActionValidator.updateAction), async (req, res, next) => controller.updateAction(req, res, next));
+  router.patch('/id/:id', validate(ActionValidator.updateAction), requireAuthentication, async (req, res, next) => controller.updateAction(req, res, next));
 
   // [DELETE] section
-  router.delete('/id/:id', async (req, res, next) => controller.deleteAction(req, res, next));
+  router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteAction(req, res, next));
 
   router.use('*', (req: Request, res: Response) => res.send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
 
