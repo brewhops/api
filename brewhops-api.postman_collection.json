@@ -726,14 +726,14 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{api-domain}}/recipes/id/{{reciipe-id}}",
+							"raw": "{{api-domain}}/recipes/id/{{recipe-id}}",
 							"host": [
 								"{{api-domain}}"
 							],
 							"path": [
 								"recipes",
 								"id",
-								"{{reciipe-id}}"
+								"{{recipe-id}}"
 							]
 						}
 					},
@@ -964,37 +964,37 @@
 	],
 	"variable": [
 		{
-			"id": "3dfbdf3d-7d2f-409a-8261-fea809fcf089",
+			"id": "2c0f29df-8b5b-47cc-90e9-6807eb49fb8b",
 			"key": "api-domain",
 			"value": "http://localhost:3000",
 			"type": "string"
 		},
 		{
-			"id": "4179ff86-5a66-404c-a9d7-8c3d74bfbb06",
+			"id": "7de947d3-45e8-42dd-a7bd-6ec78b6b69d6",
 			"key": "employee-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "d1187804-0778-45c2-aa54-0538dfd75378",
+			"id": "ff821e41-2b12-4d90-9c36-7e9da30a4d1d",
 			"key": "tank-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "17bf9c70-3877-41c0-9b09-2472ed35a7e8",
+			"id": "3a83480b-1aad-41c3-8030-5b30cefa18f7",
 			"key": "action-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "1a673f2e-9054-487d-aba8-e77a61161838",
+			"id": "f728c2bc-a5a5-4c3a-b2a0-dfaea7371ae3",
 			"key": "recipe-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "f92c33c0-d592-457c-979a-2f1d73c6ec8e",
+			"id": "f1e21fd8-cd73-43bf-8aff-e55d933b49de",
 			"key": "batch-id",
 			"value": "1",
 			"type": "string"
