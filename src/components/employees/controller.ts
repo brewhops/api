@@ -1,4 +1,4 @@
-import { PostgresController, IPg } from '../../dal/postgres';
+import { PostgresController, IPostgresController } from '../../dal/postgres';
 import { Request, Response, RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import Boom from 'boom';
@@ -10,29 +10,35 @@ const saltRounds = 8;
 const safeUserData = 'id, first_name, last_name, username, phone, admin';
 
 // tslint:disable:no-any no-unsafe-any
-interface IEmployeeController extends IPg {
-  getUsers: RequestHandler;
-  getUser: RequestHandler;
-  createUser: RequestHandler;
+export interface IEmployeeController extends IPostgresController {
+  getEmployees: RequestHandler;
+  getEmployee: RequestHandler;
+  createEmployee: RequestHandler;
   login: RequestHandler;
-  updateUser: RequestHandler;
-  deleteUser: RequestHandler;
+  updateEmployee: RequestHandler;
+  deleteEmployee: RequestHandler;
 }
 
 
 /**
  * Class that defined the logic for the 'user' route
  * @export
- * @class UserLogic
+ * @class EmployeeController
  * @extends {PostgresController}
+ * @implements {IEmployeeController}
  */
 export class EmployeeController extends PostgresController implements IEmployeeController {
   constructor(tableName: string) {
     super(tableName);
   }
 
-  // GET
-  async getUsers(req: Request, res: Response) {
+  /**
+   * Returns an array of users
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof EmployeeController
+   */
+  async getEmployees(req: Request, res: Response) {
     try {
       await this.connect();
       const { rows } = await this.read(safeUserData, '$1', [true]);
@@ -43,7 +49,13 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     }
   }
 
-  async getUser(req: Request, res: Response) {
+  /**
+   * Returns a user by id
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof EmployeeController
+   */
+  async getEmployee(req: Request, res: Response) {
     try {
       await this.connect();
       const { rows } = await this.readById(req.params.id);
@@ -54,8 +66,13 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     }
   }
 
-  // POST
-  async createUser(req: Request, res: Response) {
+  /**
+   * Creates a new employee.
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof EmployeeController
+   */
+  async createEmployee(req: Request, res: Response) {
     const { username, password: pw } = req.body;
     try {
       await this.connect();
@@ -77,6 +94,12 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     await this.disconnect();
   }
 
+  /**
+   * Verifies an employee in the database and returns an authentication token for that user.
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof EmployeeController
+   */
   async login(req: Request, res: Response) {
     const { username, password } = req.body;
     try {
@@ -103,8 +126,13 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     await this.disconnect();
   }
 
-  // PATCH/PUT
-  async updateUser(req: Request, res: Response) {
+  /**
+   * Updates an employee's information.
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof EmployeeController
+   */
+  async updateEmployee(req: Request, res: Response) {
     try {
       await this.connect();
       const { keys, values } = this.splitObjectKeyVals(req.body);
@@ -123,8 +151,13 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     await this.disconnect();
   }
 
-  // DELETE
-  async deleteUser(req: Request, res: Response) {
+  /**
+   * Removes an employee from the database.
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof EmployeeController
+   */
+  async deleteEmployee(req: Request, res: Response) {
     try {
       await this.connect();
       const { rows } = await this.readById(req.params.id);
