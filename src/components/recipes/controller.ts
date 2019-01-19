@@ -1,47 +1,60 @@
-import { PostgresController } from '../../dal/postgres';
-import { Request, Response, NextFunction } from 'express';
+import { PostgresController, IPostgresController } from '../../dal/postgres';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Boom from 'boom';
 import is from 'is';
 
 // tslint:disable:no-floating-promises no-any no-unsafe-any
 
-export interface IRecipeController {
-  getRecipes: () => Promise<void>;
-  getRecipe: () => Promise<void>;
-  createRecipe: () => Promise<void>;
-  updateRecipe: () => Promise<void>;
-  deleteRecipe: () => Promise<void>;
+export interface IRecipeController extends IPostgresController {
+  getRecipes: RequestHandler;
+  getRecipe: RequestHandler;
+  createRecipe: RequestHandler;
+  updateRecipe: RequestHandler;
+  deleteRecipe: RequestHandler;
 }
 
 /**
- * Logic for recipes
+ * Controller class for the recipes routes
  * @export
  * @class RecipeController
  * @extends {PostgresController}
+ * @implements {IRecipeController}
  */
-export class RecipeController extends PostgresController {
+export class RecipeController extends PostgresController implements IRecipeController {
   constructor(tableName: string) {
     super(tableName);
   }
 
-  // GET
+  /**
+   * Returns an array of all recipes.
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof RecipeController
+   */
   async getRecipes(req: Request, res: Response) {
     try {
       await this.connect();
       const { rows } = await this.read();
-      res.json(rows);
+      res.status(200).json(rows);
     } catch (err) {
       res.send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
 
+  /**
+   * Returns a single recipe by id.
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof RecipeController
+   */
   async getRecipe(req: Request, res: Response, next: NextFunction) {
     try {
       await this.connect();
       const { rows } = await this.readById(req.params.id);
       if (rows.length > 0) {
-        res.json(rows[0]);
+        res.status(200).json(rows[0]);
       } else {
         next();
       }
@@ -51,7 +64,12 @@ export class RecipeController extends PostgresController {
     await this.disconnect();
   }
 
-  // POST
+  /**
+   * Creates a new recipe
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof RecipeController
+   */
   async createRecipe(req: Request, res: Response) {
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
@@ -63,7 +81,13 @@ export class RecipeController extends PostgresController {
     }
   }
 
-  // PATCH/PUT
+  /**
+   * Updates an existing recipe
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof RecipeController
+   */
   async updateRecipe(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
       res.send(Boom.badRequest('Request does not match valid form'));
@@ -76,7 +100,7 @@ export class RecipeController extends PostgresController {
         await this.connect();
         const { rows } = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
         if (rows.length > 0) {
-          res.json(rows[0]);
+          res.status(200).json(rows[0]);
         } else {
           next();
         }
@@ -87,18 +111,25 @@ export class RecipeController extends PostgresController {
     }
   }
 
-  // DELETE
+  /**
+   * Delets a recipe
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof RecipeController
+   */
   async deleteRecipe(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
     try {
       await this.connect();
-      const response = await this.deleteById(req.params.id);
+      const response = await this.deleteById(id);
       if (response.rowCount > 0) {
-        res.status(200).json();
+        res.status(200).json(`Successfully deleted recipe (id=${id})`);
       } else {
         next();
       }
-    } catch (e) {
-      res.send(Boom.badImplementation(e));
+    } catch (err) {
+      res.send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
