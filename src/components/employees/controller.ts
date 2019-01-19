@@ -183,6 +183,12 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     await this.disconnect();
   }
 
+  /**
+   * Determines whether the surrent user is an administrator.
+   * @param {string} username
+   * @returns
+   * @memberof EmployeeController
+   */
   async isAdmin(username: string) {
     let isAdmin: boolean = false;
     try {
