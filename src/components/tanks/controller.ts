@@ -1,12 +1,10 @@
-import { PostgresController } from '../../dal/postgres';
+import { PostgresController, IPostgresController } from '../../dal/postgres';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import is from 'is';
-import { RequestHandlerParams } from 'express-serve-static-core';
-import { ICrudController } from '../../dal/crud';
 import Boom from 'boom';
 
 // tslint:disable:no-any no-unsafe-any
-export interface ITankController extends ICrudController {
+export interface ITankController extends IPostgresController {
   getTanks: RequestHandler;
   getTank: RequestHandler;
   getTankMonitoring: RequestHandler;
