@@ -23,10 +23,10 @@ export function routes(): Router {
   router.get('/monitoring', async (req, res, next) => controller.getTankMonitoring(req, res, next));
 
   // POST
-  router.post('/', validate(TankValidator.createTank), async (req, res, next) => controller.createTank(req, res, next));
+  router.post('/', validate(TankValidator.createTank), requireAuthentication, async (req, res, next) => controller.createTank(req, res, next));
 
   // PUT
-  router.patch('/id/:id', validate(TankValidator.updateTank), async (req, res, next) => controller.updateTank(req, res, next));
+  router.patch('/id/:id', validate(TankValidator.updateTank), requireAuthentication, async (req, res, next) => controller.updateTank(req, res, next));
 
   // DELETE
   router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteTank(req, res, next));
