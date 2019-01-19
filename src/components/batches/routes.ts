@@ -2,6 +2,7 @@ import e, { Router, Request, Response, NextFunction } from 'express';
 import { BatchesController, IBatchesController } from './controller';
 import { BatchesValidator } from './validator';
 import Boom from 'boom';
+import { requireAuthentication } from '../../middleware/auth';
 // tslint:disable-next-line:no-var-requires no-require-imports
 const validate = require('express-validation');
 
@@ -20,13 +21,13 @@ export function routes(): Router {
   router.get('/history/id/:id', async (req, res, next) => controller.getBatchHistory(req, res, next));
 
   // [POST] section
-  router.post('/', validate(BatchesValidator.createBatch), async (req, res, next) => controller.createBatch(req, res, next));
+  router.post('/', validate(BatchesValidator.createBatch), requireAuthentication, async (req, res, next) => controller.createBatch(req, res, next));
 
   // [PATCH] section
-  router.patch('/id/:id', validate(BatchesValidator.updateBatch), async (req, res, next) => controller.updateBatch(req, res, next));
+  router.patch('/id/:id', validate(BatchesValidator.updateBatch), requireAuthentication, async (req, res, next) => controller.updateBatch(req, res, next));
 
   // [DELETE] section
-  router.delete('/id/:id', async (req, res, next) => controller.deleteBatch(req, res, next));
+  router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteBatch(req, res, next));
 
   router.use('*', (req, res) =>
     res.send(Boom.notFound(`The route ${req.originalUrl} does not exist`))
