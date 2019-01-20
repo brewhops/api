@@ -9,6 +9,8 @@ import { BatchesController, IBatchesController } from '../components/batches/con
 import { IActionController, ActionController } from '../components/actions/controller';
 import { Action } from '../components/actions/types';
 import { Batch } from '../components/batches/types';
+import { RecipeController, IRecipeController } from '../components/recipes/controller';
+import { Recipe } from '../components/recipes/types';
 
 // tslint:disable: no-console no-unsafe-any
 
@@ -21,6 +23,7 @@ function encryptPassword(password: string, username: string) {
 
 async function insertDevAdmin() {
   const employeeController: IEmployeeController = new EmployeeController('employees');
+  await employeeController.connect();
 
   const user: Employee = {
     first_name: 'General',
@@ -47,10 +50,13 @@ async function insertDevAdmin() {
   } catch (e) {
     console.log(' x Error inserting test admin user.', e);
   }
+
+  await employeeController.disconnect();
 }
 
 async function insertTanks() {
   const tankController: ITankController = new TankController('tanks');
+  await tankController.connect();
 
   for (let i = 1; i < 10; i++) {
     const { rows }: QueryResult = await tankController.readById(i);
@@ -67,10 +73,13 @@ async function insertTanks() {
       console.log(`tank ${tank.name} exists.`);
     }
   }
+
+  await tankController.disconnect();
 }
 
 async function insertActions() {
-  const actionController: IActionController = new ActionController('tanks');
+  const actionController: IActionController = new ActionController('actions');
+  await actionController.connect();
 
   for (let i = 1; i < 10; i++) {
     const { rows }: QueryResult = await actionController.readById(i);
@@ -86,25 +95,34 @@ async function insertActions() {
       console.log(`tank ${action.name} exists.`);
     }
   }
+  await actionController.disconnect();
 }
 
 async function insertRecipes() {
-  const actionController: IActionController = new ActionController('tanks');
+  const recipeController: IRecipeController = new RecipeController('tanks');
+  await recipeController.connect();
 
   for (let i = 1; i < 10; i++) {
-    const { rows }: QueryResult = await actionController.readById(i);
-    const action: Action = {
-      name: `Action ${i}`,
-      description: `Description for action ${i}`
-    };
+    const { rows }: QueryResult = await recipeController.readById(i);
+    const recipe: Recipe = {
+      name: `Recipe ${i}`,
+      airplane_code: 'ABC',
+      yeast: 5,
+      instructions: {
+        directions: `brew the beer according to recipe ${i}`
+      }
+  };
     if(rows.length === 0) {
-      const { keys, values, escapes } = actionController.splitObjectKeyVals(action);
-      await actionController.create(keys, escapes, values);
-      console.log(`inserted action ${action.name}.`);
+      const { keys, values, escapes } = recipeController.splitObjectKeyVals(recipe);
+      await recipeController.create(keys, escapes, values);
+      console.log(`inserted recipe ${recipe.name}.`);
     } else {
-      console.log(`action ${action.name} exists.`);
+      console.log(`recipe ${recipe.name} exists.`);
     }
   }
+
+  await recipeController.disconnect();
+
 }
 
 // async function insertBatches() {
