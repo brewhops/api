@@ -1,7 +1,7 @@
-import { Crud, ICrud } from './CRUD';
+import { CrudController, ICrudController } from './crud';
 
 // tslint:disable:no-any no-unsafe-any
-export interface IPg extends ICrud {
+export interface IPostgresController extends ICrudController {
   splitObjectKeyVals: (obj: any) => any;
   buildQueryByID: (key: string, value: string) => string;
   buildUpdateString: (keys: any) => any;
@@ -14,12 +14,12 @@ export type KeyValueResult = {
 };
 
 /**
- * A further extension of the Crud class for some reason. Stay tuned...
+ * A further extension of the CrudController class for some reason. Stay tuned...
  * @export
- * @class Pg
- * @extends {Crud}
+ * @class PostgresController
+ * @extends {CrudController}
  */
-export class Pg extends Crud {
+export class PostgresController extends CrudController implements IPostgresController {
   private url: string;
 
   constructor(collName: string) {
@@ -33,14 +33,15 @@ export class Pg extends Crud {
    * Returns an object containing all of this info.
    * @param {*} obj
    * @returns
-   * @memberof Pg
+   * @memberof PostgresController
    */
-  splitObjectKeyVals(obj: any): KeyValueResult {
+  splitObjectKeyVals(obj: { [index: string]: any }): KeyValueResult {
     const keys = [];
     const values = [];
     const escapes = [];
     let idx = 1;
-    for (let key in obj) {
+    // tslint:disable-next-line: no-for-in forin
+    for (const key in obj) {
       keys.push(key.toString());
       values.push(obj[key].toString());
       escapes.push(`\$${idx}`); // eslint-disable-line
@@ -60,7 +61,7 @@ export class Pg extends Crud {
    * @param {string} key
    * @param {string} value
    * @returns
-   * @memberof Pg
+   * @memberof PostgresController
    */
   buildQueryByID(key: string, value: string): string {
     return `${key} = ${value}`;
@@ -71,7 +72,7 @@ export class Pg extends Crud {
    * @param {string} keys
    * @param {*} values
    * @returns {*}
-   * @memberof Pg
+   * @memberof PostgresController
    */
   buildUpdateString(keys: string[]): any {
     let query = ``;

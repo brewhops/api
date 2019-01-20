@@ -6,6 +6,9 @@ export interface IBatchesValidator {
   updateBatch: () => JOIResult;
 }
 
+/**
+ * Static validation class for the batches routes
+ */
 export const BatchesValidator: IBatchesValidator = {
   createBatch() {
     return {

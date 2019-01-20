@@ -2,6 +2,7 @@
 
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import Boom from 'boom';
 
 const secretKey = 'SuperSecret';
 
@@ -39,9 +40,7 @@ export function requireAuthentication(req: Request, res: Response, next: NextFun
       req.user = payload.sub;
       next();
     } else {
-      res.status(401).json({
-        error: 'Invalid authentication token'
-      });
+      res.send(Boom.unauthorized('Invalid authentication token'));
     }
   });
 }

@@ -6,6 +6,9 @@ export interface RecipeValidator {
   updateRecipe: () => JOIResult;
 }
 
+/**
+ * Static validation class for the recipes route
+ */
 export const RecipeValidator = {
   createRecipe() {
     return {

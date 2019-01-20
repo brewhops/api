@@ -1,7 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { TankController } from './logic';
+import { TankController, ITankController } from './controller';
 import { TankValidator } from './validator';
 import { requireAuthentication } from './../../middleware/auth';
+import Boom from 'boom';
 
 // tslint:disable:no-any no-unsafe-any no-console no-void-expression
 
@@ -9,39 +10,28 @@ import { requireAuthentication } from './../../middleware/auth';
 const validate = require('express-validation');
 
 // tslint:disable-next-line:no-any
-export function routes(tableName: any) {
-  const controller: TankController = new TankController(tableName);
+export function routes(): Router {
+  const controller: ITankController = new TankController('tanks');
   const router = Router();
-
-  if (process.env.NODE_ENV !== 'test') {
-    controller
-      .connect()
-      .then(() => console.log('Tanks route connected to database'))
-      .catch(e => console.log('Error! Connection refused', e));
-  }
 
   // tslint:disable-next-line: no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
   // GET
-  router.get('/', controller.getTanks);
-  router.get('/id/:id', controller.getTank);
-  router.get('/monitoring', controller.getTankMonitoring);
+  router.get('/', async (req, res, next) => controller.getTanks(req, res, next));
+  router.get('/id/:id', async (req, res, next) => controller.getTank(req, res, next));
+  router.get('/monitoring', async (req, res, next) => controller.getTankMonitoring(req, res, next));
 
   // POST
-  router.post('/', validate(TankValidator.createTank), controller.createTank);
+  router.post('/', validate(TankValidator.createTank), requireAuthentication, async (req, res, next) => controller.createTank(req, res, next));
 
   // PUT
-  router.patch('/id/:id', validate(TankValidator.updateTank), controller.updateTank);
+  router.patch('/id/:id', validate(TankValidator.updateTank), requireAuthentication, async (req, res, next) => controller.updateTank(req, res, next));
 
   // DELETE
-  router.delete('/id/:id', requireAuthentication, controller.deleteTank);
+  router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteTank(req, res, next));
 
-  router.use('*', (req, res) =>
-    res.status(400).json({
-      err: `${req.originalUrl} doesn't exist`
-    })
-  );
+  router.use('*', (req, res) => res.send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
 
   return router;
 }

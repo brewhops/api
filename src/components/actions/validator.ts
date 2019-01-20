@@ -7,7 +7,7 @@ export interface IActionValidator {
 }
 
 /**
- * Validation class for the 'actions' route
+ * Static validation class for the 'actions' route
  * @export
  * @class ActionValidator
  */

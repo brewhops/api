@@ -1,53 +1,41 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { UserValidator } from './validator';
-import { UserLogic } from './logic';
+import { EmployeeValidator } from './validator';
+import { EmployeeController, IEmployeeController } from './controller';
 import { requireAuthentication } from './../../middleware/auth';
+import Boom from 'boom';
 
 // tslint:disable:no-any no-unsafe-any
 
 // tslint:disable-next-line:no-var-requires no-require-imports
 const validate = require('express-validation');
 
-export async function routes(tableName: string) {
-  const controller = new UserLogic(tableName);
-  const router = Router();
-
-  if (process.env.NODE_ENV !== 'test') {
-    try {
-      await controller.connect();
-    } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.error(error);
-    }
-  }
+export function routes(): Router {
+  const controller: IEmployeeController = new EmployeeController('employees');
+  const router: Router = Router();
 
   // tslint:disable-next-line:no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
   // [GET] section
-  router.get('/', controller.getUsers);
-  router.get('/id/:id', requireAuthentication, controller.getUser);
+  router.get('/', async (req, res, next) => controller.getEmployees(req, res, next));
+  router.get('/id/:id', requireAuthentication, async (req, res, next) => controller.getEmployee(req, res, next));
 
   // [POST] section
-  router.post('/', validate(UserValidator.createUser), controller.createUser);
-  router.post('/login', validate(UserValidator.login), controller.login);
+  router.post('/', validate(EmployeeValidator.createEmployee), requireAuthentication, async (req, res, next) => controller.createEmployee(req, res, next));
+  router.post('/login', validate(EmployeeValidator.login), async (req, res, next) => controller.login(req, res, next));
 
   // [PATCH] section
   router.patch(
     '/id/:id',
-    validate(UserValidator.updateUser),
+    validate(EmployeeValidator.updateEmployee),
     requireAuthentication,
-    controller.updateUser
+    async (req, res, next) => controller.updateEmployee(req, res, next)
   );
 
   // [DELETE] section
-  router.delete('/id/:id', requireAuthentication, controller.deleteUser);
+  router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteEmployee(req, res, next));
 
-  router.use('*', (req, res) =>
-    res.status(400).json({
-      err: `${req.originalUrl} doesn't exist`
-    })
-  );
+  router.use('*', (req, res) => res.json(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
 
   return router;
 }

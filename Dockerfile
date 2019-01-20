@@ -18,7 +18,7 @@ COPY . .
 RUN npm run build
 
 # expose the port on the docker container
-EXPOSE 1234
+EXPOSE 3000
 
 # sets the default command for this image
 CMD ["npm", "start"]

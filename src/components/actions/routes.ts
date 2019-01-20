@@ -1,47 +1,39 @@
-import e, { Request, Response, NextFunction, Router } from 'express';
-import { ActionLogic } from './logic';
+import { Request, Response, NextFunction, Router } from 'express';
+import { ActionController, IActionController } from './controller';
+import Boom from 'boom';
 import { ActionValidator } from './validator';
+import { requireAuthentication } from '../../middleware/auth';
 // tslint:disable-next-line:no-var-requires no-require-imports
 const validate = require('express-validation');
 
-// tslint:disable:no-any no-unsafe-any
+// tslint:disable: no-unsafe-any
 
-export async function routes(tableName: string) {
-  const controller = new ActionLogic(tableName);
-  const router = Router();
+/**
+ * Initializes the 'actions' route handlers and returns an Express.Router
+ * @export
+ * @returns {Router}
+ */
+export function routes(): Router {
+  const controller: IActionController = new ActionController('actions');
+  const router: Router = Router();
 
-  // we want to connect to the DB automatically if we are not testing
-  if (process.env.NODE_ENV !== 'test') {
-    try {
-      await controller.connect();
-    } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.error('Error! Connection refused', e);
-    }
-  }
-
-  // tslint:disable-next-line:no-void-expression
+  // tslint:disable-next-line: no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
   // [GET] section
-  router.get('/', controller.getActions);
-  router.get('/id/:id', controller.getAction);
+  router.get('/', async (req, res, next) => controller.getActions(req, res, next));
+  router.get('/id/:id', async (req, res, next) => controller.getAction(req, res, next));
 
   // [POST] section
-  router.post('/', validate(ActionValidator.createAction), controller.createAction);
+  router.post('/', validate(ActionValidator.createAction), requireAuthentication, async (req, res, next) => controller.createAction(req, res, next));
 
   // [PATCH] section
-  router.patch('/id/:id', validate(ActionValidator.updateAction), controller.updateAction);
+  router.patch('/id/:id', validate(ActionValidator.updateAction), requireAuthentication, async (req, res, next) => controller.updateAction(req, res, next));
 
   // [DELETE] section
-  router.delete('/id/:id', controller.deleteAction);
+  router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteAction(req, res, next));
 
-  router.use('*', (req: Request, res: Response) => {
-    res.status(400);
-    res.json({
-      err: `${req.originalUrl} doesn't exist`
-    });
-  });
+  router.use('*', (req: Request, res: Response) => res.send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
 
   return router;
 }

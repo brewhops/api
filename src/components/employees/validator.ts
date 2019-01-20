@@ -1,14 +1,17 @@
 import Joi from 'joi';
 import { JOIResult } from '../../types';
 
-export interface IUserValidator {
-  createUser: () => JOIResult;
-  updateUser: () => JOIResult;
+export interface IEmployeeValidator {
+  createEmployee: () => JOIResult;
+  updateEmployee: () => JOIResult;
   login: () => JOIResult;
 }
 
-export const UserValidator: IUserValidator = {
-  createUser() {
+/**
+ * Static validation class for the employees routes
+ */
+export const EmployeeValidator: IEmployeeValidator = {
+  createEmployee() {
     return {
       body: Joi.object()
         .keys({
@@ -22,7 +25,7 @@ export const UserValidator: IUserValidator = {
         .unknown(false)
     };
   },
-  updateUser() {
+  updateEmployee() {
     return {
       body: Joi.object()
         .keys({
