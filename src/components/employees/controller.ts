@@ -1,9 +1,10 @@
 import { PostgresController, IPostgresController } from '../../dal/postgres';
 import { Request, Response, RequestHandler } from 'express';
-import bcrypt from 'bcrypt';
+import CryptoJS from 'crypto-js';
 import Boom from 'boom';
 import { generateAuthToken } from '../../middleware/auth';
 import { userMatchAuthToken } from '../../util/auth';
+import is from 'is';
 
 const saltRounds = 8;
 
@@ -17,6 +18,7 @@ export interface IEmployeeController extends IPostgresController {
   login: RequestHandler;
   updateEmployee: RequestHandler;
   deleteEmployee: RequestHandler;
+  verifyAdmin: RequestHandler;
   isAdmin: (id: string) => Promise<boolean>;
 }
 
@@ -42,7 +44,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
   async getEmployees(req: Request, res: Response) {
     try {
       await this.connect();
-      const { rows } = await this.read(safeUserData, '$1', [true]);
+      const { rows } = await this.read('*', '$1', [true]);
       res.status(200).json(rows);
       await this.disconnect();
     } catch (err) {
@@ -78,7 +80,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     try {
       await this.connect();
       const prevUser = await this.readByUsername(username);
-      const password = bcrypt.hashSync(pw, saltRounds);
+      const password = CryptoJS.AES.encrypt(pw, username);
       const { keys, values, escapes } = this.splitObjectKeyVals({...req.body, password});
 
       if (prevUser.rows.length !== 0) {
@@ -110,7 +112,9 @@ export class EmployeeController extends PostgresController implements IEmployeeC
         res.json(Boom.unauthorized('Not authorized'));
       } else {
         const userID = prevUser.rows[0].id;
-        const match = bcrypt.compareSync(password, prevUser.rows[0].password);
+        const stored = prevUser.rows[0].password;
+        // tslint:disable-next-line:possible-timing-attack
+        const match = password === stored;
         if (match) {
           const token = await generateAuthToken(req.body.username);
           res.status(200).json({
@@ -118,11 +122,11 @@ export class EmployeeController extends PostgresController implements IEmployeeC
             userID
           });
         } else {
-          res.json(Boom.badRequest('Incorrect password'));
+          res.status(400).send(Boom.badRequest('Incorrect password'));
         }
       }
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -179,6 +183,25 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       }
     } catch (err) {
       res.json(Boom.badImplementation(err));
+    }
+    await this.disconnect();
+  }
+
+  /**
+   *
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof EmployeeController
+   */
+  async verifyAdmin(req: Request, res: Response) {
+    const { username } = req.params;
+    try {
+      await this.connect();
+      const isAdmin = await this.isAdmin(username);
+      res.status(200).json(isAdmin);
+    } catch (err) {
+      res.send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }

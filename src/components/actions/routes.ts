@@ -33,7 +33,7 @@ export function routes(): Router {
   // [DELETE] section
   router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteAction(req, res, next));
 
-  router.use('*', (req: Request, res: Response) => res.send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
+  router.use('*', (req: Request, res: Response) => res.status(400).send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
 
   return router;
 }

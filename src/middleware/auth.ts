@@ -40,7 +40,7 @@ export function requireAuthentication(req: Request, res: Response, next: NextFun
       req.user = payload.sub;
       next();
     } else {
-      res.send(Boom.unauthorized('Invalid authentication token'));
+      res.status(401).send(Boom.unauthorized('Invalid authentication token'));
     }
   });
 }

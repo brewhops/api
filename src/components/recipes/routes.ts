@@ -28,7 +28,7 @@ export function routes(): Router {
   // [DELETE] section
   router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteRecipe(req, res, next));
 
-  router.use('*', (req, res) => res.json(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
+  router.use('*', (req, res) => res.status(400).send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
 
   return router;
 }

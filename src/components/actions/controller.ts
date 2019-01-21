@@ -36,7 +36,7 @@ export class ActionController extends PostgresController implements IActionContr
       const { rows } = await this.read('*', '$1', [true]);
       res.status(200).json(rows);
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -57,7 +57,7 @@ export class ActionController extends PostgresController implements IActionContr
         next();
       }
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -74,7 +74,7 @@ export class ActionController extends PostgresController implements IActionContr
       const { rows } = await this.create(keys, escapes, values);
       res.status(201).json(rows[0]);
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -87,7 +87,7 @@ export class ActionController extends PostgresController implements IActionContr
    */
   async updateAction(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
-      res.send(Boom.badRequest('Request does not match valid form'));
+      res.status(400).send(Boom.badRequest('Request does not match valid form'));
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
@@ -102,7 +102,7 @@ export class ActionController extends PostgresController implements IActionContr
           next();
         }
       } catch (err) {
-        res.send(Boom.badImplementation(err));
+        res.status(500).send(Boom.badImplementation(err));
       }
       await this.disconnect();
     }
@@ -125,7 +125,7 @@ export class ActionController extends PostgresController implements IActionContr
         next();
       }
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }

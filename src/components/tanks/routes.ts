@@ -31,7 +31,7 @@ export function routes(): Router {
   // DELETE
   router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteTank(req, res, next));
 
-  router.use('*', (req, res) => res.send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
+  router.use('*', (req, res) => res.status(400).send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
 
   return router;
 }
