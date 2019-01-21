@@ -44,11 +44,11 @@ export class EmployeeController extends PostgresController implements IEmployeeC
   async getEmployees(req: Request, res: Response) {
     try {
       await this.connect();
-      const { rows } = await this.read('*', '$1', [true]);
+      const { rows } = await this.read(safeUserData, '$1', [true]);
       res.status(200).json(rows);
       await this.disconnect();
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
   }
 
@@ -65,7 +65,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       res.status(200).json(rows);
       await this.disconnect();
     } catch(err) {
-      res.json(Boom.badRequest(err));
+      res.status(400).send(Boom.badRequest(err));
     }
   }
 
@@ -84,7 +84,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       const { keys, values, escapes } = this.splitObjectKeyVals({...req.body, password});
 
       if (prevUser.rows.length !== 0) {
-        res.json(Boom.badRequest('Username already taken'));
+        res.status(400).send(Boom.badRequest('Username already taken'));
       } else {
         const { rows } = await this.create(keys, escapes, values, safeUserData);
         const returnedUser = rows[0];
@@ -92,7 +92,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
         res.status(201).json(rows[0]);
       }
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -109,7 +109,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       await this.connect();
       const prevUser = await this.readByUsername(username);
       if (prevUser.rows.length === 0) {
-        res.json(Boom.unauthorized('Not authorized'));
+        res.status(401).send(Boom.unauthorized('Not authorized'));
       } else {
         const userID = prevUser.rows[0].id;
         const stored = prevUser.rows[0].password;
@@ -150,13 +150,13 @@ export class EmployeeController extends PostgresController implements IEmployeeC
           const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
           res.status(200).json(`Deleted ${results.rowCount} user`);
         } else {
-          res.send(Boom.unauthorized('Not authorized.'));
+          res.status(401).send(Boom.unauthorized('Not authorized.'));
         }
       } else {
-        res.send(Boom.badImplementation(`User down not exist`));
+        res.status(500).send(Boom.badImplementation(`User down not exist`));
       }
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -176,13 +176,13 @@ export class EmployeeController extends PostgresController implements IEmployeeC
           const results = await this.deleteById(req.params.id);
           res.json(results.rows);
         } else {
-          res.send(Boom.unauthorized('Not authorized.'));
+          res.status(401).send(Boom.unauthorized('Not authorized.'));
         }
       } else {
-        res.send(Boom.badImplementation(`User down not exist`));
+        res.status(500).send(Boom.badImplementation(`User down not exist`));
       }
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -201,7 +201,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       const isAdmin = await this.isAdmin(username);
       res.status(200).json(isAdmin);
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
