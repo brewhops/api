@@ -7,17 +7,15 @@ import { QueryResult } from 'pg';
 import { BatchesController, IBatchesController } from '../components/batches/controller';
 import { IActionController, ActionController } from '../components/actions/controller';
 import { Action } from '../components/actions/types';
-import { Batch, Task, Version } from '../components/batches/types';
 import { RecipeController, IRecipeController } from '../components/recipes/controller';
 import { Recipe } from '../components/recipes/types';
+import CryptoJS from 'crypto-js';
 
-// tslint:disable: no-console no-unsafe-any
+// tslint:disable: no-console no-unsafe-any no-any
 
-function encryptPassword(password: string, username: string) {
-  const saltRounds = 8;
-  // const hash = CryptoJS.AES.encrypt(password, username).toString();
+function encryptPassword(password: string) {
 
-  return bcrypt.hashSync(password, saltRounds);
+  return CryptoJS.SHA3(password).toString();
 }
 
 async function insertDevAdmin() {
@@ -30,7 +28,7 @@ async function insertDevAdmin() {
     username: 'admin',
     phone: '555-867-5309',
     admin: true,
-    password: encryptPassword('password', 'admin')
+    password: encryptPassword('password')
   };
 
   try {
