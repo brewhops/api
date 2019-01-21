@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import CryptoJS from 'crypto-js';
 import { EmployeeController, IEmployeeController } from '../components/employees/controller';
 import { Employee } from '../components/employees/types';
 import { TankController, ITankController } from '../components/tanks/controller';
@@ -8,7 +7,7 @@ import { QueryResult } from 'pg';
 import { BatchesController, IBatchesController } from '../components/batches/controller';
 import { IActionController, ActionController } from '../components/actions/controller';
 import { Action } from '../components/actions/types';
-import { Batch } from '../components/batches/types';
+import { Batch, Task, Version } from '../components/batches/types';
 import { RecipeController, IRecipeController } from '../components/recipes/controller';
 import { Recipe } from '../components/recipes/types';
 
@@ -54,7 +53,7 @@ async function insertDevAdmin() {
   await employeeController.disconnect();
 }
 
-async function insertTanks() {
+async function insertDevTanks() {
   const tankController: ITankController = new TankController('tanks');
   await tankController.connect();
 
@@ -65,7 +64,7 @@ async function insertTanks() {
       status: 'available',
       in_use: true
     };
-    if(rows.length === 0) {
+    if (rows.length === 0) {
       const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
       await tankController.create(keys, escapes, values);
       console.log(`inserted tank ${tank.name}.`);
@@ -77,17 +76,17 @@ async function insertTanks() {
   await tankController.disconnect();
 }
 
-async function insertActions() {
+async function insertDevActions() {
   const actionController: IActionController = new ActionController('actions');
   await actionController.connect();
 
   for (let i = 1; i < 10; i++) {
     const { rows }: QueryResult = await actionController.readById(i);
     const action: Action = {
-      name: `Action ${1}`,
-      description: `Description for action ${1}`
+      name: `Action ${i}`,
+      description: `Description for action ${i}`
     };
-    if(rows.length === 0) {
+    if (rows.length === 0) {
       const { keys, values, escapes } = actionController.splitObjectKeyVals(action);
       await actionController.create(keys, escapes, values);
       console.log(`inserted tank ${action.name}.`);
@@ -98,8 +97,8 @@ async function insertActions() {
   await actionController.disconnect();
 }
 
-async function insertRecipes() {
-  const recipeController: IRecipeController = new RecipeController('tanks');
+async function insertDevRecipes() {
+  const recipeController: IRecipeController = new RecipeController('recipes');
   await recipeController.connect();
 
   for (let i = 1; i < 10; i++) {
@@ -108,11 +107,11 @@ async function insertRecipes() {
       name: `Recipe ${i}`,
       airplane_code: 'ABC',
       yeast: 5,
-      instructions: {
+      instructions: JSON.stringify({
         directions: `brew the beer according to recipe ${i}`
-      }
-  };
-    if(rows.length === 0) {
+      })
+    };
+    if (rows.length === 0) {
       const { keys, values, escapes } = recipeController.splitObjectKeyVals(recipe);
       await recipeController.create(keys, escapes, values);
       console.log(`inserted recipe ${recipe.name}.`);
@@ -125,66 +124,67 @@ async function insertRecipes() {
 
 }
 
-// async function insertBatches() {
-//   const batchesController: IBatchesController = new BatchesController('tanks');
+async function insertDevBatches() {
+  const batchesController: IBatchesController = new BatchesController('batches');
+  await batchesController.connect();
 
-//   for (let i = 1; i < 10; i++) {
-//     const { rows }: QueryResult = await batchesController.readById(i);
-//     const batch: Batch = {
-//       name: `Batch ${i}`,
-//       // tslint:disable: insecure-random
-//       volume: Math.random() * Math.floor(5),
-//       bright: Math.random() * Math.floor(5),
-//       generation: Math.floor(Math.random() * Math.floor(20)),
-//       started_on: new Date().toUTCString(),
-//       completed_on: undefined,
-//       recipe_id: i,
-//       tank_id: i
-//     };
-//     if(rows.length === 0) {
-//       const { keys, values, escapes } = batchesController.splitObjectKeyVals(batch);
-//       await batchesController.create(keys, escapes, values);
-//       console.log(`inserted action ${batch.name}.`);
-//     } else {
-//       console.log(`action ${batch.name} exists.`);
-//     }
-//   }
-// }
+  for (let i = 1; i < 10; i++) {
+    const { rows }: QueryResult = await batchesController.readById(i);
+    const batch = {
+      name: `Batch ${i}`,
+      // tslint:disable: insecure-random
+      volume: Math.random() * Math.floor(5),
+      bright: Math.random() * Math.floor(5),
+      generation: Math.floor(Math.random() * Math.floor(20)),
+      started_on: new Date().toUTCString(),
+      recipe_id: i,
+      tank_id: i
+    };
 
-// async function insertVersions() {
-//   const batchesController: IVersionController = new VersionController('tanks');
+    const version = {
+      SG: 1.23,
+      PH: 5.64,
+      ABV: 8.0,
+      temperature: 57,
+      pressure: 12,
+      measured_on: new Date().toUTCString(),
+      batch_id: i
+    };
 
-//   for (let i = 1; i < 10; i++) {
-//     const { rows }: QueryResult = await batchesController.readById(i);
-//     const batch: Batches = {
-//       name: `Batch ${i}`,
-//       // tslint:disable: insecure-random
-//       volume: Math.random() * Math.floor(5),
-//       bright: Math.random() * Math.floor(5),
-//       generation: Math.floor(Math.random() * Math.floor(20)),
-//       started_on: new Date().toUTCString(),
-//       completed_on: undefined,
-//       recipe_id: i,
-//       tank_id: i
-//     };
-//     if(rows.length === 0) {
-//       const { keys, values, escapes } = batchesController.splitObjectKeyVals(batch);
-//       await batchesController.create(keys, escapes, values);
-//       console.log(`inserted action ${batch.name}.`);
-//     } else {
-//       console.log(`action ${batch.name} exists.`);
-//     }
-//   }
-// }
+    const task = {
+      id: i,
+      assigned: true,
+      batch_id: i,
+      action_id: i,
+      employee_id: 1,
+      added_on: new Date().toUTCString(),
+      completed_on: new Date().toUTCString()
+    };
 
+    if (rows.length === 0) {
+      const { keys, values, escapes } = batchesController.splitObjectKeyVals(batch);
+      await batchesController.create(keys, escapes, values);
+      const taskKeys = batchesController.splitObjectKeyVals(task);
+      await batchesController.createInTable(taskKeys.keys, 'tasks', taskKeys.escapes, taskKeys.values);
+      const versionKeys = batchesController.splitObjectKeyVals(version);
+      await batchesController.createInTable(versionKeys.keys, 'versions', versionKeys.escapes, versionKeys.values);
+      console.log(`inserted batch ${batch.name}.`);
+    } else {
+      console.log(`batch ${batch.name} exists.`);
+    }
+  }
+  await batchesController.disconnect();
+}
 
 
 export async function insertDevelopmentData() {
-  console.log('Inserting development data...');
-  await insertDevAdmin();
-  await insertTanks();
-  await insertActions();
-  await insertRecipes();
-  // await insertBatches();
-
+  try {
+    await insertDevAdmin();
+    await insertDevTanks();
+    await insertDevActions();
+    await insertDevRecipes();
+    await insertDevBatches();
+  } catch (err) {
+    console.error(err);
+  }
 }
