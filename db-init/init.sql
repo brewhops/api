@@ -46,6 +46,18 @@ CREATE TABLE IF NOT EXISTS tanks (
   update_user SERIAL        NULL
 );
 
+CREATE TABLE IF NOT EXISTS tanks_audit (
+  id          SERIAL        NOT NULL    PRIMARY KEY,
+  operation   VARCHAR(6)    NOT NULL,
+  time_stamp  TIMESTAMPTZ   NOT NULL,
+  
+  tanks_id    SERIAL        NOT NULL,
+  name        VARCHAR(255)  NOT NULL,
+  status      VARCHAR(255)  NOT NULL,
+  in_use      BOOLEAN       NOT NULL,
+  update_user SERIAL        NULL
+);
+
 --
 -- Table structure for table `recipes`
 --
@@ -59,12 +71,42 @@ CREATE TABLE IF NOT EXISTS recipes (
   update_user   SERIAL        NULL
 );
 
+CREATE TABLE IF NOT EXISTS recipes_audit (
+  id            SERIAL        NOT NULL    PRIMARY KEY,
+  operation     VARCHAR(6)    NOT NULL,
+  time_stamp    TIMESTAMPTZ   NOT NULL,
+
+  recipes_id    SERIAL        NOT NULL    PRIMARY KEY,
+  name          VARCHAR(30)   NOT NULL,
+  airplane_code VARCHAR(50)   NOT NULL,
+  yeast         INT           NULL,
+  instructions  JSONB         NOT NULL,
+  update_user   SERIAL        NULL
+);
+
 --
 -- Table structure for table `batches`
 --
 
 CREATE TABLE IF NOT EXISTS batches (
   id            SERIAL        NOT NULL    PRIMARY KEY,
+  name          VARCHAR(50)   NOT NULL,
+  volume        FLOAT(2)      NULL,
+  bright        FLOAT(2)      NULL,
+  generation    FLOAT(2)      NULL,
+  started_on    TIMESTAMPTZ   NOT NULL,
+  completed_on  TIMESTAMPTZ   NULL,
+  recipe_id     SERIAL        NOT NULL    REFERENCES recipes(id) ,
+  tank_id       SERIAL        NOT NULL    REFERENCES tanks(id),
+  update_user   SERIAL        NULL
+);
+
+CREATE TABLE IF NOT EXISTS batches_audit (
+  id            SERIAL        NOT NULL    PRIMARY KEY,
+  operation     VARCHAR(6)    NOT NULL,
+  time_stamp    TIMESTAMPTZ   NOT NULL,
+
+  batches_id    SERIAL        NOT NULL    PRIMARY KEY,
   name          VARCHAR(50)   NOT NULL,
   volume        FLOAT(2)      NULL,
   bright        FLOAT(2)      NULL,
@@ -93,6 +135,23 @@ CREATE TABLE IF NOT EXISTS versions (
   update_user   SERIAL        NULL
 );
 
+CREATE TABLE IF NOT EXISTS versions_audit (
+  id            SERIAL        NOT NULL    PRIMARY KEY,
+  operation     VARCHAR(6)    NOT NULL,
+  time_stamp    TIMESTAMPTZ   NOT NULL,
+
+  versions_id   SERIAL        NOT NULL    PRIMARY KEY,
+  SG            FLOAT(2)      NOT NULL,
+  PH            FLOAT(2)      NOT NULL,
+  ABV           FLOAT(2)      NOT NULL,
+  temperature   FLOAT(2)      NOT NULL,
+  pressure      FLOAT(2)      NOT NULL,
+  measured_on   TIMESTAMPTZ   NOT NULL,
+  completed     BOOLEAN       NOT NULL    DEFAULT FALSE,
+  batch_id      SERIAL        NOT NULL    REFERENCES batches(id),
+  update_user   SERIAL        NULL
+);
+
 --
 -- Table structure for table `tasks`
 --
@@ -108,6 +167,21 @@ CREATE TABLE IF NOT EXISTS tasks (
   update_user   SERIAL        NULL
 );
 
+
+CREATE TABLE IF NOT EXISTS tasks_audit (
+  id            SERIAL        NOT NULL    PRIMARY KEY,
+  operation     VARCHAR(6)    NOT NULL,
+  time_stamp    TIMESTAMPTZ   NOT NULL,
+
+  tasks_id      SERIAL        NOT NULL    PRIMARY KEY,
+  added_on      TIMESTAMPTZ   NOT NULL,
+  completed_on  TIMESTAMPTZ   NULL        DEFAULT ,
+  assigned      BOOLEAN       NOT NULL    DEFAULT FALSE,
+  batch_id      SERIAL        NOT NULL    REFERENCES batches(id),
+  action_id     SERIAL        NOT NULL    REFERENCES actions(id),
+  employee_id   SERIAL        NULL        REFERENCES employees(id),
+  update_user   SERIAL        NULL
+);
 
 --
 -- Views for easy querying of the DB
