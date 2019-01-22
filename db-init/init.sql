@@ -39,23 +39,23 @@ CREATE TABLE IF NOT EXISTS actions (
 --
 
 CREATE TABLE IF NOT EXISTS tanks (
-  id          SERIAL        NOT NULL    PRIMARY KEY,
-  name        VARCHAR(255)  NOT NULL,
-  status      VARCHAR(255)  NOT NULL,
-  in_use      BOOLEAN       NOT NULL,
-  update_user SERIAL        NULL
+  id            SERIAL        NOT NULL    PRIMARY KEY,
+  name          VARCHAR(255)  NOT NULL,
+  status        VARCHAR(255)  NOT NULL,
+  in_use        BOOLEAN       NOT NULL,
+  update_user   INTEGER       NULL
 );
 
 CREATE TABLE IF NOT EXISTS tanks_audit (
-  id          SERIAL        NOT NULL    PRIMARY KEY,
-  operation   VARCHAR(6)    NOT NULL,
-  time_stamp  TIMESTAMPTZ   NOT NULL,
+  id            SERIAL        NOT NULL    PRIMARY KEY,
+  operation     VARCHAR(6)    NOT NULL,
+  time_stamp    TIMESTAMPTZ   NOT NULL,
   
-  tanks_id    SERIAL        NOT NULL,
-  name        VARCHAR(255)  NOT NULL,
-  status      VARCHAR(255)  NOT NULL,
-  in_use      BOOLEAN       NOT NULL,
-  update_user SERIAL        NULL
+  tanks_id      INTEGER       NOT NULL,
+  name          VARCHAR(255)  NOT NULL,
+  status        VARCHAR(255)  NOT NULL,
+  in_use        BOOLEAN       NOT NULL,
+  update_user   INTEGER       NULL
 );
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS recipes (
   airplane_code VARCHAR(50)   NOT NULL,
   yeast         INT           NULL,
   instructions  JSONB         NOT NULL,
-  update_user   SERIAL        NULL
+  update_user   INTEGER       NULL
 );
 
 CREATE TABLE IF NOT EXISTS recipes_audit (
@@ -76,12 +76,12 @@ CREATE TABLE IF NOT EXISTS recipes_audit (
   operation     VARCHAR(6)    NOT NULL,
   time_stamp    TIMESTAMPTZ   NOT NULL,
 
-  recipes_id    SERIAL        NOT NULL    PRIMARY KEY,
+  recipes_id    INTEGER       NOT NULL,
   name          VARCHAR(30)   NOT NULL,
   airplane_code VARCHAR(50)   NOT NULL,
   yeast         INT           NULL,
   instructions  JSONB         NOT NULL,
-  update_user   SERIAL        NULL
+  update_user   INTEGER       NULL
 );
 
 --
@@ -96,9 +96,9 @@ CREATE TABLE IF NOT EXISTS batches (
   generation    FLOAT(2)      NULL,
   started_on    TIMESTAMPTZ   NOT NULL,
   completed_on  TIMESTAMPTZ   NULL,
-  recipe_id     SERIAL        NOT NULL    REFERENCES recipes(id) ,
-  tank_id       SERIAL        NOT NULL    REFERENCES tanks(id),
-  update_user   SERIAL        NULL
+  recipe_id     INTEGER       NOT NULL    REFERENCES recipes(id) ,
+  tank_id       INTEGER       NOT NULL    REFERENCES tanks(id),
+  update_user   INTEGER       NULL
 );
 
 CREATE TABLE IF NOT EXISTS batches_audit (
@@ -106,16 +106,16 @@ CREATE TABLE IF NOT EXISTS batches_audit (
   operation     VARCHAR(6)    NOT NULL,
   time_stamp    TIMESTAMPTZ   NOT NULL,
 
-  batches_id    SERIAL        NOT NULL    PRIMARY KEY,
+  batches_id    INTEGER       NOT NULL,
   name          VARCHAR(50)   NOT NULL,
   volume        FLOAT(2)      NULL,
   bright        FLOAT(2)      NULL,
   generation    FLOAT(2)      NULL,
   started_on    TIMESTAMPTZ   NOT NULL,
   completed_on  TIMESTAMPTZ   NULL,
-  recipe_id     SERIAL        NOT NULL    REFERENCES recipes(id) ,
-  tank_id       SERIAL        NOT NULL    REFERENCES tanks(id),
-  update_user   SERIAL        NULL
+  recipe_id     INTEGER       NOT NULL,
+  tank_id       INTEGER       NOT NULL,
+  update_user   INTEGER       NULL
 );
 
 --
@@ -131,8 +131,8 @@ CREATE TABLE IF NOT EXISTS versions (
   pressure      FLOAT(2)      NOT NULL,
   measured_on   TIMESTAMPTZ   NOT NULL,
   completed     BOOLEAN       NOT NULL    DEFAULT FALSE,
-  batch_id      SERIAL        NOT NULL    REFERENCES batches(id),
-  update_user   SERIAL        NULL
+  batch_id      INTEGER       NOT NULL    REFERENCES batches(id),
+  update_user   INTEGER       NULL
 );
 
 CREATE TABLE IF NOT EXISTS versions_audit (
@@ -140,16 +140,16 @@ CREATE TABLE IF NOT EXISTS versions_audit (
   operation     VARCHAR(6)    NOT NULL,
   time_stamp    TIMESTAMPTZ   NOT NULL,
 
-  versions_id   SERIAL        NOT NULL    PRIMARY KEY,
+  versions_id   INTEGER       NOT NULL,
   SG            FLOAT(2)      NOT NULL,
   PH            FLOAT(2)      NOT NULL,
   ABV           FLOAT(2)      NOT NULL,
   temperature   FLOAT(2)      NOT NULL,
   pressure      FLOAT(2)      NOT NULL,
   measured_on   TIMESTAMPTZ   NOT NULL,
-  completed     BOOLEAN       NOT NULL    DEFAULT FALSE,
-  batch_id      SERIAL        NOT NULL    REFERENCES batches(id),
-  update_user   SERIAL        NULL
+  completed     BOOLEAN       NOT NULL,
+  batch_id      INTEGER       NOT NULL,
+  update_user   INTEGER       NULL
 );
 
 --
@@ -159,12 +159,12 @@ CREATE TABLE IF NOT EXISTS versions_audit (
 CREATE TABLE IF NOT EXISTS tasks (
   id            SERIAL        NOT NULL    PRIMARY KEY,
   added_on      TIMESTAMPTZ   NOT NULL,
-  completed_on  TIMESTAMPTZ   NULL        DEFAULT ,
+  completed_on  TIMESTAMPTZ   NULL,
   assigned      BOOLEAN       NOT NULL    DEFAULT FALSE,
-  batch_id      SERIAL        NOT NULL    REFERENCES batches(id),
-  action_id     SERIAL        NOT NULL    REFERENCES actions(id),
-  employee_id   SERIAL        NULL        REFERENCES employees(id),
-  update_user   SERIAL        NULL
+  batch_id      INTEGER       NOT NULL    REFERENCES batches(id),
+  action_id     INTEGER       NOT NULL    REFERENCES actions(id),
+  employee_id   INTEGER       NULL        REFERENCES employees(id),
+  update_user   INTEGER       NULL
 );
 
 
@@ -173,14 +173,14 @@ CREATE TABLE IF NOT EXISTS tasks_audit (
   operation     VARCHAR(6)    NOT NULL,
   time_stamp    TIMESTAMPTZ   NOT NULL,
 
-  tasks_id      SERIAL        NOT NULL    PRIMARY KEY,
+  tasks_id      INTEGER       NOT NULL,
   added_on      TIMESTAMPTZ   NOT NULL,
-  completed_on  TIMESTAMPTZ   NULL        DEFAULT ,
-  assigned      BOOLEAN       NOT NULL    DEFAULT FALSE,
-  batch_id      SERIAL        NOT NULL    REFERENCES batches(id),
-  action_id     SERIAL        NOT NULL    REFERENCES actions(id),
-  employee_id   SERIAL        NULL        REFERENCES employees(id),
-  update_user   SERIAL        NULL
+  completed_on  TIMESTAMPTZ   NULL,
+  assigned      BOOLEAN       NOT NULL,
+  batch_id      INTEGER       NOT NULL,
+  action_id     INTEGER       NOT NULL,
+  employee_id   INTEGER       NULL,
+  update_user   INTEGER       NULL
 );
 
 --
@@ -234,3 +234,4 @@ ON versions.measured_on = e.max;
 -- ----------+-------------+--------+------+-----+----------
 --       190 |          50 | 1.1008 | 3.45 | 6.5 |        1
 --       140 |          80 | 1.1025 | 3.89 | 6.1 |        2
+
