@@ -235,3 +235,122 @@ ON versions.measured_on = e.max;
 --       190 |          50 | 1.1008 | 3.45 | 6.5 |        1
 --       140 |          80 | 1.1025 | 3.89 | 6.1 |        2
 
+
+--
+-- Triggers for audit tables
+--
+
+CREATE OR REPLACE FUNCTION tanks_audit_function() RETURNS TRIGGER AS $tanks_audit_trigger$
+  BEGIN
+      --
+      -- Create a row in tanks_audit to reflect the operation performed on tanks.
+      --
+      IF (TG_OP = 'DELETE') THEN
+          INSERT INTO tanks_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          RETURN OLD;
+      ELSIF (TG_OP = 'UPDATE') THEN
+          INSERT INTO tanks_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      ELSIF (TG_OP = 'INSERT') THEN
+          INSERT INTO tanks_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      END IF;
+      RETURN NULL; -- result is ignored since this is an AFTER trigger
+  END;
+$tanks_audit_trigger$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tanks_audit_t AFTER INSERT OR UPDATE OR DELETE ON tanks 
+    FOR EACH ROW EXECUTE PROCEDURE tanks_audit_function();
+
+
+CREATE OR REPLACE FUNCTION recipes_audit_function() RETURNS TRIGGER AS $recipes_audit_trigger$
+  BEGIN
+      --
+      -- Create a row in recipes_audit to reflect the operation performed on recipes.
+      --
+      IF (TG_OP = 'DELETE') THEN
+          INSERT INTO recipes_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          RETURN OLD;
+      ELSIF (TG_OP = 'UPDATE') THEN
+          INSERT INTO recipes_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      ELSIF (TG_OP = 'INSERT') THEN
+          INSERT INTO recipes_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      END IF;
+      RETURN NULL; -- result is ignored since this is an AFTER trigger
+  END;
+$recipes_audit_trigger$ LANGUAGE plpgsql;
+
+CREATE TRIGGER recipes_audit_t AFTER INSERT OR UPDATE OR DELETE ON recipes 
+    FOR EACH ROW EXECUTE PROCEDURE recipes_audit_function();
+
+
+CREATE OR REPLACE FUNCTION batches_audit_function() RETURNS TRIGGER AS $batches_audit_trigger$
+  BEGIN
+      --
+      -- Create a row in batches_audit to reflect the operation performed on batches.
+      --
+      IF (TG_OP = 'DELETE') THEN
+          INSERT INTO batches_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          RETURN OLD;
+      ELSIF (TG_OP = 'UPDATE') THEN
+          INSERT INTO batches_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      ELSIF (TG_OP = 'INSERT') THEN
+          INSERT INTO batches_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      END IF;
+      RETURN NULL; -- result is ignored since this is an AFTER trigger
+  END;
+$batches_audit_trigger$ LANGUAGE plpgsql;
+
+CREATE TRIGGER batches_audit_t AFTER INSERT OR UPDATE OR DELETE ON batches 
+    FOR EACH ROW EXECUTE PROCEDURE batches_audit_function();
+
+
+CREATE OR REPLACE FUNCTION versions_audit_function() RETURNS TRIGGER AS $versions_audit_trigger$
+  BEGIN
+      --
+      -- Create a row in versions_audit to reflect the operation performed on versions.
+      --
+      IF (TG_OP = 'DELETE') THEN
+          INSERT INTO versions_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          RETURN OLD;
+      ELSIF (TG_OP = 'UPDATE') THEN
+          INSERT INTO versions_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      ELSIF (TG_OP = 'INSERT') THEN
+          INSERT INTO versions_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      END IF;
+      RETURN NULL; -- result is ignored since this is an AFTER trigger
+  END;
+$versions_audit_trigger$ LANGUAGE plpgsql;
+
+CREATE TRIGGER versions_audit_t AFTER INSERT OR UPDATE OR DELETE ON versions 
+    FOR EACH ROW EXECUTE PROCEDURE versions_audit_function();
+
+
+CREATE OR REPLACE FUNCTION tasks_audit_function() RETURNS TRIGGER AS $tasks_audit_trigger$
+  BEGIN
+      --
+      -- Create a row in tasks_audit to reflect the operation performed on tasks.
+      --
+      IF (TG_OP = 'DELETE') THEN
+          INSERT INTO tasks_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          RETURN OLD;
+      ELSIF (TG_OP = 'UPDATE') THEN
+          INSERT INTO tasks_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      ELSIF (TG_OP = 'INSERT') THEN
+          INSERT INTO tasks_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          RETURN NEW;
+      END IF;
+      RETURN NULL; -- result is ignored since this is an AFTER trigger
+  END;
+$tasks_audit_trigger$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tasks_audit_t AFTER INSERT OR UPDATE OR DELETE ON tasks 
+    FOR EACH ROW EXECUTE PROCEDURE tasks_audit_function();
+
