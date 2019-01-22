@@ -246,13 +246,13 @@ CREATE OR REPLACE FUNCTION tanks_audit_function() RETURNS TRIGGER AS $tanks_audi
       -- Create a row in tanks_audit to reflect the operation performed on tanks.
       --
       IF (TG_OP = 'DELETE') THEN
-          INSERT INTO tanks_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          INSERT INTO tanks_audit VALUES (DEFAULT, 'DELETE', now(), OLD.*);
           RETURN OLD;
       ELSIF (TG_OP = 'UPDATE') THEN
-          INSERT INTO tanks_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          INSERT INTO tanks_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.*);
           RETURN NEW;
       ELSIF (TG_OP = 'INSERT') THEN
-          INSERT INTO tanks_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          INSERT INTO tanks_audit VALUES (DEFAULT, 'INSERT', now(), NEW.*);
           RETURN NEW;
       END IF;
       RETURN NULL; -- result is ignored since this is an AFTER trigger
@@ -269,13 +269,13 @@ CREATE OR REPLACE FUNCTION recipes_audit_function() RETURNS TRIGGER AS $recipes_
       -- Create a row in recipes_audit to reflect the operation performed on recipes.
       --
       IF (TG_OP = 'DELETE') THEN
-          INSERT INTO recipes_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          INSERT INTO recipes_audit VALUES (DEFAULT, 'DELETE', now(), OLD.*);
           RETURN OLD;
       ELSIF (TG_OP = 'UPDATE') THEN
-          INSERT INTO recipes_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          INSERT INTO recipes_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.*);
           RETURN NEW;
       ELSIF (TG_OP = 'INSERT') THEN
-          INSERT INTO recipes_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          INSERT INTO recipes_audit VALUES (DEFAULT, 'INSERT', now(), NEW.*);
           RETURN NEW;
       END IF;
       RETURN NULL; -- result is ignored since this is an AFTER trigger
@@ -292,13 +292,13 @@ CREATE OR REPLACE FUNCTION batches_audit_function() RETURNS TRIGGER AS $batches_
       -- Create a row in batches_audit to reflect the operation performed on batches.
       --
       IF (TG_OP = 'DELETE') THEN
-          INSERT INTO batches_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          INSERT INTO batches_audit VALUES (DEFAULT, 'DELETE', now(), OLD.*);
           RETURN OLD;
       ELSIF (TG_OP = 'UPDATE') THEN
-          INSERT INTO batches_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          INSERT INTO batches_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.*);
           RETURN NEW;
       ELSIF (TG_OP = 'INSERT') THEN
-          INSERT INTO batches_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          INSERT INTO batches_audit VALUES (DEFAULT, 'INSERT', now(), NEW.*);
           RETURN NEW;
       END IF;
       RETURN NULL; -- result is ignored since this is an AFTER trigger
@@ -315,13 +315,13 @@ CREATE OR REPLACE FUNCTION versions_audit_function() RETURNS TRIGGER AS $version
       -- Create a row in versions_audit to reflect the operation performed on versions.
       --
       IF (TG_OP = 'DELETE') THEN
-          INSERT INTO versions_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          INSERT INTO versions_audit VALUES (DEFAULT, 'DELETE', now(), OLD.*);
           RETURN OLD;
       ELSIF (TG_OP = 'UPDATE') THEN
-          INSERT INTO versions_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          INSERT INTO versions_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.*);
           RETURN NEW;
       ELSIF (TG_OP = 'INSERT') THEN
-          INSERT INTO versions_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          INSERT INTO versions_audit VALUES (DEFAULT, 'INSERT', now(), NEW.*);
           RETURN NEW;
       END IF;
       RETURN NULL; -- result is ignored since this is an AFTER trigger
@@ -338,13 +338,13 @@ CREATE OR REPLACE FUNCTION tasks_audit_function() RETURNS TRIGGER AS $tasks_audi
       -- Create a row in tasks_audit to reflect the operation performed on tasks.
       --
       IF (TG_OP = 'DELETE') THEN
-          INSERT INTO tasks_audit VALUES (DEFAULT, 'DELETE', now(), OLD.id, OLD.*);
+          INSERT INTO tasks_audit VALUES (DEFAULT, 'DELETE', now(), OLD.*);
           RETURN OLD;
       ELSIF (TG_OP = 'UPDATE') THEN
-          INSERT INTO tasks_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.id, NEW.*);
+          INSERT INTO tasks_audit VALUES (DEFAULT, 'UPDATE', now(), NEW.*);
           RETURN NEW;
       ELSIF (TG_OP = 'INSERT') THEN
-          INSERT INTO tasks_audit VALUES (DEFAULT, 'INSERT', now(), NEW.id, NEW.*);
+          INSERT INTO tasks_audit VALUES (DEFAULT, 'INSERT', now(), NEW.*);
           RETURN NEW;
       END IF;
       RETURN NULL; -- result is ignored since this is an AFTER trigger
