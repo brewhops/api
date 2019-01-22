@@ -36,7 +36,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
       const { rows } = await this.read('*', '$1', [true]);
       res.status(200).json(rows);
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -58,7 +58,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
         next();
       }
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -87,7 +87,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
         next();
       }
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -129,7 +129,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
         await this.connect();
         results = await this.create(keys, escapes, values);
       } catch (err) {
-        res.send(Boom.badRequest(err));
+        res.status(400).send(Boom.badRequest(err));
         await this.disconnect();
 
         return;
@@ -146,7 +146,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
         await this.connect();
         results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
       } catch (err) {
-        res.send(Boom.badRequest(err));
+        res.status(400).send(Boom.badRequest(err));
         await this.disconnect();
 
         return;
@@ -190,7 +190,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
           [batchID]
         );
       } catch (err) {
-        res.send(Boom.badRequest(err));
+        res.status(400).send(Boom.badRequest(err));
       }
 
       // parse it out
@@ -209,14 +209,14 @@ export class BatchesController extends PostgresController implements IBatchesCon
             `UPDATE tasks SET (${keys}) = (${escapes}) WHERE id = ${taskID} RETURNING *`,
             values
           )
-          .catch(err => res.send(Boom.badRequest(err)));
+          .catch(err => res.status(400).send(Boom.badRequest(err)));
       } else {
         // dont let the user try and finish a task that has not started
         if (input.action.completed) {
-          res.send(Boom.badRequest('You can not close a task that has not yet been opened'));
+          res.status(400).send(Boom.badRequest('You can not close a task that has not yet been opened'));
         } else {
           // insert a new task
-          this.createInTable(keys, 'tasks', escapes, values).catch(err => res.send(Boom.badRequest(err)));
+          this.createInTable(keys, 'tasks', escapes, values).catch(err => res.status(400).send(Boom.badRequest(err)));
         }
       }
     }
@@ -252,7 +252,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
       })
       // log and return errors if we had a problem
       .catch(err => {
-        res.send(Boom.badRequest(err));
+        res.status(400).send(Boom.badRequest(err));
       });
 
     await this.disconnect();
@@ -278,7 +278,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
         next();
       }
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -311,7 +311,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
         next();
       }
     } catch (err) {
-      res.send(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }

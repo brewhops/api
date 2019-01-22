@@ -20,7 +20,7 @@ const app = e();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => res.json(Boom.badRequest(err.message)));
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => res.status(400).send(Boom.badRequest(err.message)));
 
 app.use('/employees', EmployeesRoutes());
 app.use('/tanks', TanksRoutes());
@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === 'development') {
       await insertDevelopmentData();
       res.status(200).send('success');
     } catch (error) {
-      res.send(Boom.badImplementation('failed'));
+      res.status(500).send(Boom.badImplementation('failed'));
     }
   });
 }

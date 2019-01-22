@@ -18,6 +18,7 @@ export function routes(): Router {
 
   // [GET] section
   router.get('/', async (req, res, next) => controller.getEmployees(req, res, next));
+  router.get('/admin/:username', async (req, res, next) => controller.verifyAdmin(req, res, next));
   router.get('/id/:id', requireAuthentication, async (req, res, next) => controller.getEmployee(req, res, next));
 
   // [POST] section
@@ -35,7 +36,7 @@ export function routes(): Router {
   // [DELETE] section
   router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteEmployee(req, res, next));
 
-  router.use('*', (req, res) => res.json(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
+  router.use('*', (req, res) => res.status(400).send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
 
   return router;
 }

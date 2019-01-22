@@ -1,9 +1,10 @@
 import { PostgresController, IPostgresController } from '../../dal/postgres';
 import { Request, Response, RequestHandler } from 'express';
-import bcrypt from 'bcrypt';
+import CryptoJS from 'crypto-js';
 import Boom from 'boom';
 import { generateAuthToken } from '../../middleware/auth';
 import { userMatchAuthToken } from '../../util/auth';
+import is from 'is';
 
 const saltRounds = 8;
 
@@ -17,6 +18,8 @@ export interface IEmployeeController extends IPostgresController {
   login: RequestHandler;
   updateEmployee: RequestHandler;
   deleteEmployee: RequestHandler;
+  verifyAdmin: RequestHandler;
+  isAdmin: (id: string) => Promise<boolean>;
 }
 
 
@@ -45,7 +48,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       res.status(200).json(rows);
       await this.disconnect();
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
   }
 
@@ -62,7 +65,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       res.status(200).json(rows);
       await this.disconnect();
     } catch(err) {
-      res.json(Boom.badRequest(err));
+      res.status(400).send(Boom.badRequest(err));
     }
   }
 
@@ -77,11 +80,11 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     try {
       await this.connect();
       const prevUser = await this.readByUsername(username);
-      const password = bcrypt.hashSync(pw, saltRounds);
+      const password = CryptoJS.AES.encrypt(pw, username);
       const { keys, values, escapes } = this.splitObjectKeyVals({...req.body, password});
 
       if (prevUser.rows.length !== 0) {
-        res.json(Boom.badRequest('Username already taken'));
+        res.status(400).send(Boom.badRequest('Username already taken'));
       } else {
         const { rows } = await this.create(keys, escapes, values, safeUserData);
         const returnedUser = rows[0];
@@ -89,7 +92,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
         res.status(201).json(rows[0]);
       }
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -106,10 +109,12 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       await this.connect();
       const prevUser = await this.readByUsername(username);
       if (prevUser.rows.length === 0) {
-        res.json(Boom.unauthorized('Not authorized'));
+        res.status(401).send(Boom.unauthorized('Not authorized'));
       } else {
         const userID = prevUser.rows[0].id;
-        const match = bcrypt.compareSync(password, prevUser.rows[0].password);
+        const stored = prevUser.rows[0].password;
+        // tslint:disable-next-line:possible-timing-attack
+        const match = password === stored;
         if (match) {
           const token = await generateAuthToken(req.body.username);
           res.status(200).json({
@@ -117,11 +122,11 @@ export class EmployeeController extends PostgresController implements IEmployeeC
             userID
           });
         } else {
-          res.json(Boom.badRequest('Incorrect password'));
+          res.status(400).send(Boom.badRequest('Incorrect password'));
         }
       }
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -139,14 +144,19 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       const { query, idx } = this.buildUpdateString(keys);
       values.push(req.params.id); // add last escaped value for where clause
       const { rows } = await this.readById(req.params.id);
-      if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
-        res.json(Boom.badRequest('Not Authorized'));
+
+      if(rows.length > 0 ) {
+        if(await this.isAdmin(req.user) && !userMatchAuthToken(req.user, rows[0].username)) {
+          const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
+          res.status(200).json(`Deleted ${results.rowCount} user`);
+        } else {
+          res.status(401).send(Boom.unauthorized('Not authorized.'));
+        }
       } else {
-        const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
-        res.json(results.rows);
+        res.status(500).send(Boom.badImplementation(`User down not exist`));
       }
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
   }
@@ -161,15 +171,56 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     try {
       await this.connect();
       const { rows } = await this.readById(req.params.id);
-      if (rows.length === 0 || !userMatchAuthToken(req.user, rows[0].username)) {
-        res.json(Boom.badRequest('Not Authorized'));
+      if(rows.length > 0 ) {
+        if(await this.isAdmin(req.user) && !userMatchAuthToken(req.user, rows[0].username)) {
+          const results = await this.deleteById(req.params.id);
+          res.json(results.rows);
+        } else {
+          res.status(401).send(Boom.unauthorized('Not authorized.'));
+        }
       } else {
-        const results = await this.deleteById(req.params.id);
-        res.json(results.rows);
+        res.status(500).send(Boom.badImplementation(`User down not exist`));
       }
     } catch (err) {
-      res.json(Boom.badImplementation(err));
+      res.status(500).send(Boom.badImplementation(err));
     }
     await this.disconnect();
+  }
+
+  /**
+   *
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @memberof EmployeeController
+   */
+  async verifyAdmin(req: Request, res: Response) {
+    const { username } = req.params;
+    try {
+      await this.connect();
+      const isAdmin = await this.isAdmin(username);
+      res.status(200).json(isAdmin);
+    } catch (err) {
+      res.status(200).json(false);
+    }
+    await this.disconnect();
+  }
+
+  /**
+   * Determines whether the surrent user is an administrator.
+   * @param {string} username
+   * @returns
+   * @memberof EmployeeController
+   */
+  async isAdmin(username: string) {
+    let isAdmin: boolean = false;
+    try {
+      const { rows } = await this.readByUsername(username);
+      isAdmin = rows[0].admin;
+    } catch (err) {
+      throw err;
+    }
+
+    return isAdmin;
   }
 }
