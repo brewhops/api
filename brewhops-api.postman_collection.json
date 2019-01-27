@@ -955,6 +955,68 @@
 			]
 		},
 		{
+			"name": "Tasks Routes",
+			"item": [
+				{
+					"name": "/ (get all tasks)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "399e769a-2a99-4b8c-bc72-c550c48bec03",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7ccc7dbc-d061-4910-8913-62f75da9b695",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Versions Routes",
+			"item": [
+				{
+					"name": "batch/:batchId (get version by batch id)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Initialize Data",
 			"request": {
 				"method": "POST",
@@ -1001,37 +1063,37 @@
 	],
 	"variable": [
 		{
-			"id": "8f07ae4c-9afc-4f39-9b31-90fb2702fe7e",
+			"id": "a701cddd-ac33-4185-983a-7ea720422507",
 			"key": "api-domain",
 			"value": "http://localhost:3000",
 			"type": "string"
 		},
 		{
-			"id": "65e5cd88-6ea7-4d2a-b879-b5134c638cfa",
+			"id": "becc032c-8afc-447e-99a0-2d382eca067b",
 			"key": "employee-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "87850ded-52e0-4e4b-8a34-a8e3838a03de",
+			"id": "ef25adf4-e540-479b-95b7-da3cdc2de302",
 			"key": "tank-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "90cbef80-7074-49be-b4b9-489931cd7bae",
+			"id": "90185298-49c9-47b2-b25a-f47770404051",
 			"key": "action-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "7d8e5551-619f-492e-8805-08c9099644af",
+			"id": "10d5ebcf-8b24-4105-aef6-69d8d53b8635",
 			"key": "recipe-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "0fcb7da4-c717-4f4c-b942-bcdcf571c70f",
+			"id": "fc9db5c4-5e45-4950-b543-386de2073918",
 			"key": "batch-id",
 			"value": "1",
 			"type": "string"
