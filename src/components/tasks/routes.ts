@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction, Router } from 'express';
 import { TaskController, ITaskController } from './controller';
 import Boom from 'boom';
-// import { ActionValidator } from './validator';
-import { requireAuthentication } from '../../middleware/auth';
-// tslint:disable-next-line:no-var-requires no-require-imports
-const validate = require('express-validation');
 
 // tslint:disable: no-unsafe-any
 
