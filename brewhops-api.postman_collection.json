@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3b5ae75d-9da7-4f63-9a90-1284fdb53b78",
+		"_postman_id": "e17f671e-3709-4cb6-8f99-d6f3d9fbdda5",
 		"name": "brewhops-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -967,7 +967,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": ""
+							"raw": "{{api-domain}}/tasks",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tasks"
+							]
 						}
 					},
 					"response": []
@@ -1009,7 +1015,15 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": ""
+							"raw": "{{api-domain}}/versions/batch/1",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"versions",
+								"batch",
+								"1"
+							]
 						}
 					},
 					"response": []
