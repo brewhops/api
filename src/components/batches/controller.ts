@@ -131,8 +131,6 @@ export class BatchesController extends PostgresController implements IBatchesCon
     // ****** CREATE TASK ****** //
     // ************************* //
 
-    await this.connect();
-
     // if there is an action
     if (input.action) {
       // build up our info to insert
