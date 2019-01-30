@@ -196,7 +196,6 @@ async function insertDevBatches() {
 
     const tasksResult: QueryResult = await tasksController.readById(i);
     const task = {
-      id: i,
       assigned: true,
       batch_id: i,
       action_id: i,
@@ -208,9 +207,9 @@ async function insertDevBatches() {
     if (tasksResult.rows.length === 0) {
       const {keys, escapes, values} = batchesController.splitObjectKeyVals(task);
       await batchesController.createInTable(keys, 'tasks', escapes, values);
-      console.log(` + Added task ${task.id}.`);
+      console.log(` + Added task ${i}.`);
     } else {
-      console.log(` ✔️ Task ${task.id} exists.`);
+      console.log(` ✔️ Task ${i} exists.`);
     }
 
     iterations++;
