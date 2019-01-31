@@ -133,7 +133,7 @@ export class TankController extends PostgresController implements ITankControlle
    * @memberof TankController
    */
   async updateTank(req: Request, res: Response, next: NextFunction) {
-    const {id} = req.params;
+    const { id } = req.params;
     if (is.empty(req.body)) {
       res.status(400).send(Boom.badRequest('Request does not match valid form'));
     } else {
