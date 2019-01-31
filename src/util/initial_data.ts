@@ -122,9 +122,10 @@ async function insertDevRecipes() {
       name: `Recipe ${i}`,
       airplane_code: 'ABC',
       yeast: 5,
-      instructions: JSON.stringify({
-        directions: `brew the beer according to recipe ${i}`
-      })
+      instructions: JSON.stringify([{
+        ingredient: 'hops',
+        ratio: `${i}`
+      }])
     };
     if (rows.length === 0) {
       const { keys, values, escapes } = recipeController.splitObjectKeyVals(recipe);
