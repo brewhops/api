@@ -51,7 +51,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
   async getBatchesByTank(req: Request, res: Response, next: NextFunction) {
     try {
       await this.connect();
-      const { rows } = await this.read('*', 'tank_id = $1', [req.params.id]);
+      const { rows } = await this.read('*', 'tank_id = $1', [req.params.tankId]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
