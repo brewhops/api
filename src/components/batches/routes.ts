@@ -17,6 +17,7 @@ export function routes(): Router {
 
   // [GET] section
   router.get('/', async (req, res, next) => controller.getBatches(req, res, next));
+  router.get('/tank/:tankId', async (req, res, next) => controller.getBatchesByTank(req, res, next));
   router.get('/id/:id', async (req, res, next) => controller.getBatch(req, res, next));
 
   // [POST] section

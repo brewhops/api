@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e17f671e-3709-4cb6-8f99-d6f3d9fbdda5",
+		"_postman_id": "a35cd7ee-9c19-497d-ba19-7c899757d531",
 		"name": "brewhops-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -874,7 +874,7 @@
 					"response": []
 				},
 				{
-					"name": "/history/id/:id",
+					"name": "/tank/:id (get batches by tank id)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -883,15 +883,14 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{api-domain}}/batches/history/id/{{batch-id}}",
+							"raw": "{{api-domain}}/batches/tank/{{tank-id}}",
 							"host": [
 								"{{api-domain}}"
 							],
 							"path": [
 								"batches",
-								"history",
-								"id",
-								"{{batch-id}}"
+								"tank",
+								"{{tank-id}}"
 							]
 						},
 						"description": "Gets the history of a batch by id"
