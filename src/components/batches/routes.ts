@@ -18,10 +18,9 @@ export function routes(): Router {
   // [GET] section
   router.get('/', async (req, res, next) => controller.getBatches(req, res, next));
   router.get('/id/:id', async (req, res, next) => controller.getBatch(req, res, next));
-  router.get('/history/id/:id', async (req, res, next) => controller.getBatchHistory(req, res, next));
 
   // [POST] section
-  router.post('/', validate(BatchesValidator.createBatch), requireAuthentication, async (req, res, next) => controller.createBatch(req, res, next));
+  router.post('/', validate(BatchesValidator.createBatch), async (req, res, next) => controller.createBatch(req, res, next));
 
   // [PATCH] section
   router.patch('/id/:id', validate(BatchesValidator.updateBatch), requireAuthentication, async (req, res, next) => controller.updateBatch(req, res, next));

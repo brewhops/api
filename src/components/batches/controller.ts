@@ -5,7 +5,6 @@ import Boom from 'boom';
 export interface IBatchesController extends IPostgresController {
   getBatches: RequestHandler;
   getBatch: RequestHandler;
-  getBatchHistory: RequestHandler;
   createBatch: RequestHandler;
   updateBatch: RequestHandler;
   deleteBatch: RequestHandler;
@@ -63,36 +62,6 @@ export class BatchesController extends PostgresController implements IBatchesCon
     await this.disconnect();
   }
 
-  /**
-   * Returns the corresponding history for a batch by id
-   * @param {Request} req
-   * @param {Response} res
-   * @param {NextFunction} next
-   * @memberof BatchesController
-   */
-  async getBatchHistory(req: Request, res: Response, next: NextFunction) {
-    try {
-      await this.connect();
-      const results = await this.readById(req.params.id);
-      if (results.rowCount > 0) {
-        const versions = await this.client.query(
-          `SELECT * FROM versions
-          WHERE batch_id = $1`,
-          [req.params.id]
-        );
-        const response = results.rows[0];
-        response.history = versions.rows;
-        res.status(200).json(response);
-      } else {
-        next();
-      }
-    } catch (err) {
-      res.status(500).send(Boom.badImplementation(err));
-    }
-    await this.disconnect();
-  }
-
-
   // tslint:disable:max-func-body-length
   /**
    * Creates a new batch, task and version.
@@ -103,6 +72,8 @@ export class BatchesController extends PostgresController implements IBatchesCon
   async createBatch(req: Request, res: Response) {
     // make a shorthand for out body so organizing is easier
     const input = req.body;
+
+    await this.connect();
 
     // check to see if the item already exists
     let results = await this.read('id', 'name=$1', [req.body.name]);
@@ -138,11 +109,11 @@ export class BatchesController extends PostgresController implements IBatchesCon
     } else {
       // get the id of the current batch
       const batchID = results.rows[0].id;
-      // set an update
-      const { query, idx } = await this.buildUpdateString(keys);
-      values.push(batchID);
-      // update the batch
       try {
+        // set an update
+        const { query, idx } = await this.buildUpdateString(keys);
+        values.push(batchID);
+        // update the batch
         await this.connect();
         results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
       } catch (err) {
@@ -203,20 +174,24 @@ export class BatchesController extends PostgresController implements IBatchesCon
         // get the taskID
         const taskID = taskExists.rows[0].id;
 
-        // update the task
-        this.client
-          .query(
-            `UPDATE tasks SET (${keys}) = (${escapes}) WHERE id = ${taskID} RETURNING *`,
-            values
-          )
-          .catch(err => res.status(400).send(Boom.badRequest(err)));
+        try {
+          // update the task
+          await this.client
+            .query(`UPDATE tasks SET (${keys}) = (${escapes}) WHERE id = ${taskID} RETURNING *`,values);
+        } catch (err) {
+          res.status(400).send(Boom.badRequest(err));
+        }
       } else {
         // dont let the user try and finish a task that has not started
         if (input.action.completed) {
           res.status(400).send(Boom.badRequest('You can not close a task that has not yet been opened'));
         } else {
           // insert a new task
-          this.createInTable(keys, 'tasks', escapes, values).catch(err => res.status(400).send(Boom.badRequest(err)));
+          try {
+            await this.createInTable(keys, 'tasks', escapes, values);
+          } catch (err) {
+            res.status(400).send(Boom.badRequest(err));
+          }
         }
       }
     }
@@ -227,9 +202,9 @@ export class BatchesController extends PostgresController implements IBatchesCon
 
     // pull the information for our version
     const version = {
-      SG: input.SG,
-      PH: input.PH,
-      ABV: input.ABV,
+      SG: input.sg,
+      PH: input.ph,
+      ABV: input.abv,
       temperature: input.temperature,
       pressure: input.pressure,
       // if our measured on time was not given, set it to now
@@ -245,15 +220,12 @@ export class BatchesController extends PostgresController implements IBatchesCon
     escapes = split.escapes;
 
     // put our version info in the versions table
-    this.createInTable(keys, 'versions', escapes, values)
-      // send back the all ok
-      .then(submittedValue => {
-        res.status(201).end();
-      })
-      // log and return errors if we had a problem
-      .catch(err => {
-        res.status(400).send(Boom.badRequest(err));
-      });
+    try {
+      await this.createInTable(keys, 'versions', escapes, values);
+      res.status(201).end();
+    } catch (err) {
+      res.status(400).send(Boom.badRequest(err));
+    }
 
     await this.disconnect();
   }
