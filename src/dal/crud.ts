@@ -122,7 +122,7 @@ export class CrudController implements ICrudController {
     conditions: any,
     escaped: any[]
   ): Promise<QueryResult> {
-    return this.client.query(`INSERT INTO ${table} (${columns}) VALUES (${conditions})`, escaped);
+    return this.client.query(`INSERT INTO ${table} (${columns}) VALUES (${conditions}) RETURNING *`, escaped);
   }
 
   /**

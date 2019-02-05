@@ -153,7 +153,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
     await this.connect();
 
     // if there is an action
-    if (input.action) {
+    if (input.action.id !== '') {
       // build up our info to insert
       const tasksInfo: any = {
         assigned: input.action.assigned,

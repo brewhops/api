@@ -6,7 +6,7 @@ export type Version = {
   pressure: number;
 };
 
-export type Task = {
+export type BatchAction = {
   id: number;
   completed: boolean;
   assigned: boolean;
@@ -26,5 +26,5 @@ export type Batch = {
   completed_on: string | undefined;
   recipe_id: number;
   tank_id: number;
-  action: Task;
+  action: BatchAction;
 } & Version;
