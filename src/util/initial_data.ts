@@ -91,26 +91,26 @@ async function insertDevTanks() {
   await tankController.disconnect();
 }
 
-async function insertDevActions() {
-  const actionController: IActionController = new ActionController('actions');
-  await actionController.connect();
+// async function insertDevActions() {
+//   const actionController: IActionController = new ActionController('actions');
+//   await actionController.connect();
 
-  for (let i = 1; i < 10; i++) {
-    const { rows }: QueryResult = await actionController.readById(i);
-    const action: Action = {
-      name: `Action ${i}`,
-      description: `Description for action ${i}`
-    };
-    if (rows.length === 0) {
-      const { keys, values, escapes } = actionController.splitObjectKeyVals(action);
-      await actionController.create(keys, escapes, values);
-      console.log(` + Added action '${action.name}'.`);
-    } else {
-      console.log(` ✔️ Action '${action.name}' exists.`);
-    }
-  }
-  await actionController.disconnect();
-}
+//   for (let i = 1; i < 10; i++) {
+//     const { rows }: QueryResult = await actionController.readById(i);
+//     const action: Action = {
+//       name: `Action ${i}`,
+//       description: `Description for action ${i}`
+//     };
+//     if (rows.length === 0) {
+//       const { keys, values, escapes } = actionController.splitObjectKeyVals(action);
+//       await actionController.create(keys, escapes, values);
+//       console.log(` + Added action '${action.name}'.`);
+//     } else {
+//       console.log(` ✔️ Action '${action.name}' exists.`);
+//     }
+//   }
+//   await actionController.disconnect();
+// }
 
 async function insertDevRecipes() {
   const recipeController: IRecipeController = new RecipeController('recipes');
@@ -225,7 +225,7 @@ export async function insertDevelopmentData() {
   try {
     await insertDevAdmin();
     await insertDevTanks();
-    await insertDevActions();
+    // await insertDevActions();
     await insertDevRecipes();
     await insertDevBatches();
   } catch (err) {

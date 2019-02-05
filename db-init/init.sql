@@ -354,3 +354,21 @@ $tasks_audit_trigger$ LANGUAGE plpgsql;
 CREATE TRIGGER tasks_audit_t AFTER INSERT OR UPDATE OR DELETE ON tasks 
     FOR EACH ROW EXECUTE PROCEDURE tasks_audit_function();
 
+
+INSERT INTO actions (name, description) VALUES 
+    ('Set Lager temp to 57 deg', ''),
+    ('Cap non Dry Hop', ''),
+    ('Cap and Dry Hop', ''),
+    ('Set Tri temp to 73 deg', ''),
+    ('Dry Hop Day', ''),
+    ('Waiting for Diatecyl', ''),
+    ('Crash Day', ''),
+    ('Exception', ''),
+    ('Yeast Pull', ''),
+    ('Cap and Exception', ''),
+    ('Set H&S and Hazy temp to 74 deg', '');
+
+
+
+
+
