@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a35cd7ee-9c19-497d-ba19-7c899757d531",
+		"_postman_id": "0114da96-2b12-45d1-ba0f-e7d45e7cbb1e",
 		"name": "brewhops-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -874,7 +874,7 @@
 					"response": []
 				},
 				{
-					"name": "/tank/:id (get batches by tank id)",
+					"name": "/history/id/:id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -883,14 +883,15 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{api-domain}}/batches/tank/{{tank-id}}",
+							"raw": "{{api-domain}}/batches/history/id/{{batch-id}}",
 							"host": [
 								"{{api-domain}}"
 							],
 							"path": [
 								"batches",
-								"tank",
-								"{{tank-id}}"
+								"history",
+								"id",
+								"{{batch-id}}"
 							]
 						},
 						"description": "Gets the history of a batch by id"
@@ -971,6 +972,62 @@
 						"body": {
 							"mode": "raw",
 							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/tasks",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ (create tank)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assigned\": true,\n    \"batch_id\": 5,\n    \"action_id\": 1,\n    \"employee_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{api-domain}}/tasks",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ (update task)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": 18,\n    \"assigned\": true,\n    \"batch_id\": 1,\n    \"action_id\": 1,\n    \"employee_id\": 1\n}"
 						},
 						"url": {
 							"raw": "{{api-domain}}/tasks",
