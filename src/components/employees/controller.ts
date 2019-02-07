@@ -76,11 +76,10 @@ export class EmployeeController extends PostgresController implements IEmployeeC
    * @memberof EmployeeController
    */
   async createEmployee(req: Request, res: Response) {
-    const { username, password: pw } = req.body;
+    const { username, password } = req.body;
     try {
       await this.connect();
       const prevUser = await this.readByUsername(username);
-      const password = CryptoJS.AES.encrypt(pw, username);
       const { keys, values, escapes } = this.splitObjectKeyVals({...req.body, password});
 
       if (prevUser.rows.length !== 0) {
