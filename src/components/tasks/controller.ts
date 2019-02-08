@@ -54,7 +54,6 @@ export class TaskController extends PostgresController implements ITaskControlle
 
     const taskInfo: Task = req.body;
     taskInfo.id = undefined;
-    taskInfo.added_on = new Date().toISOString();
 
     let taskExists: QueryResult;
     try {
@@ -69,6 +68,8 @@ export class TaskController extends PostgresController implements ITaskControlle
 
       if (taskExists.rowCount > 0) {
         res.status(400).send(Boom.badRequest('You can only have one open task per batch.'));
+
+        return;
       }
 
     } catch(err) {
@@ -82,6 +83,8 @@ export class TaskController extends PostgresController implements ITaskControlle
     // dont let the user try and finish a task that has not started
     if (taskInfo.completed_on !== undefined) {
       res.status(400).send(Boom.badRequest('You can not close a task that has not yet been opened'));
+
+      return;
     }
 
     // parse it out
@@ -96,7 +99,7 @@ export class TaskController extends PostgresController implements ITaskControlle
       if (results.rows.length === 1) {
         res.status(201).json(results.rows[0]);
       } else {
-        res.status(500).send('Failed to retrieve id after creation.');
+        res.status(500).send('Failed to retrieve object after creation.');
       }
     } catch (err) {
       res.status(500).send(Boom.badRequest(err));
@@ -113,13 +116,13 @@ export class TaskController extends PostgresController implements ITaskControlle
    */
   async updateTask(req: Request, res: Response, next: NextFunction) {
     const taskInfo: Task = req.body;
-    taskInfo.completed_on = new Date().toISOString();
-
     const taskId = taskInfo.id;
     taskInfo.id = undefined;
 
     if (taskId === undefined) {
       res.status(400).send(Boom.badRequest('Must include task id.'));
+
+      return;
     }
 
     try {
@@ -138,10 +141,14 @@ export class TaskController extends PostgresController implements ITaskControlle
         res.status(200).json(results.rows[0]);
       } else {
         res.status(404).end();
+
+        return;
       }
 
     } catch (err) {
       res.status(500).send(Boom.badRequest(err));
+
+      return;
     }
 
   }
