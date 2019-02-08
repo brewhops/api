@@ -8,6 +8,7 @@ import { QueryResult } from 'pg';
 
 export interface ITaskController extends IPostgresController {
   getTasks: RequestHandler;
+  getTasksByBatch: RequestHandler;
   createTask: RequestHandler;
   updateTask: RequestHandler;
 }
@@ -36,6 +37,24 @@ export class TaskController extends PostgresController implements ITaskControlle
     try {
       await this.connect();
       const { rows } = await this.read('*', '$1', [true]);
+      res.status(200).json(rows);
+    } catch (err) {
+      res.status(500).send(Boom.badImplementation(err));
+    }
+    await this.disconnect();
+  }
+
+  /**
+   * Returns tasks for a batch
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof TaskController
+   */
+  async getTasksByBatch(req: Request, res: Response, next: NextFunction) {
+    try {
+      await this.connect();
+      const { rows } = await this.read('*', 'batch_id = $1', [req.params.batchId]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));

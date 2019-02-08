@@ -999,7 +999,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"assigned\": true,\n    \"batch_id\": 5,\n    \"action_id\": 1,\n    \"employee_id\": 1\n}"
+							"raw": "{\n    \"assigned\": true,\n    \"batch_id\": 1,\n    \"action_id\": 1,\n    \"employee_id\": 1,\n    \"added_on\": \"2019-02-07T21:49\"\n}"
 						},
 						"url": {
 							"raw": "{{api-domain}}/tasks",
@@ -1027,7 +1027,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": 18,\n    \"assigned\": true,\n    \"batch_id\": 1,\n    \"action_id\": 1,\n    \"employee_id\": 1\n}"
+							"raw": "{\n\t\"id\": 1,\n    \"assigned\": true,\n    \"batch_id\": 1,\n    \"action_id\": 1,\n    \"employee_id\": 1,\n    \"completed_on\": \"2019-02-07T22:49\"\n}"
 						},
 						"url": {
 							"raw": "{{api-domain}}/tasks",
@@ -1036,6 +1036,29 @@
 							],
 							"path": [
 								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/batch/:batchId (get all tasks for batch)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-domain}}/tasks/batch/{{batch-id}}",
+							"host": [
+								"{{api-domain}}"
+							],
+							"path": [
+								"tasks",
+								"batch",
+								"{{batch-id}}"
 							]
 						}
 					},

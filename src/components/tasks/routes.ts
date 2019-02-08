@@ -18,6 +18,7 @@ export function routes(): Router {
 
   // [GET] section
   router.get('/', async (req, res, next) => controller.getTasks(req, res, next));
+  router.get('/batch/:batchId', async (req, res, next) => controller.getTasksByBatch(req, res, next));
 
   // [POST] section
   router.post('/', async (req, res, next) => controller.createTask(req, res, next));
