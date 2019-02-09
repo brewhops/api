@@ -356,17 +356,18 @@ CREATE TRIGGER tasks_audit_t AFTER INSERT OR UPDATE OR DELETE ON tasks
 
 
 INSERT INTO actions (name, description) VALUES 
-    ('Set Lager temp to 57 deg', ''),
-    ('Cap non Dry Hop', ''),
-    ('Cap and Dry Hop', ''),
-    ('Set Tri temp to 73 deg', ''),
-    ('Dry Hop Day', ''),
-    ('Waiting for Diatecyl', ''),
-    ('Crash Day', ''),
-    ('Exception', ''),
-    ('Yeast Pull', ''),
-    ('Cap and Exception', ''),
-    ('Set H&S and Hazy temp to 74 deg', '');
+    ('Set Lager temp to 57 deg', 'Set Lager temp to 57 deg'),
+    ('Cap non Dry Hop', 'Cap non Dry Hop'),
+    ('Cap and Dry Hop', 'Cap and Dry Hop'),
+    ('Set Tri temp to 73 deg', 'Set Tri temp to 73 deg'),
+    ('Dry Hop Day', 'Dry Hop Day'),
+    ('Waiting for Diatecyl', 'Waiting for Diatecyl'),
+    ('Crash Day', 'Crash Day'),
+    ('Exception', 'Exception'),
+    ('Yeast Pull', 'Yeast Pull'),
+    ('Cap and Exception', 'Cap and Exception'),
+    ('Set H&S and Hazy temp to 74 deg', 'Set H&S and Hazy temp to 74 deg'),
+    ('New Batch No Action', 'New Batch No Action');
 
 
 
