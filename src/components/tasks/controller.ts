@@ -135,10 +135,8 @@ export class TaskController extends PostgresController implements ITaskControlle
    */
   async updateTask(req: Request, res: Response, next: NextFunction) {
     const taskInfo: Task = req.body;
-    const taskId = taskInfo.id;
-    taskInfo.id = undefined;
 
-    if (taskId === undefined) {
+    if (taskInfo.id === undefined) {
       res.status(400).send(Boom.badRequest('Must include task id.'));
 
       return;
@@ -149,7 +147,7 @@ export class TaskController extends PostgresController implements ITaskControlle
       // parse it out
       const { keys, values } = this.splitObjectKeyVals(taskInfo);
       const { query, idx } = this.buildUpdateString(keys);
-      values.push(String(taskId));
+      values.push(String(taskInfo.id));
 
       // insert a new task
       await this.connect();
