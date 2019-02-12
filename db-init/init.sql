@@ -363,7 +363,7 @@ INSERT INTO actions (name, description) VALUES
     ('Dry Hop Day', 'Dry Hop Day'),
     ('Waiting for Diatecyl', 'Waiting for Diatecyl'),
     ('Crash Day', 'Crash Day'),
-    ('Exception', 'Exception'),
+    ('Cap and Dry Hop Exception', 'Cap and Dry Hop Exception'),
     ('Yeast Pull', 'Yeast Pull'),
     ('Cap and Exception', 'Cap and Exception'),
     ('Set H&S and Hazy temp to 74 deg', 'Set H&S and Hazy temp to 74 deg'),
