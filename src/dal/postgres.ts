@@ -40,12 +40,15 @@ export class PostgresController extends CrudController implements IPostgresContr
     const values = [];
     const escapes = [];
     let idx = 1;
+
     // tslint:disable-next-line: no-for-in forin
     for (const key in obj) {
-      keys.push(key.toString());
-      values.push(obj[key].toString());
-      escapes.push(`\$${idx}`); // eslint-disable-line
-      idx++;
+      if (obj[key]) {
+        keys.push(key.toString());
+        values.push(obj[key].toString());
+        escapes.push(`\$${idx}`); // eslint-disable-line
+        idx++;
+      }
     }
 
     return {
