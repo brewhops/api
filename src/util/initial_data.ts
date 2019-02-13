@@ -1,12 +1,9 @@
-import bcrypt from 'bcrypt';
 import { EmployeeController, IEmployeeController } from '../components/employees/controller';
 import { Employee } from '../components/employees/types';
 import { TankController, ITankController } from '../components/tanks/controller';
 import { Tank } from '../components/tanks/types';
 import { QueryResult } from 'pg';
 import { BatchesController, IBatchesController } from '../components/batches/controller';
-import { IActionController, ActionController } from '../components/actions/controller';
-import { Action } from '../components/actions/types';
 import { RecipeController, IRecipeController } from '../components/recipes/controller';
 import { Recipe } from '../components/recipes/types';
 import CryptoJS from 'crypto-js';
@@ -72,7 +69,7 @@ async function insertDevTanks() {
   const tankController: ITankController = new TankController('tanks');
   await tankController.connect();
 
-  for (let i = 1; i < 10; i++) {
+  for (let i = 1; i < 13; i++) {
     const { rows }: QueryResult = await tankController.readById(i);
     const tank: Tank = {
       name: `F${i}`,
@@ -91,32 +88,11 @@ async function insertDevTanks() {
   await tankController.disconnect();
 }
 
-async function insertDevActions() {
-  const actionController: IActionController = new ActionController('actions');
-  await actionController.connect();
-
-  for (let i = 1; i < 10; i++) {
-    const { rows }: QueryResult = await actionController.readById(i);
-    const action: Action = {
-      name: `Action ${i}`,
-      description: `Description for action ${i}`
-    };
-    if (rows.length === 0) {
-      const { keys, values, escapes } = actionController.splitObjectKeyVals(action);
-      await actionController.create(keys, escapes, values);
-      console.log(` + Added action '${action.name}'.`);
-    } else {
-      console.log(` ✔️ Action '${action.name}' exists.`);
-    }
-  }
-  await actionController.disconnect();
-}
-
 async function insertDevRecipes() {
   const recipeController: IRecipeController = new RecipeController('recipes');
   await recipeController.connect();
 
-  for (let i = 1; i < 10; i++) {
+  for (let i = 1; i < 13; i++) {
     const { rows }: QueryResult = await recipeController.readById(i);
     const recipe: Recipe = {
       name: `Recipe ${i}`,
@@ -151,7 +127,7 @@ async function insertDevBatches() {
   let idx = 0;
   let iterations = 1;
 
-  for (let i = 1; i < 10; i++) {
+  for (let i = 1; i < 13; i++) {
     const batchResult: QueryResult = await batchesController.readById(i);
     const batch = {
       name: `Batch ${i}`,
@@ -206,8 +182,8 @@ async function insertDevBatches() {
     };
 
     if (tasksResult.rows.length === 0) {
-      const {keys, escapes, values} = batchesController.splitObjectKeyVals(task);
-      await batchesController.createInTable(keys, 'tasks', escapes, values);
+      const {keys, escapes, values} = tasksController.splitObjectKeyVals(task);
+      await tasksController.createInTable(keys, 'tasks', escapes, values);
       console.log(` + Added task ${i}.`);
     } else {
       console.log(` ✔️ Task ${i} exists.`);
@@ -225,7 +201,6 @@ export async function insertDevelopmentData() {
   try {
     await insertDevAdmin();
     await insertDevTanks();
-    await insertDevActions();
     await insertDevRecipes();
     await insertDevBatches();
   } catch (err) {
