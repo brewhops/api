@@ -1,6 +1,7 @@
 import { PostgresController, IPostgresController } from '../../dal/postgres';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Boom from 'boom';
+import { Batch } from './types';
 
 export interface IBatchesController extends IPostgresController {
   getBatches: RequestHandler;
@@ -88,7 +89,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {Response} res
    * @memberof BatchesController
    */
-  async createBatch(req: Request, res: Response) {
+  async updateBatch(req: Request, res: Response) {
     // make a shorthand for out body so organizing is easier
     const input = req.body;
 
@@ -256,18 +257,14 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {NextFunction} next
    * @memberof BatchesController
    */
-  async updateBatch(req: Request, res: Response, next: NextFunction) {
-    const { keys, values } = this.splitObjectKeyVals(req.body);
-    const { query, idx } = await this.buildUpdateString(keys);
-    values.push(req.params.id);
+  async createBatch(req: Request, res: Response, next: NextFunction) {
+    const batch: Batch = req.body;
+    batch.started_on =  new Date().toUTCString();
+    const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
       await this.connect();
-      const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
-      if (results.rowCount > 0) {
-        res.status(200).json(results.rows[0]);
-      } else {
-        next();
-      }
+      const results = await this.create(keys, escapes, values);
+      res.status(200).json(results.rows[0]);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
