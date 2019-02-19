@@ -10,6 +10,7 @@ export interface IBatchesController extends IPostgresController {
   createBatch: RequestHandler;
   updateBatch: RequestHandler;
   deleteBatch: RequestHandler;
+  closeBatch: RequestHandler;
 }
 
 // tslint:disable:no-any no-unsafe-any no-console
@@ -198,16 +199,21 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @memberof BatchesController
    */
   async deleteBatch(req: Request, res: Response, next: NextFunction) {
-    // remove the versions tied to that batch
-    const versions = await this.client.query(
-      `DELETE FROM versions
-      WHERE batch_id = $1`,
-      [req.params.id]
-    );
-    // remove the batch
     try {
       await this.connect();
+      // remove the versions tied to that batch
+      const versions = await this.client.query(
+        `DELETE FROM versions
+        WHERE batch_id = $1`,
+        [req.params.id]
+      );
+      await this.disconnect();
+
+      // remove the batch
+      await this.connect();
       const batch = await this.deleteById(req.params.id);
+      await this.disconnect();
+
       if (batch.rowCount > 0) {
         res.status(200).json({
           msg: 'Success',
@@ -220,6 +226,36 @@ export class BatchesController extends PostgresController implements IBatchesCon
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+  }
+
+  /**
+   * Closes a batch.
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof BatchesController
+   */
+  async closeBatch(req: Request, res: Response, next: NextFunction) {
+    const batchId = req.params.id;
+
+    try {
+      const batch = {
+        completed_on: new Date().toUTCString()
+      };
+
+      const { keys, values, escapes } = this.splitObjectKeyVals(batch);
+      // set an update
+      const { query, idx } = await this.buildUpdateString(keys);
+      values.push(batchId);
+
+      // update the batch
+      await this.connect();
+      const results = await this.update(query, `id = \$${idx}`, values);
+      await this.disconnect();
+
+      res.status(200).end();
+    } catch(err) {
+      res.status(500).send(Boom.badImplementation(err));
+    }
   }
 }
