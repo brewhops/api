@@ -1,4 +1,5 @@
 import { PostgresController, IPostgresController } from '../../dal/postgres';
+import { Client } from 'pg';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Boom from 'boom';
 
@@ -31,13 +32,14 @@ export class VersionController extends PostgresController implements IVersionCon
   async getVersionsByBatch(req: Request, res: Response, next: NextFunction) {
     const { batchId } = req.params;
     try {
-      await this.connect();
-      const { rows } = await this.client.query(`SELECT * FROM versions WHERE batch_id = ${batchId}`);
+      const client = await this.connect(true) as Client;
+      const { rows } = await client.query(`SELECT * FROM versions WHERE batch_id = ${batchId}`);
+      await this.disconnect(client);
+
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
 }
