@@ -36,6 +36,8 @@ class CrudController {
             port: process.env.PORT,
             host: process.env.HOST
         };
+        // tslint:disable-next-line
+        console.log(config);
         if (process.env.NODE_ENV === 'production') {
             this.client = new pg_1.Client(config);
         }
