@@ -2,7 +2,7 @@ import { PostgresController, IPostgresController } from '../../dal/postgres';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Boom from 'boom';
 import { Task } from './types';
-import { QueryResult } from 'pg';
+import { QueryResult, Client } from 'pg';
 
 // tslint:disable: no-unsafe-any
 
@@ -52,15 +52,17 @@ export class TaskController extends PostgresController implements ITaskControlle
    * @memberof TaskController
    */
   async getTasksByBatch(req: Request, res: Response, next: NextFunction) {
+    let client;
     try {
-      await this.connect();
-      const { rows } = await this.read('*', 'batch_id = $1', [req.params.batchId]);
+      client = await this.connect(true) as Client;
+      const { rows } = await this.read('*', 'batch_id = $1', [req.params.batchId], client);
+
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
+    } finally {
+      await this.disconnect(client);
     }
-
-    await this.disconnect();
   }
 
   /**
@@ -73,10 +75,11 @@ export class TaskController extends PostgresController implements ITaskControlle
   async createTask(req: Request, res: Response, next: NextFunction) {
     const { id, ...taskInfo } = req.body;
 
+    let client;
     try {
-      await this.connect();
+      client = await this.connect(true) as Client;
 
-      const taskExists = await this.client.query(
+      const taskExists = await client.query(
         `SELECT * FROM tasks
         WHERE completed_on IS NULL
         AND batch_id = $1`,
@@ -90,7 +93,7 @@ export class TaskController extends PostgresController implements ITaskControlle
           // parse it out
           const { keys, values, escapes } = this.splitObjectKeyVals(taskInfo);
 
-          const results: QueryResult = await this.createInTable(keys, this.tableName(), escapes, values);
+          const results: QueryResult = await this.createInTable(keys, this.tableName(), escapes, values, client);
 
           if (results.rows.length === 1) {
             res.status(201).json(results.rows[0]);
@@ -108,9 +111,9 @@ export class TaskController extends PostgresController implements ITaskControlle
 
     } catch(err) {
       res.status(500).send(Boom.badRequest(err));
+    } finally {
+      await this.disconnect(client);
     }
-
-    await this.disconnect();
 
   }
 
@@ -124,9 +127,11 @@ export class TaskController extends PostgresController implements ITaskControlle
   async updateTask(req: Request, res: Response, next: NextFunction) {
     const { id, ...taskInfo } = req.body;
 
+    let client;
     try {
 
       if (id !== undefined) {
+        client = await this.connect(true) as Client;
 
         // parse it out
         const { keys, values } = this.splitObjectKeyVals(taskInfo);
@@ -134,8 +139,7 @@ export class TaskController extends PostgresController implements ITaskControlle
         values.push(id);
 
         // insert a new task
-        await this.connect();
-        const results: QueryResult = await this.update(query, `id = \$${idx}`, values);
+        const results: QueryResult = await this.update(query, `id = \$${idx}`, values, client);
 
         if (results.rowCount > 0) {
           res.status(200).json(results.rows[0]);
@@ -149,9 +153,9 @@ export class TaskController extends PostgresController implements ITaskControlle
 
     } catch (err) {
       res.status(500).send(Boom.badRequest(err));
+    } finally {
+      await this.disconnect(client);
     }
-
-    await this.disconnect();
 
   }
 }
