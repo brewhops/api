@@ -23,6 +23,7 @@ export interface ICrudController {
   readByUsername: (username: any) => Promise<QueryResult>;
   readInTable: (columns: any, table: any, conditions: any, escaped: any[]) => Promise<QueryResult>;
   update: (columns: any, conditions: any, escaped: any[]) => Promise<QueryResult>;
+  updateInTable: (columns: any, table: any, conditions: any, escaped: any[]) => Promise<QueryResult>;
   // tslint:disable-next-line:no-reserved-keywords
   delete: (conditions: any, escaped: any[]) => Promise<QueryResult>;
   deleteById: (escaped: any[]) => Promise<QueryResult>;
@@ -195,6 +196,22 @@ export class CrudController implements ICrudController {
   async update(columns: any, conditions: any, escaped: any[]): Promise<QueryResult> {
     return this.client.query(
       `UPDATE ${this.table} SET ${columns} WHERE ${conditions} RETURNING *`,
+      escaped
+    );
+  }
+
+  /**
+   * Updates all columns in a specified table in the database where the conditions are met.
+   * @param {*} columns
+   * @param {*} table
+   * @param {*} conditions
+   * @param {any[]} escaped
+   * @returns {Promise<QueryResult>}
+   * @memberof CrudController
+   */
+  async updateInTable(columns: any, table: any, conditions: any, escaped: any[]): Promise<QueryResult> {
+    return this.client.query(
+      `UPDATE ${table} SET ${columns} WHERE ${conditions} RETURNING *`,
       escaped
     );
   }

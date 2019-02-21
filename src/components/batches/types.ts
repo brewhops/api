@@ -1,9 +1,14 @@
 export type Version = {
-  SG: number;
-  PH: number;
-  ABV: number;
+  id?: number;
+  sg: number;
+  ph: number;
+  abv: number;
   temperature: number;
   pressure: number;
+  measured_on?: string;
+  completed?: boolean;
+  batch_id?: number;
+  update_user?: number;
 };
 
 export type BatchAction = {
@@ -23,9 +28,8 @@ export type Batch = {
   bright: number;
   generation: number;
   started_on: string;
-  completed_on: string | undefined;
+  completed_on?: string;
   recipe_id: number;
   tank_id: number;
-  action: BatchAction;
   update_user?: number;
-} & Version;
+};
