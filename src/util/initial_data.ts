@@ -73,8 +73,9 @@ async function insertDevTanks() {
     const { rows }: QueryResult = await tankController.readById(i);
     const tank: Tank = {
       name: `F${i}`,
-      status: 'available',
-      in_use: true
+      status: 'brewing',
+      in_use: true,
+      update_user: 1
     };
     if (rows.length === 0) {
       const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
@@ -84,6 +85,16 @@ async function insertDevTanks() {
       console.log(` ✔️ Tank '${tank.name}' exists.`);
     }
   }
+
+  // we need one tank that is not being used for testing
+  const tank: Tank = {
+    name: `F13`,
+    status: 'available',
+    in_use: false,
+    update_user: 1
+  };
+  const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
+  await tankController.create(keys, escapes, values);
 
   await tankController.disconnect();
 }
@@ -159,7 +170,8 @@ async function insertDevBatches() {
         temperature: Math.random() * Math.floor(60),
         pressure: Math.random() * Math.floor(12),
         measured_on: dateArray[dateIter].toUTCString(),
-        batch_id: i
+        batch_id: i,
+        update_user: 1
       };
       dateIter++;
       if (versionResult.rows.length === 0) {
@@ -178,7 +190,8 @@ async function insertDevBatches() {
       action_id: i,
       employee_id: 1,
       added_on: new Date().toUTCString(),
-      completed_on: new Date().toUTCString()
+      completed_on: new Date().toUTCString(),
+      update_user: 1
     };
 
     if (tasksResult.rows.length === 0) {

@@ -43,7 +43,8 @@ export class PostgresController extends CrudController implements IPostgresContr
 
     // tslint:disable-next-line: no-for-in forin
     for (const key in obj) {
-      if (obj[key]) {
+      // we can;t use truthiness here because some of the values we insert must be 'false'
+      if (obj[key] !== null && obj[key] !== undefined) {
         keys.push(key.toString());
         values.push(obj[key].toString());
         escapes.push(`\$${idx}`); // eslint-disable-line

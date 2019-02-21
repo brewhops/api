@@ -3,4 +3,5 @@ export type Recipe = {
     airplane_code: string;
     yeast: number;
     instructions: {};
+    update_user?: number;
 };

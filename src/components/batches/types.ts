@@ -27,4 +27,5 @@ export type Batch = {
   recipe_id: number;
   tank_id: number;
   action: BatchAction;
+  update_user?: number;
 } & Version;
