@@ -21,10 +21,11 @@
   },
   "homepage": "https://github.com/ConnorChristensen/NinkasiServer#readme",
   "scripts": {
+    "start": "node dist/index.js",
     "build": "tsc",
     "test": "cross-env  NODE_ENV=test mocha --reporter spec 'src/test/components/*.js' --file src/test/dbSetup.js --exit",
     "test-intg": "cross-env  NODE_ENV=test docker-compose -f DEV.docker-compose.yaml up -d test-database; sleep 10; cross-env NODE_ENV=test TEST_PG_HOST=localhost TEST_PG_PORT=45758 mocha --reporter spec 'test/components/*.js' --file test/dbSetup.js --exit; NODE_ENV=test docker-compose -f DEV.docker-compose.yaml stop test-database;",
-    "start": "npm run build && npm run debug",
+    "dev": "npm run build && npm run debug",
     "debug": "NODE_ENV=development nodemon --legacy-watch --watch ./dist --inspect=0.0.0.0:9222 --nolazy",
     "dev": "cross-env NODE_ENV=development docker-compose up database web-server",
     "build-images": "cross-env NODE_ENV=development docker-compose up --build database web-server",
