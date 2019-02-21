@@ -189,11 +189,11 @@ class EmployeeController extends postgres_1.PostgresController {
             await this.connect();
             const isAdmin = await this.isAdmin(username);
             res.status(200).json(isAdmin);
+            await this.disconnect();
         }
         catch (err) {
             res.status(200).json(false);
         }
-        await this.disconnect();
     }
     /**
      * Determines whether the surrent user is an administrator.

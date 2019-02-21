@@ -187,6 +187,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     try {
       const isAdmin = await this.isAdmin(username);
       res.status(200).json(isAdmin);
+      await this.disconnect();
     } catch (err) {
       res.status(200).json(false);
     }
