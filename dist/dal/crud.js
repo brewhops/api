@@ -30,13 +30,13 @@ class CrudController {
     async connect() {
         // if we are testing the app, connect to the test db
         const config = {
-            user: process.env.TEST_PG_USER,
-            database: process.env.TEST_PG_DATABASE,
-            password: process.env.TEST_PG_PASSWORD,
-            port: process.env.TEST_PG_PORT,
-            host: process.env.TEST_PG_HOST
+            user: process.env.USER,
+            database: process.env.DATABASE,
+            password: process.env.PASSWORD,
+            port: process.env.PORT,
+            host: process.env.HOST
         };
-        if (process.env.NODE_ENV === 'test') {
+        if (process.env.NODE_ENV === 'production') {
             this.client = new pg_1.Client(config);
         }
         else {
