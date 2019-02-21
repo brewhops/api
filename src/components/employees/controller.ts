@@ -117,6 +117,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
           res.status(400).send(Boom.badRequest('Incorrect password'));
         }
       }
+      await this.disconnect();
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }

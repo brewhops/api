@@ -111,11 +111,11 @@ class EmployeeController extends postgres_1.PostgresController {
                     res.status(400).send(boom_1.default.badRequest('Incorrect password'));
                 }
             }
+            await this.disconnect();
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Updates an employee's information.
