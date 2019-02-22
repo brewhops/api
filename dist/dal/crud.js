@@ -135,6 +135,18 @@ class CrudController {
     async update(columns, conditions, escaped) {
         return this.client.query(`UPDATE ${this.table} SET ${columns} WHERE ${conditions} RETURNING *`, escaped);
     }
+    /**
+     * Updates all columns in a specified table in the database where the conditions are met.
+     * @param {*} columns
+     * @param {*} table
+     * @param {*} conditions
+     * @param {any[]} escaped
+     * @returns {Promise<QueryResult>}
+     * @memberof CrudController
+     */
+    async updateInTable(columns, table, conditions, escaped) {
+        return this.client.query(`UPDATE ${table} SET ${columns} WHERE ${conditions} RETURNING *`, escaped);
+    }
     // tslint:disable:no-reserved-keywords
     /**
      * Deletes all entries from the current table where the conditions are met.

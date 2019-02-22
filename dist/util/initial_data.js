@@ -171,7 +171,7 @@ async function insertDevBatches() {
             action_id: i,
             employee_id: 1,
             added_on: new Date().toUTCString(),
-            completed_on: new Date().toUTCString(),
+            completed_on: i % 2 === 0 ? new Date().toUTCString() : undefined,
             update_user: 1
         };
         if (tasksResult.rows.length === 0) {

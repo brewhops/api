@@ -25,6 +25,7 @@ function routes() {
     router.post('/update', validate(validator_1.BatchesValidator.updateBatch), auth_1.requireAuthentication, async (req, res, next) => controller.updateBatch(req, res, next));
     // [DELETE] section
     router.delete('/id/:id', auth_1.requireAuthentication, async (req, res, next) => controller.deleteBatch(req, res, next));
+    router.delete('/close/:id', auth_1.requireAuthentication, async (req, res, next) => controller.closeBatch(req, res, next));
     router.use('*', (req, res) => res.status(404).send(boom_1.default.notFound(`The route ${req.originalUrl} does not exist`)));
     return router;
 }
