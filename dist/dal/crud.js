@@ -29,13 +29,13 @@ class CrudController {
      */
     async connect() {
         // if we are testing the app, connect to the test db
-        const config = {
-            connectionString: process.env.DATABASE_URL
-        };
-        // tslint:disable-next-line
-        console.log(config);
+        // const config: ClientConfig = {
+        //   connectionString: process.env.DATABASE_URL
+        // };
+        // // tslint:disable-next-line
+        // console.log(config);
         if (process.env.NODE_ENV === 'production') {
-            this.client = new pg_1.Client(config);
+            this.client = new pg_1.Client(process.env.DATABASE_URL);
         }
         else {
             // connect to the prod db
