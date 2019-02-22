@@ -23,7 +23,8 @@ export const TankValidator = {
         .keys({
           name: Joi.string(),
           status: Joi.string(),
-          in_use: Joi.boolean()
+          in_use: Joi.boolean(),
+          update_user: Joi.number()
         })
         .unknown(false)
     };
