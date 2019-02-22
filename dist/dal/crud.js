@@ -30,11 +30,7 @@ class CrudController {
     async connect() {
         // if we are testing the app, connect to the test db
         const config = {
-            user: process.env.USER,
-            database: process.env.DATABASE_URL,
-            password: process.env.PASSWORD,
-            port: process.env.PORT,
-            host: process.env.HOST
+            connectionString: process.env.DATABASE_URL
         };
         // tslint:disable-next-line
         console.log(config);
