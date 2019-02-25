@@ -155,7 +155,6 @@ export class BatchesController extends PostgresController implements IBatchesCon
       res.status(400).send(Boom.badRequest(err));
     }
 
-    await this.disconnect();
   }
 
   /**

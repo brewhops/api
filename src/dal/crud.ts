@@ -11,8 +11,6 @@ const pool = new Pool();
  */
 export interface ICrudController {
   tableName: () => string;
-  connect: () => Promise<void>;
-  disconnect: () => Promise<void>;
   create: (columns: any, conditions: any, escaped: any[]) => Promise<QueryResult>;
   createInTable: (
     columns: any,
@@ -56,27 +54,6 @@ export class CrudController implements ICrudController {
    */
   public tableName(): string {
     return this.table;
-  }
-
-  /**
-   * This function is used to connect to the database.
-   * It must be called before performing any operation.
-   * @returns {Promise<void>}
-   * @memberof CrudController
-   */
-  public async connect(): Promise<void> {
-
-    return;
-  }
-
-  /**
-   * Ends the database conneciton
-   * @returns {Promise<void>}
-   * @memberof CrudController
-   */
-  public async disconnect(): Promise<void> {
-
-    return;
   }
 
   /**
