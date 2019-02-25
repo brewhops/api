@@ -1,5 +1,4 @@
-import { Client, ClientConfig, QueryResult } from 'pg';
-
+import { QueryResult, PoolClient, Pool, PoolConfig } from 'pg';
 // tslint:disable:no-any
 
 /**
@@ -39,11 +38,20 @@ export interface ICrudController {
  * @implements {ICrudController}
  */
 export class CrudController implements ICrudController {
-  public client!: Client;
+  public client!: PoolClient;
+  public pool: Pool;
   private table: string;
 
   constructor(tableName: string) {
     this.table = tableName;
+    const config: PoolConfig = {
+      // user: process.env.POSTGRES_USER,
+      // database: process.env.POSTGRES_DATABASE,
+      // password: process.env.POSTGRES_PASSWORD,
+      // port: 5432,
+      max: 20
+    };
+    this.pool = new Pool(config);
   }
 
   /**
@@ -63,22 +71,14 @@ export class CrudController implements ICrudController {
    */
   public async connect(): Promise<void> {
     // if we are testing the app, connect to the test db
-    const config: ClientConfig = {
-      user: process.env.TEST_PG_USER,
-      database: process.env.TEST_PG_DATABASE,
-      password: process.env.TEST_PG_PASSWORD,
-      port: <number | undefined>process.env.TEST_PG_PORT,
-      host: process.env.TEST_PG_HOST
-    };
-
-    if (process.env.NODE_ENV === 'test') {
-      this.client = new Client(config);
-    } else {
-      // connect to the prod db
-      this.client = new Client();
-    }
-
-    return this.client.connect();
+    // const config: ClientConfig = {
+    //   user: process.env.TEST_PG_USER,
+    //   database: process.env.TEST_PG_DATABASE,
+    //   password: process.env.TEST_PG_PASSWORD,
+    //   port: <number | undefined>process.env.TEST_PG_PORT,
+    //   host: process.env.TEST_PG_HOST
+    // };
+    this.client = await this.pool.connect();
   }
 
   /**
@@ -87,7 +87,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   public async disconnect(): Promise<void> {
-    return this.client.end();
+    this.client.release();
   }
 
   /**

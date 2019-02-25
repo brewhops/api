@@ -58,7 +58,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    // await this.disconnect();
   }
 
   /**
