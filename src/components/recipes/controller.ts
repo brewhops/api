@@ -39,7 +39,7 @@ export class RecipeController extends PostgresController implements IRecipeContr
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -61,7 +61,7 @@ export class RecipeController extends PostgresController implements IRecipeContr
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -107,7 +107,7 @@ export class RecipeController extends PostgresController implements IRecipeContr
       } catch (err) {
         res.status(500).send(Boom.badImplementation(err));
       }
-      await this.disconnect();
+      this.disconnect();
     }
   }
 
@@ -131,6 +131,6 @@ export class RecipeController extends PostgresController implements IRecipeContr
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 }

@@ -39,7 +39,7 @@ export class TankController extends PostgresController implements ITankControlle
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -66,7 +66,7 @@ export class TankController extends PostgresController implements ITankControlle
     } catch (err) {
       res.status(400).send(Boom.badRequest(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -104,7 +104,7 @@ export class TankController extends PostgresController implements ITankControlle
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -122,7 +122,7 @@ export class TankController extends PostgresController implements ITankControlle
     } catch (err) {
       res.status(400).send(Boom.badRequest(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -151,7 +151,7 @@ export class TankController extends PostgresController implements ITankControlle
       } catch (err) {
         res.status(500).send(Boom.badImplementation(err));
       }
-      await this.disconnect();
+      this.disconnect();
     }
   }
 
@@ -175,6 +175,6 @@ export class TankController extends PostgresController implements ITankControlle
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 }

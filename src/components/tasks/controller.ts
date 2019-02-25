@@ -41,7 +41,7 @@ export class TaskController extends PostgresController implements ITaskControlle
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -58,9 +58,10 @@ export class TaskController extends PostgresController implements ITaskControlle
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
+    } finally {
+      this.disconnect();
     }
 
-    await this.disconnect();
   }
 
   /**
@@ -110,7 +111,7 @@ export class TaskController extends PostgresController implements ITaskControlle
       res.status(500).send(Boom.badRequest(err));
     }
 
-    await this.disconnect();
+    this.disconnect();
 
   }
 
@@ -151,7 +152,7 @@ export class TaskController extends PostgresController implements ITaskControlle
       res.status(500).send(Boom.badRequest(err));
     }
 
-    await this.disconnect();
+    this.disconnect();
 
   }
 }

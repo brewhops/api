@@ -38,7 +38,7 @@ export class ActionController extends PostgresController implements IActionContr
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -59,7 +59,7 @@ export class ActionController extends PostgresController implements IActionContr
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -76,7 +76,7 @@ export class ActionController extends PostgresController implements IActionContr
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -104,7 +104,7 @@ export class ActionController extends PostgresController implements IActionContr
       } catch (err) {
         res.status(500).send(Boom.badImplementation(err));
       }
-      await this.disconnect();
+      this.disconnect();
     }
   }
 
@@ -127,6 +127,6 @@ export class ActionController extends PostgresController implements IActionContr
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 }

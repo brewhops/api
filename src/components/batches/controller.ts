@@ -40,7 +40,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -58,7 +58,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -80,7 +80,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   // tslint:disable:max-func-body-length
@@ -127,7 +127,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
         // update the batch
         await this.connect();
         await this.update(query, `id = \$${idx}`, values);
-        await this.disconnect();
+        this.disconnect();
       } catch (err) {
         res.status(400).send(Boom.badRequest(err));
       }
@@ -160,14 +160,14 @@ export class BatchesController extends PostgresController implements IBatchesCon
     try {
       await this.connect();
       const result = await this.createInTable(keys, 'versions', escapes, values);
-      await this.disconnect();
+      this.disconnect();
       console.log(result);
       res.status(201).end();
     } catch (err) {
       res.status(400).send(Boom.badRequest(err));
     }
 
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -188,7 +188,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
+    this.disconnect();
   }
 
   /**
@@ -207,12 +207,12 @@ export class BatchesController extends PostgresController implements IBatchesCon
         WHERE batch_id = $1`,
         [req.params.id]
       );
-      await this.disconnect();
+      this.disconnect();
 
       // remove the batch
       await this.connect();
       const batch = await this.deleteById(req.params.id);
-      await this.disconnect();
+      this.disconnect();
 
       if (batch.rowCount > 0) {
         res.status(200).json({
@@ -251,7 +251,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
       // update the batch
       await this.connect();
       const results = await this.update(query, `id = \$${idx}`, values);
-      await this.disconnect();
+      this.disconnect();
 
       res.status(200).end();
     } catch(err) {

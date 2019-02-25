@@ -9,7 +9,7 @@ import { QueryResult, PoolClient, Pool, PoolConfig } from 'pg';
 export interface ICrudController {
   tableName: () => string;
   connect: () => Promise<void>;
-  disconnect: () => Promise<void>;
+  disconnect: () => void;
   create: (columns: any, conditions: any, escaped: any[]) => Promise<QueryResult>;
   createInTable: (
     columns: any,
@@ -86,8 +86,15 @@ export class CrudController implements ICrudController {
    * @returns {Promise<void>}
    * @memberof CrudController
    */
-  public async disconnect(): Promise<void> {
-    this.client.release();
+  public disconnect(): void {
+    try {
+      if(this.client) {
+        this.disconnect();
+      }
+    } catch (err) {
+      // tslint:disable-next-line
+      console.log(err.message);
+    }
   }
 
   /**
