@@ -32,9 +32,7 @@ export class VersionController extends PostgresController implements IVersionCon
   async getVersionsByBatch(req: Request, res: Response, next: NextFunction) {
     const { batchId } = req.params;
     try {
-      const client = await this.connect(true) as Client;
-      const { rows } = await client.query(`SELECT * FROM versions WHERE batch_id = ${batchId}`);
-      await this.disconnect(client);
+      const { rows } = await this.query(`SELECT * FROM versions WHERE batch_id = ${batchId}`);
 
       res.status(200).json(rows);
     } catch (err) {

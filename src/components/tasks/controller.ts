@@ -52,16 +52,12 @@ export class TaskController extends PostgresController implements ITaskControlle
    * @memberof TaskController
    */
   async getTasksByBatch(req: Request, res: Response, next: NextFunction) {
-    let client;
     try {
-      client = await this.connect(true) as Client;
-      const { rows } = await this.read('*', 'batch_id = $1', [req.params.batchId], client);
+      const { rows } = await this.read('*', 'batch_id = $1', [req.params.batchId]);
 
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
-    } finally {
-      await this.disconnect(client);
     }
   }
 
@@ -75,11 +71,8 @@ export class TaskController extends PostgresController implements ITaskControlle
   async createTask(req: Request, res: Response, next: NextFunction) {
     const { id, ...taskInfo } = req.body;
 
-    let client;
     try {
-      client = await this.connect(true) as Client;
-
-      const taskExists = await client.query(
+      const taskExists = await this.client.query(
         `SELECT * FROM tasks
         WHERE completed_on IS NULL
         AND batch_id = $1`,
@@ -93,7 +86,7 @@ export class TaskController extends PostgresController implements ITaskControlle
           // parse it out
           const { keys, values, escapes } = this.splitObjectKeyVals(taskInfo);
 
-          const results: QueryResult = await this.createInTable(keys, this.tableName(), escapes, values, client);
+          const results: QueryResult = await this.createInTable(keys, this.tableName(), escapes, values);
 
           if (results.rows.length === 1) {
             res.status(201).json(results.rows[0]);
@@ -111,8 +104,6 @@ export class TaskController extends PostgresController implements ITaskControlle
 
     } catch(err) {
       res.status(500).send(Boom.badRequest(err));
-    } finally {
-      await this.disconnect(client);
     }
 
   }
@@ -127,19 +118,16 @@ export class TaskController extends PostgresController implements ITaskControlle
   async updateTask(req: Request, res: Response, next: NextFunction) {
     const { id, ...taskInfo } = req.body;
 
-    let client;
     try {
 
       if (id !== undefined) {
-        client = await this.connect(true) as Client;
-
         // parse it out
         const { keys, values } = this.splitObjectKeyVals(taskInfo);
         const { query, idx } = this.buildUpdateString(keys);
         values.push(id);
 
         // insert a new task
-        const results: QueryResult = await this.update(query, `id = \$${idx}`, values, client);
+        const results: QueryResult = await this.update(query, `id = \$${idx}`, values);
 
         if (results.rowCount > 0) {
           res.status(200).json(results.rows[0]);
@@ -153,8 +141,6 @@ export class TaskController extends PostgresController implements ITaskControlle
 
     } catch (err) {
       res.status(500).send(Boom.badRequest(err));
-    } finally {
-      await this.disconnect(client);
     }
 
   }
