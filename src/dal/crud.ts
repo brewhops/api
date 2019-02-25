@@ -66,7 +66,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async create(columns: any, conditions: any, escaped: any[], returns = '*'): Promise<QueryResult> {
-    return pool.query(
+    return this.pool.query(
       `INSERT INTO ${this.table} (${columns}) VALUES (${conditions}) RETURNING ${returns}`,
       escaped
     );
@@ -88,7 +88,7 @@ export class CrudController implements ICrudController {
     conditions: any,
     escaped: any[]
   ): Promise<QueryResult> {
-    return pool.query(`INSERT INTO ${table} (${columns}) VALUES (${conditions}) RETURNING *`, escaped);
+    return this.pool.query(`INSERT INTO ${table} (${columns}) VALUES (${conditions}) RETURNING *`, escaped);
   }
 
   /**
@@ -105,7 +105,7 @@ export class CrudController implements ICrudController {
     escaped: any[] = ['']
   ): Promise<QueryResult> {
     // tslint:disable-next-line: no-unnecessary-local-variable
-    return pool.query(`SELECT ${columns} FROM ${this.table} WHERE (${conditions})`, escaped);
+    return this.pool.query(`SELECT ${columns} FROM ${this.table} WHERE (${conditions})`, escaped);
   }
 
   /**
@@ -115,7 +115,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async readById(escaped: any): Promise<QueryResult> {
-    return pool.query(
+    return this.pool.query(
       `SELECT * FROM ${this.table} WHERE id = $1`,
       [escaped]
     );
@@ -128,7 +128,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async readByUsername(username: string): Promise<QueryResult> {
-    return pool.query(`SELECT * FROM ${this.table} WHERE username = $1`, [username]);
+    return this.pool.query(`SELECT * FROM ${this.table} WHERE username = $1`, [username]);
   }
 
   /**
@@ -147,7 +147,7 @@ export class CrudController implements ICrudController {
     conditions: any = '',
     escaped: any[]
   ): Promise<QueryResult> {
-    return pool.query(`Select ${columns} FROM ${table} WHERE ${conditions}`, escaped);
+    return this.pool.query(`Select ${columns} FROM ${table} WHERE ${conditions}`, escaped);
   }
 
   /**
@@ -159,7 +159,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async update(columns: any, conditions: any, escaped: any[]): Promise<QueryResult> {
-    return pool.query(
+    return this.pool.query(
       `UPDATE ${this.table} SET ${columns} WHERE ${conditions} RETURNING *`,
       escaped
     );
@@ -175,7 +175,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async updateInTable(columns: any, table: any, conditions: any, escaped: any[]): Promise<QueryResult> {
-    return pool.query(
+    return this.pool.query(
       `UPDATE ${table} SET ${columns} WHERE ${conditions} RETURNING *`,
       escaped
     );
@@ -190,7 +190,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async delete(conditions: any, escaped: any[]): Promise<QueryResult> {
-    return pool.query(`DELETE FROM ${this.table} WHERE ${conditions}`, escaped);
+    return this.pool.query(`DELETE FROM ${this.table} WHERE ${conditions}`, escaped);
   }
   // tslint:enable:no-reserved-keywords
 
@@ -201,7 +201,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async deleteById(escaped: any[]): Promise<QueryResult> {
-    return pool.query(`DELETE FROM ${this.table} WHERE id = $1`, [escaped]);
+    return this.pool.query(`DELETE FROM ${this.table} WHERE id = $1`, [escaped]);
   }
 
   /**
@@ -214,6 +214,6 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async deleteInTable(table: any, conditions: any, escaped: any[]): Promise<QueryResult> {
-    return pool.query(`DELETE FROM ${table} WHERE ${conditions}`, escaped);
+    return this.pool.query(`DELETE FROM ${table} WHERE ${conditions}`, escaped);
   }
 }

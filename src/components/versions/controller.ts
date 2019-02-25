@@ -1,5 +1,4 @@
 import { PostgresController, IPostgresController } from '../../dal/postgres';
-import { Client } from 'pg';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Boom from 'boom';
 

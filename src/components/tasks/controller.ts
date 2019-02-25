@@ -2,7 +2,7 @@ import { PostgresController, IPostgresController } from '../../dal/postgres';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Boom from 'boom';
 import { Task } from './types';
-import { QueryResult, Client } from 'pg';
+import { QueryResult } from 'pg';
 
 // tslint:disable: no-unsafe-any
 
