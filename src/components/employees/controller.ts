@@ -43,10 +43,8 @@ export class EmployeeController extends PostgresController implements IEmployeeC
    */
   async getEmployees(req: Request, res: Response) {
     try {
-      await this.connect();
       const { rows } = await this.read(safeUserData, '$1', [true]);
       res.status(200).json(rows);
-      await this.disconnect();
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
@@ -60,10 +58,8 @@ export class EmployeeController extends PostgresController implements IEmployeeC
    */
   async getEmployee(req: Request, res: Response) {
     try {
-      await this.connect();
       const { rows } = await this.readById(req.params.id);
       res.status(200).json(rows);
-      await this.disconnect();
     } catch(err) {
       res.status(400).send(Boom.badRequest(err));
     }
@@ -78,7 +74,6 @@ export class EmployeeController extends PostgresController implements IEmployeeC
   async createEmployee(req: Request, res: Response) {
     const { username, password } = req.body;
     try {
-      await this.connect();
       const prevUser = await this.readByUsername(username);
       const { keys, values, escapes } = this.splitObjectKeyVals({...req.body, password});
 
@@ -93,7 +88,6 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -105,7 +99,6 @@ export class EmployeeController extends PostgresController implements IEmployeeC
   async login(req: Request, res: Response) {
     const { username, password } = req.body;
     try {
-      await this.connect();
       const prevUser = await this.readByUsername(username);
       if (prevUser.rows.length === 0) {
         res.status(401).send(Boom.unauthorized('Not authorized'));
@@ -127,7 +120,6 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -138,7 +130,6 @@ export class EmployeeController extends PostgresController implements IEmployeeC
    */
   async updateEmployee(req: Request, res: Response) {
     try {
-      await this.connect();
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
       values.push(req.params.id); // add last escaped value for where clause
@@ -157,7 +148,6 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -168,7 +158,6 @@ export class EmployeeController extends PostgresController implements IEmployeeC
    */
   async deleteEmployee(req: Request, res: Response) {
     try {
-      await this.connect();
       const { rows } = await this.readById(req.params.id);
       if(rows.length > 0 ) {
         if(await this.isAdmin(req.user) && !userMatchAuthToken(req.user, rows[0].username)) {
@@ -183,7 +172,6 @@ export class EmployeeController extends PostgresController implements IEmployeeC
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -196,13 +184,11 @@ export class EmployeeController extends PostgresController implements IEmployeeC
   async verifyAdmin(req: Request, res: Response) {
     const { username } = req.params;
     try {
-      await this.connect();
       const isAdmin = await this.isAdmin(username);
       res.status(200).json(isAdmin);
     } catch (err) {
       res.status(200).json(false);
     }
-    await this.disconnect();
   }
 
   /**
