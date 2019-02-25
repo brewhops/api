@@ -186,7 +186,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
   async deleteBatch(req: Request, res: Response, next: NextFunction) {
     try {
       // remove the versions tied to that batch
-      const versions = await this.client.query(
+      const versions = await this.pool.query(
         `DELETE FROM versions
         WHERE batch_id = $1`,
         [req.params.id]

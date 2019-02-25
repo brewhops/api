@@ -70,7 +70,7 @@ export class TaskController extends PostgresController implements ITaskControlle
     const { id, ...taskInfo } = req.body;
 
     try {
-      const taskExists = await this.client.query(
+      const taskExists = await this.pool.query(
         `SELECT * FROM tasks
         WHERE completed_on IS NULL
         AND batch_id = $1`,

@@ -39,12 +39,12 @@ export interface ICrudController {
  * @implements {ICrudController}
  */
 export class CrudController implements ICrudController {
-  public client: Pool;
+  public pool: Pool;
   private table: string;
 
   constructor(tableName: string) {
     this.table = tableName;
-    this.client = pool;
+    this.pool = pool;
   }
 
   /**

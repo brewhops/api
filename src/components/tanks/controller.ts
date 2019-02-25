@@ -94,7 +94,7 @@ export class TankController extends PostgresController implements ITankControlle
       ON open_tasks.batch_id = tank_open_batch.batch_id
     )`;
     try {
-      const results = await this.client.query(query);
+      const results = await this.pool.query(query);
       res.status(200).json(results.rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
