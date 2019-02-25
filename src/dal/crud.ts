@@ -1,4 +1,5 @@
-import { Client, ClientConfig, QueryResult } from 'pg';
+import { QueryResult, Pool } from 'pg';
+import { pool } from './db';
 
 // tslint:disable:no-any
 
@@ -9,8 +10,6 @@ import { Client, ClientConfig, QueryResult } from 'pg';
  */
 export interface ICrudController {
   tableName: () => string;
-  connect: () => Promise<void>;
-  disconnect: () => Promise<void>;
   create: (columns: any, conditions: any, escaped: any[]) => Promise<QueryResult>;
   createInTable: (
     columns: any,
@@ -39,11 +38,12 @@ export interface ICrudController {
  * @implements {ICrudController}
  */
 export class CrudController implements ICrudController {
-  public client!: Client;
+  public pool: Pool;
   private table: string;
 
   constructor(tableName: string) {
     this.table = tableName;
+    this.pool = pool;
   }
 
   /**
@@ -53,41 +53,6 @@ export class CrudController implements ICrudController {
    */
   public tableName(): string {
     return this.table;
-  }
-
-  /**
-   * This function is used to connect to the database.
-   * It must be called before performing any operation.
-   * @returns {Promise<void>}
-   * @memberof CrudController
-   */
-  public async connect(): Promise<void> {
-    // if we are testing the app, connect to the test db
-    const config: ClientConfig = {
-      user: process.env.TEST_PG_USER,
-      database: process.env.TEST_PG_DATABASE,
-      password: process.env.TEST_PG_PASSWORD,
-      port: <number | undefined>process.env.TEST_PG_PORT,
-      host: process.env.TEST_PG_HOST
-    };
-
-    if (process.env.NODE_ENV === 'test') {
-      this.client = new Client(config);
-    } else {
-      // connect to the prod db
-      this.client = new Client();
-    }
-
-    return this.client.connect();
-  }
-
-  /**
-   * Ends the database conneciton
-   * @returns {Promise<void>}
-   * @memberof CrudController
-   */
-  public async disconnect(): Promise<void> {
-    return this.client.end();
   }
 
   /**
@@ -101,7 +66,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async create(columns: any, conditions: any, escaped: any[], returns = '*'): Promise<QueryResult> {
-    return this.client.query(
+    return this.pool.query(
       `INSERT INTO ${this.table} (${columns}) VALUES (${conditions}) RETURNING ${returns}`,
       escaped
     );
@@ -123,7 +88,7 @@ export class CrudController implements ICrudController {
     conditions: any,
     escaped: any[]
   ): Promise<QueryResult> {
-    return this.client.query(`INSERT INTO ${table} (${columns}) VALUES (${conditions}) RETURNING *`, escaped);
+    return this.pool.query(`INSERT INTO ${table} (${columns}) VALUES (${conditions}) RETURNING *`, escaped);
   }
 
   /**
@@ -140,7 +105,7 @@ export class CrudController implements ICrudController {
     escaped: any[] = ['']
   ): Promise<QueryResult> {
     // tslint:disable-next-line: no-unnecessary-local-variable
-    return this.client.query(`SELECT ${columns} FROM ${this.table} WHERE (${conditions})`, escaped);
+    return this.pool.query(`SELECT ${columns} FROM ${this.table} WHERE (${conditions})`, escaped);
   }
 
   /**
@@ -150,7 +115,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async readById(escaped: any): Promise<QueryResult> {
-    return this.client.query(
+    return this.pool.query(
       `SELECT * FROM ${this.table} WHERE id = $1`,
       [escaped]
     );
@@ -163,7 +128,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async readByUsername(username: string): Promise<QueryResult> {
-    return this.client.query(`SELECT * FROM ${this.table} WHERE username = $1`, [username]);
+    return this.pool.query(`SELECT * FROM ${this.table} WHERE username = $1`, [username]);
   }
 
   /**
@@ -182,7 +147,7 @@ export class CrudController implements ICrudController {
     conditions: any = '',
     escaped: any[]
   ): Promise<QueryResult> {
-    return this.client.query(`Select ${columns} FROM ${table} WHERE ${conditions}`, escaped);
+    return this.pool.query(`Select ${columns} FROM ${table} WHERE ${conditions}`, escaped);
   }
 
   /**
@@ -194,7 +159,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async update(columns: any, conditions: any, escaped: any[]): Promise<QueryResult> {
-    return this.client.query(
+    return this.pool.query(
       `UPDATE ${this.table} SET ${columns} WHERE ${conditions} RETURNING *`,
       escaped
     );
@@ -210,7 +175,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async updateInTable(columns: any, table: any, conditions: any, escaped: any[]): Promise<QueryResult> {
-    return this.client.query(
+    return this.pool.query(
       `UPDATE ${table} SET ${columns} WHERE ${conditions} RETURNING *`,
       escaped
     );
@@ -225,7 +190,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async delete(conditions: any, escaped: any[]): Promise<QueryResult> {
-    return this.client.query(`DELETE FROM ${this.table} WHERE ${conditions}`, escaped);
+    return this.pool.query(`DELETE FROM ${this.table} WHERE ${conditions}`, escaped);
   }
   // tslint:enable:no-reserved-keywords
 
@@ -236,7 +201,7 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async deleteById(escaped: any[]): Promise<QueryResult> {
-    return this.client.query(`DELETE FROM ${this.table} WHERE id = $1`, [escaped]);
+    return this.pool.query(`DELETE FROM ${this.table} WHERE id = $1`, [escaped]);
   }
 
   /**
@@ -249,6 +214,6 @@ export class CrudController implements ICrudController {
    * @memberof CrudController
    */
   async deleteInTable(table: any, conditions: any, escaped: any[]): Promise<QueryResult> {
-    return this.client.query(`DELETE FROM ${table} WHERE ${conditions}`, escaped);
+    return this.pool.query(`DELETE FROM ${table} WHERE ${conditions}`, escaped);
   }
 }
