@@ -24,14 +24,12 @@ class ActionController extends postgres_1.PostgresController {
      */
     async getActions(req, res) {
         try {
-            await this.connect();
             const { rows } = await this.read('*', '$1', [true]);
             res.status(200).json(rows);
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Returns a single action by id.
@@ -41,7 +39,6 @@ class ActionController extends postgres_1.PostgresController {
      */
     async getAction(req, res, next) {
         try {
-            await this.connect();
             const { rows } = await this.readById(req.params.id);
             if (rows.length > 0) {
                 res.status(200).json(rows[0]);
@@ -53,7 +50,6 @@ class ActionController extends postgres_1.PostgresController {
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Creates a new action.
@@ -63,14 +59,12 @@ class ActionController extends postgres_1.PostgresController {
     async createAction(req, res) {
         const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
         try {
-            await this.connect();
             const { rows } = await this.create(keys, escapes, values);
             res.status(201).json(rows[0]);
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Updates an action.
@@ -87,7 +81,6 @@ class ActionController extends postgres_1.PostgresController {
             const { query, idx } = this.buildUpdateString(keys);
             values.push(req.params.id); // add last escaped value for where clause
             try {
-                await this.connect();
                 const { rows } = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
                 if (rows.length > 0) {
                     res.status(200).json(rows[0]);
@@ -99,7 +92,6 @@ class ActionController extends postgres_1.PostgresController {
             catch (err) {
                 res.status(500).send(boom_1.default.badImplementation(err));
             }
-            await this.disconnect();
         }
     }
     /**
@@ -111,7 +103,6 @@ class ActionController extends postgres_1.PostgresController {
     async deleteAction(req, res, next) {
         const { id } = req.params;
         try {
-            await this.connect();
             const response = await this.deleteById(id);
             if (response.rowCount > 0) {
                 res.status(200).json(`Successfully deleted action (id=${id}).`);
@@ -123,7 +114,6 @@ class ActionController extends postgres_1.PostgresController {
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
 }
 exports.ActionController = ActionController;

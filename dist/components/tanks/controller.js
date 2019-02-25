@@ -25,14 +25,12 @@ class TankController extends postgres_1.PostgresController {
      */
     async getTanks(req, res) {
         try {
-            await this.connect();
             const { rows } = await this.read('*', '$1', [true]);
             res.status(200).json(rows);
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Returns a single tank by id
@@ -44,7 +42,6 @@ class TankController extends postgres_1.PostgresController {
     async getTank(req, res, next) {
         const { id } = req.params;
         try {
-            await this.connect();
             // get the tank by that ID
             const { rows } = await this.readById(id);
             // if it returns at least one tank
@@ -60,7 +57,6 @@ class TankController extends postgres_1.PostgresController {
         catch (err) {
             res.status(400).send(boom_1.default.badRequest(err));
         }
-        await this.disconnect();
     }
     /**
      * Returns the last measurment and action for a tank by id
@@ -91,14 +87,12 @@ class TankController extends postgres_1.PostgresController {
       ON open_tasks.batch_id = tank_open_batch.batch_id
     )`;
         try {
-            await this.connect();
-            const results = await this.client.query(query);
+            const results = await this.pool.query(query);
             res.status(200).json(results.rows);
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Creates a new tank
@@ -109,14 +103,12 @@ class TankController extends postgres_1.PostgresController {
     async createTank(req, res) {
         const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
         try {
-            await this.connect();
             const { rows } = await this.create(keys, escapes, values);
             res.status(201).json(rows[0]);
         }
         catch (err) {
             res.status(400).send(boom_1.default.badRequest(err));
         }
-        await this.disconnect();
     }
     /**
      * Updates a tank
@@ -135,7 +127,6 @@ class TankController extends postgres_1.PostgresController {
             const { query, idx } = this.buildUpdateString(keys);
             values.push(id); // add last escaped value for where clause
             try {
-                await this.connect();
                 const { rows } = await this.update(query, `id = $${idx}`, values); // eslint-disable-line
                 if (rows.length > 0) {
                     res.status(200).json(rows);
@@ -147,7 +138,6 @@ class TankController extends postgres_1.PostgresController {
             catch (err) {
                 res.status(500).send(boom_1.default.badImplementation(err));
             }
-            await this.disconnect();
         }
     }
     /**
@@ -160,7 +150,6 @@ class TankController extends postgres_1.PostgresController {
     async deleteTank(req, res, next) {
         const { id } = req.params;
         try {
-            await this.connect();
             const { rowCount } = await this.deleteById(id);
             if (rowCount > 0) {
                 res.status(200).json(`Successfully deleted tank (id=${id})`);
@@ -172,7 +161,6 @@ class TankController extends postgres_1.PostgresController {
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
 }
 exports.TankController = TankController;

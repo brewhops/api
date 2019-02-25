@@ -34,14 +34,12 @@ class TaskController extends postgres_1.PostgresController {
      */
     async getTasks(req, res, next) {
         try {
-            await this.connect();
             const { rows } = await this.read('*', '$1', [true]);
             res.status(200).json(rows);
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Returns tasks for a batch
@@ -52,14 +50,12 @@ class TaskController extends postgres_1.PostgresController {
      */
     async getTasksByBatch(req, res, next) {
         try {
-            await this.connect();
             const { rows } = await this.read('*', 'batch_id = $1', [req.params.batchId]);
             res.status(200).json(rows);
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Creates new task in the database
@@ -71,8 +67,7 @@ class TaskController extends postgres_1.PostgresController {
     async createTask(req, res, next) {
         const _a = req.body, { id } = _a, taskInfo = __rest(_a, ["id"]);
         try {
-            await this.connect();
-            const taskExists = await this.client.query(`SELECT * FROM tasks
+            const taskExists = await this.pool.query(`SELECT * FROM tasks
         WHERE completed_on IS NULL
         AND batch_id = $1`, [taskInfo.batch_id]);
             if (taskExists.rowCount === 0) {
@@ -99,7 +94,6 @@ class TaskController extends postgres_1.PostgresController {
         catch (err) {
             res.status(500).send(boom_1.default.badRequest(err));
         }
-        await this.disconnect();
     }
     /**
      * Updates existing task in the database
@@ -117,7 +111,6 @@ class TaskController extends postgres_1.PostgresController {
                 const { query, idx } = this.buildUpdateString(keys);
                 values.push(id);
                 // insert a new task
-                await this.connect();
                 const results = await this.update(query, `id = \$${idx}`, values);
                 if (results.rowCount > 0) {
                     res.status(200).json(results.rows[0]);
@@ -133,7 +126,6 @@ class TaskController extends postgres_1.PostgresController {
         catch (err) {
             res.status(500).send(boom_1.default.badRequest(err));
         }
-        await this.disconnect();
     }
 }
 exports.TaskController = TaskController;

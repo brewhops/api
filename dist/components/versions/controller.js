@@ -26,14 +26,12 @@ class VersionController extends postgres_1.PostgresController {
     async getVersionsByBatch(req, res, next) {
         const { batchId } = req.params;
         try {
-            await this.connect();
-            const { rows } = await this.client.query(`SELECT * FROM versions WHERE batch_id = ${batchId}`);
+            const { rows } = await this.pool.query(`SELECT * FROM versions WHERE batch_id = ${batchId}`);
             res.status(200).json(rows);
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
 }
 exports.VersionController = VersionController;

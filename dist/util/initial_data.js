@@ -27,7 +27,6 @@ const getDateArray = () => {
 };
 async function insertDevAdmin() {
     const employeeController = new controller_1.EmployeeController('employees');
-    await employeeController.connect();
     const user = {
         first_name: 'General',
         last_name: 'Kenobi',
@@ -53,11 +52,9 @@ async function insertDevAdmin() {
     catch (e) {
         console.log(' x Error inserting test admin user.', e);
     }
-    await employeeController.disconnect();
 }
 async function insertDevTanks() {
     const tankController = new controller_2.TankController('tanks');
-    await tankController.connect();
     for (let i = 1; i < 13; i++) {
         const { rows } = await tankController.readById(i);
         const tank = {
@@ -84,11 +81,9 @@ async function insertDevTanks() {
     };
     const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
     await tankController.create(keys, escapes, values);
-    await tankController.disconnect();
 }
 async function insertDevRecipes() {
     const recipeController = new controller_4.RecipeController('recipes');
-    await recipeController.connect();
     for (let i = 1; i < 13; i++) {
         const { rows } = await recipeController.readById(i);
         const recipe = {
@@ -109,15 +104,11 @@ async function insertDevRecipes() {
             console.log(` ✔️ Recipe '${recipe.name}' exists.`);
         }
     }
-    await recipeController.disconnect();
 }
 async function insertDevBatches() {
     const batchesController = new controller_3.BatchesController('batches');
     const versionsController = new controller_5.VersionController('versions');
     const tasksController = new controller_6.TaskController('tasks');
-    await batchesController.connect();
-    await versionsController.connect();
-    await tasksController.connect();
     let idx = 0;
     let iterations = 1;
     for (let i = 1; i < 13; i++) {
@@ -171,7 +162,6 @@ async function insertDevBatches() {
             action_id: i,
             employee_id: 1,
             added_on: new Date().toUTCString(),
-            completed_on: i % 2 === 0 ? new Date().toUTCString() : undefined,
             update_user: 1
         };
         if (tasksResult.rows.length === 0) {
@@ -184,9 +174,6 @@ async function insertDevBatches() {
         }
         iterations++;
     }
-    await batchesController.disconnect();
-    await tasksController.disconnect();
-    await versionsController.disconnect();
 }
 async function insertDevelopmentData() {
     try {

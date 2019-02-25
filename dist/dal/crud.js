@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const pg_1 = require("pg");
+const db_1 = require("./db");
 /**
  * The class that defines methods for performing CRUD operations against the db.
  * Requires an active connection to the db before performing operations.
@@ -12,6 +12,7 @@ const pg_1 = require("pg");
 class CrudController {
     constructor(tableName) {
         this.table = tableName;
+        this.pool = db_1.pool;
     }
     /**
      * Returns the table name
@@ -20,36 +21,6 @@ class CrudController {
      */
     tableName() {
         return this.table;
-    }
-    /**
-     * This function is used to connect to the database.
-     * It must be called before performing any operation.
-     * @returns {Promise<void>}
-     * @memberof CrudController
-     */
-    async connect() {
-        // if we are testing the app, connect to the test db
-        // const config: ClientConfig = {
-        //   connectionString: process.env.DATABASE_URL
-        // };
-        // // tslint:disable-next-line
-        // console.log(config);
-        if (process.env.NODE_ENV === 'production') {
-            this.client = new pg_1.Client(process.env.DATABASE_URL);
-        }
-        else {
-            // connect to the prod db
-            this.client = new pg_1.Client();
-        }
-        return this.client.connect();
-    }
-    /**
-     * Ends the database conneciton
-     * @returns {Promise<void>}
-     * @memberof CrudController
-     */
-    async disconnect() {
-        return this.client.end();
     }
     /**
      * Function to insert values into any column in the current table of the database
@@ -62,7 +33,7 @@ class CrudController {
      * @memberof CrudController
      */
     async create(columns, conditions, escaped, returns = '*') {
-        return this.client.query(`INSERT INTO ${this.table} (${columns}) VALUES (${conditions}) RETURNING ${returns}`, escaped);
+        return this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${conditions}) RETURNING ${returns}`, escaped);
     }
     /**
      * Function to insert values into any column in a specified table of the database
@@ -75,7 +46,7 @@ class CrudController {
      * @memberof CrudController
      */
     async createInTable(columns, table, conditions, escaped) {
-        return this.client.query(`INSERT INTO ${table} (${columns}) VALUES (${conditions}) RETURNING *`, escaped);
+        return this.pool.query(`INSERT INTO ${table} (${columns}) VALUES (${conditions}) RETURNING *`, escaped);
     }
     /**
      * Selects all specified columns from the current table in the database where the conditions are met.
@@ -87,7 +58,7 @@ class CrudController {
      */
     async read(columns = `*`, conditions = 'true', escaped = ['']) {
         // tslint:disable-next-line: no-unnecessary-local-variable
-        return this.client.query(`SELECT ${columns} FROM ${this.table} WHERE (${conditions})`, escaped);
+        return this.pool.query(`SELECT ${columns} FROM ${this.table} WHERE (${conditions})`, escaped);
     }
     /**
      * Not currently used?
@@ -96,7 +67,7 @@ class CrudController {
      * @memberof CrudController
      */
     async readById(escaped) {
-        return this.client.query(`SELECT * FROM ${this.table} WHERE id = $1`, [escaped]);
+        return this.pool.query(`SELECT * FROM ${this.table} WHERE id = $1`, [escaped]);
     }
     /**
      * Not currently used?
@@ -105,7 +76,7 @@ class CrudController {
      * @memberof CrudController
      */
     async readByUsername(username) {
-        return this.client.query(`SELECT * FROM ${this.table} WHERE username = $1`, [username]);
+        return this.pool.query(`SELECT * FROM ${this.table} WHERE username = $1`, [username]);
     }
     /**
      * Selects all specified columns from a specified table in the database where the conditions are met.
@@ -118,7 +89,7 @@ class CrudController {
      * @memberof CrudController
      */
     async readInTable(columns = `*`, table = `${this.table}`, conditions = '', escaped) {
-        return this.client.query(`Select ${columns} FROM ${table} WHERE ${conditions}`, escaped);
+        return this.pool.query(`Select ${columns} FROM ${table} WHERE ${conditions}`, escaped);
     }
     /**
      * Updates all columns in a specified table in the database where the conditions are met.
@@ -129,7 +100,7 @@ class CrudController {
      * @memberof CrudController
      */
     async update(columns, conditions, escaped) {
-        return this.client.query(`UPDATE ${this.table} SET ${columns} WHERE ${conditions} RETURNING *`, escaped);
+        return this.pool.query(`UPDATE ${this.table} SET ${columns} WHERE ${conditions} RETURNING *`, escaped);
     }
     /**
      * Updates all columns in a specified table in the database where the conditions are met.
@@ -141,7 +112,7 @@ class CrudController {
      * @memberof CrudController
      */
     async updateInTable(columns, table, conditions, escaped) {
-        return this.client.query(`UPDATE ${table} SET ${columns} WHERE ${conditions} RETURNING *`, escaped);
+        return this.pool.query(`UPDATE ${table} SET ${columns} WHERE ${conditions} RETURNING *`, escaped);
     }
     // tslint:disable:no-reserved-keywords
     /**
@@ -152,7 +123,7 @@ class CrudController {
      * @memberof CrudController
      */
     async delete(conditions, escaped) {
-        return this.client.query(`DELETE FROM ${this.table} WHERE ${conditions}`, escaped);
+        return this.pool.query(`DELETE FROM ${this.table} WHERE ${conditions}`, escaped);
     }
     // tslint:enable:no-reserved-keywords
     /**
@@ -162,7 +133,7 @@ class CrudController {
      * @memberof CrudController
      */
     async deleteById(escaped) {
-        return this.client.query(`DELETE FROM ${this.table} WHERE id = $1`, [escaped]);
+        return this.pool.query(`DELETE FROM ${this.table} WHERE id = $1`, [escaped]);
     }
     /**
      * Deletes all entries from a specified table in the database where the conditions are met.
@@ -174,7 +145,7 @@ class CrudController {
      * @memberof CrudController
      */
     async deleteInTable(table, conditions, escaped) {
-        return this.client.query(`DELETE FROM ${table} WHERE ${conditions}`, escaped);
+        return this.pool.query(`DELETE FROM ${table} WHERE ${conditions}`, escaped);
     }
 }
 exports.CrudController = CrudController;

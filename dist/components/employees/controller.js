@@ -28,10 +28,8 @@ class EmployeeController extends postgres_1.PostgresController {
      */
     async getEmployees(req, res) {
         try {
-            await this.connect();
             const { rows } = await this.read(safeUserData, '$1', [true]);
             res.status(200).json(rows);
-            await this.disconnect();
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
@@ -45,10 +43,8 @@ class EmployeeController extends postgres_1.PostgresController {
      */
     async getEmployee(req, res) {
         try {
-            await this.connect();
             const { rows } = await this.readById(req.params.id);
             res.status(200).json(rows);
-            await this.disconnect();
         }
         catch (err) {
             res.status(400).send(boom_1.default.badRequest(err));
@@ -63,7 +59,6 @@ class EmployeeController extends postgres_1.PostgresController {
     async createEmployee(req, res) {
         const { username, password } = req.body;
         try {
-            await this.connect();
             const prevUser = await this.readByUsername(username);
             const { keys, values, escapes } = this.splitObjectKeyVals(Object.assign({}, req.body, { password }));
             if (prevUser.rows.length !== 0) {
@@ -79,7 +74,6 @@ class EmployeeController extends postgres_1.PostgresController {
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Verifies an employee in the database and returns an authentication token for that user.
@@ -90,7 +84,6 @@ class EmployeeController extends postgres_1.PostgresController {
     async login(req, res) {
         const { username, password } = req.body;
         try {
-            await this.connect();
             const prevUser = await this.readByUsername(username);
             if (prevUser.rows.length === 0) {
                 res.status(401).send(boom_1.default.unauthorized('Not authorized'));
@@ -125,7 +118,6 @@ class EmployeeController extends postgres_1.PostgresController {
      */
     async updateEmployee(req, res) {
         try {
-            await this.connect();
             const { keys, values } = this.splitObjectKeyVals(req.body);
             const { query, idx } = this.buildUpdateString(keys);
             values.push(req.params.id); // add last escaped value for where clause
@@ -146,7 +138,6 @@ class EmployeeController extends postgres_1.PostgresController {
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      * Removes an employee from the database.
@@ -156,7 +147,6 @@ class EmployeeController extends postgres_1.PostgresController {
      */
     async deleteEmployee(req, res) {
         try {
-            await this.connect();
             const { rows } = await this.readById(req.params.id);
             if (rows.length > 0) {
                 if (await this.isAdmin(req.user) && !auth_2.userMatchAuthToken(req.user, rows[0].username)) {
@@ -174,7 +164,6 @@ class EmployeeController extends postgres_1.PostgresController {
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
         }
-        await this.disconnect();
     }
     /**
      *
@@ -186,7 +175,6 @@ class EmployeeController extends postgres_1.PostgresController {
     async verifyAdmin(req, res) {
         const { username } = req.params;
         try {
-            await this.connect();
             const isAdmin = await this.isAdmin(username);
             res.status(200).json(isAdmin);
             await this.disconnect();
