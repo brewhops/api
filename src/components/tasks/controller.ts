@@ -60,7 +60,7 @@ export class TaskController extends PostgresController implements ITaskControlle
       res.status(500).send(Boom.badImplementation(err));
     }
 
-    // await this.disconnect();
+    await this.disconnect();
   }
 
   /**

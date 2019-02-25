@@ -37,7 +37,7 @@ export class VersionController extends PostgresController implements IVersionCon
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    // await this.disconnect();
+    await this.disconnect();
   }
 
 }
