@@ -104,7 +104,6 @@ class EmployeeController extends postgres_1.PostgresController {
                     res.status(400).send(boom_1.default.badRequest('Incorrect password'));
                 }
             }
-            await this.disconnect();
         }
         catch (err) {
             res.status(500).send(boom_1.default.badImplementation(err));
@@ -177,7 +176,6 @@ class EmployeeController extends postgres_1.PostgresController {
         try {
             const isAdmin = await this.isAdmin(username);
             res.status(200).json(isAdmin);
-            await this.disconnect();
         }
         catch (err) {
             res.status(200).json(false);
