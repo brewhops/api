@@ -1,6 +1,5 @@
-import { Client, ClientConfig, QueryResult, Pool } from 'pg';
-
-const pool = new Pool();
+import { QueryResult, Pool } from 'pg';
+import { pool } from './db';
 
 // tslint:disable:no-any
 
