@@ -34,7 +34,6 @@ const getDateArray = (): Date[] => {
 
 async function insertDevAdmin() {
   const employeeController: IEmployeeController = new EmployeeController('employees');
-  await employeeController.connect();
 
   const user: Employee = {
     first_name: 'General',
@@ -62,12 +61,10 @@ async function insertDevAdmin() {
     console.log(' x Error inserting test admin user.', e);
   }
 
-  await employeeController.disconnect();
 }
 
 async function insertDevTanks() {
   const tankController: ITankController = new TankController('tanks');
-  await tankController.connect();
 
   for (let i = 1; i < 13; i++) {
     const { rows }: QueryResult = await tankController.readById(i);
@@ -96,12 +93,10 @@ async function insertDevTanks() {
   const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
   await tankController.create(keys, escapes, values);
 
-  await tankController.disconnect();
 }
 
 async function insertDevRecipes() {
   const recipeController: IRecipeController = new RecipeController('recipes');
-  await recipeController.connect();
 
   for (let i = 1; i < 13; i++) {
     const { rows }: QueryResult = await recipeController.readById(i);
@@ -123,17 +118,12 @@ async function insertDevRecipes() {
     }
   }
 
-  await recipeController.disconnect();
-
 }
 
 async function insertDevBatches() {
   const batchesController: IBatchesController = new BatchesController('batches');
   const versionsController: IVersionController = new VersionController('versions');
   const tasksController: ITaskController = new TaskController('tasks');
-  await batchesController.connect();
-  await versionsController.connect();
-  await tasksController.connect();
 
   let idx = 0;
   let iterations = 1;
@@ -190,7 +180,6 @@ async function insertDevBatches() {
       action_id: i,
       employee_id: 1,
       added_on: new Date().toUTCString(),
-      completed_on: i % 2 === 0 ? new Date().toUTCString() : undefined,
       update_user: 1
     };
 
@@ -204,9 +193,6 @@ async function insertDevBatches() {
 
     iterations++;
   }
-  await batchesController.disconnect();
-  await tasksController.disconnect();
-  await versionsController.disconnect();
 }
 
 

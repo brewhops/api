@@ -34,13 +34,11 @@ export class BatchesController extends PostgresController implements IBatchesCon
    */
   async getBatches(req: Request, res: Response) {
     try {
-      await this.connect();
       const { rows } = await this.read('*', '$1', [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -52,13 +50,11 @@ export class BatchesController extends PostgresController implements IBatchesCon
    */
   async getBatchesByTank(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.connect();
       const { rows } = await this.read('*', 'tank_id = $1', [req.params.tankId]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -70,7 +66,6 @@ export class BatchesController extends PostgresController implements IBatchesCon
    */
   async getBatch(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.connect();
       const results = await this.readById(req.params.id);
       if (results.rowCount > 0) {
         res.status(200).json(results.rows[0]);
@@ -80,7 +75,6 @@ export class BatchesController extends PostgresController implements IBatchesCon
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   // tslint:disable:max-func-body-length
@@ -97,8 +91,6 @@ export class BatchesController extends PostgresController implements IBatchesCon
     // ************************* //
     // ****** UPDATE BATCH ***** //
     // ************************* //
-
-    await this.connect();
 
     // pull the info from the input about the batch
     const batch: Batch = {
@@ -125,9 +117,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
         const { query, idx } = await this.buildUpdateString(keys);
         values.push(input.batch_id);
         // update the batch
-        await this.connect();
         await this.update(query, `id = \$${idx}`, values);
-        await this.disconnect();
       } catch (err) {
         res.status(400).send(Boom.badRequest(err));
       }
@@ -158,16 +148,13 @@ export class BatchesController extends PostgresController implements IBatchesCon
 
     // put our version info in the versions table
     try {
-      await this.connect();
       const result = await this.createInTable(keys, 'versions', escapes, values);
-      await this.disconnect();
-      console.log(result);
+
       res.status(201).end();
     } catch (err) {
       res.status(400).send(Boom.badRequest(err));
     }
 
-    await this.disconnect();
   }
 
   /**
@@ -182,13 +169,11 @@ export class BatchesController extends PostgresController implements IBatchesCon
     batch.started_on =  new Date().toUTCString();
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
-      await this.connect();
       const results = await this.create(keys, escapes, values);
       res.status(200).json(results.rows[0]);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -200,19 +185,15 @@ export class BatchesController extends PostgresController implements IBatchesCon
    */
   async deleteBatch(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.connect();
       // remove the versions tied to that batch
-      const versions = await this.client.query(
+      const versions = await this.pool.query(
         `DELETE FROM versions
         WHERE batch_id = $1`,
         [req.params.id]
       );
-      await this.disconnect();
 
       // remove the batch
-      await this.connect();
       const batch = await this.deleteById(req.params.id);
-      await this.disconnect();
 
       if (batch.rowCount > 0) {
         res.status(200).json({
@@ -249,9 +230,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
       values.push(batchId);
 
       // update the batch
-      await this.connect();
       const results = await this.update(query, `id = \$${idx}`, values);
-      await this.disconnect();
 
       res.status(200).end();
     } catch(err) {
