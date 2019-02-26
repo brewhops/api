@@ -32,19 +32,21 @@ app.use('/batches', BatchesRoutes());
 app.use('/tasks', TasksRoutes());
 app.use('/versions', VersionsRoutes());
 
-if (process.env.NODE_ENV === 'development') {
-  app.post('/init', async (req: Request, res: Response) => {
-    try {
-      await insertDevelopmentData();
-      res.status(200).send('success');
-    } catch (error) {
-      res.status(500).send(Boom.badImplementation('failed'));
-    }
-  });
-}
+
+app.post('/init', async (req: Request, res: Response) => {
+  try {
+    await insertDevelopmentData();
+    res.status(200).send('success');
+  } catch (error) {
+    res.status(500).send(Boom.badImplementation('failed'));
+  }
+});
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(process.env.PORT, () => {
+  app.listen(process.env.PORT, async () => {
+    if(process.env.NODE_ENV === 'production') {
+      await insertDevelopmentData();
+    }
     // tslint:disable-next-line:no-console
     console.log(`Server running at port ${process.env.PORT}`);
   });
