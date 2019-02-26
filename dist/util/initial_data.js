@@ -159,7 +159,7 @@ async function insertDevBatches() {
         const task = {
             assigned: true,
             batch_id: i,
-            action_id: i,
+            action_id: (i % 9) + 1,
             employee_id: 1,
             added_on: new Date().toUTCString(),
             update_user: 1

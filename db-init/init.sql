@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS employees (
 CREATE TABLE IF NOT EXISTS actions (
   id          SERIAL        NOT NULL    PRIMARY KEY,
   name        VARCHAR(255)  NOT NULL,
-  description TEXT          NULL
+  description TEXT          NULL,
+  classname   VARCHAR(20)   NOT NULL
 );
 
 --
@@ -355,19 +356,16 @@ CREATE TRIGGER tasks_audit_t AFTER INSERT OR UPDATE OR DELETE ON tasks
     FOR EACH ROW EXECUTE PROCEDURE tasks_audit_function();
 
 
-INSERT INTO actions (name, description) VALUES 
-    ('Set Lager temp to 57 deg', 'Set Lager temp to 57 deg'),
-    ('Cap non Dry Hop', 'Cap non Dry Hop'),
-    ('Cap and Dry Hop', 'Cap and Dry Hop'),
-    ('Set Tri temp to 73 deg', 'Set Tri temp to 73 deg'),
-    ('Dry Hop Day', 'Dry Hop Day'),
-    ('Waiting for Diatecyl', 'Waiting for Diatecyl'),
-    ('Crash Day', 'Crash Day'),
-    ('Cap and Dry Hop Exception', 'Cap and Dry Hop Exception'),
-    ('Yeast Pull', 'Yeast Pull'),
-    ('Cap and Exception', 'Cap and Exception'),
-    ('Set H&S and Hazy temp to 74 deg', 'Set H&S and Hazy temp to 74 deg'),
-    ('New Batch No Action', 'New Batch No Action');
+INSERT INTO actions (name, description, classname) VALUES 
+    ('Primary Fermentation', 'Primary Fermentation', 'primary-fermentation'),
+    ('Primary Adjuct Added', 'Primary Adjuct Added', 'primary-adjunct-add'),
+    ('Free Rise', 'Free Rise', 'free-rise'),
+    ('Cap', 'Cap', 'cap'),
+    ('Adjunct Added', 'Adjunct Added', 'adjunct-add'),
+    ('Exception', 'Exception', 'exception'),
+    ('Waiting for Diacetyl', 'Waiting for Diacetyl', 'wait-for-diacetyl'),
+    ('Crashed', 'Crashed', 'crashed'),
+    ('Yeast Pull', 'Yeast Pull', 'yeast-pull');
 
 
 
