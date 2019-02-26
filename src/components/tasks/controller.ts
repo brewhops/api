@@ -35,13 +35,11 @@ export class TaskController extends PostgresController implements ITaskControlle
    */
   async getTasks(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.connect();
       const { rows } = await this.read('*', '$1', [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -53,14 +51,12 @@ export class TaskController extends PostgresController implements ITaskControlle
    */
   async getTasksByBatch(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.connect();
       const { rows } = await this.read('*', 'batch_id = $1', [req.params.batchId]);
+
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-
-    // await this.disconnect();
   }
 
   /**
@@ -74,9 +70,7 @@ export class TaskController extends PostgresController implements ITaskControlle
     const { id, ...taskInfo } = req.body;
 
     try {
-      await this.connect();
-
-      const taskExists = await this.client.query(
+      const taskExists = await this.pool.query(
         `SELECT * FROM tasks
         WHERE completed_on IS NULL
         AND batch_id = $1`,
@@ -110,8 +104,6 @@ export class TaskController extends PostgresController implements ITaskControlle
       res.status(500).send(Boom.badRequest(err));
     }
 
-    await this.disconnect();
-
   }
 
   /**
@@ -127,14 +119,12 @@ export class TaskController extends PostgresController implements ITaskControlle
     try {
 
       if (id !== undefined) {
-
         // parse it out
         const { keys, values } = this.splitObjectKeyVals(taskInfo);
         const { query, idx } = this.buildUpdateString(keys);
         values.push(id);
 
         // insert a new task
-        await this.connect();
         const results: QueryResult = await this.update(query, `id = \$${idx}`, values);
 
         if (results.rowCount > 0) {
@@ -150,8 +140,6 @@ export class TaskController extends PostgresController implements ITaskControlle
     } catch (err) {
       res.status(500).send(Boom.badRequest(err));
     }
-
-    await this.disconnect();
 
   }
 }

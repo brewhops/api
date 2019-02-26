@@ -33,13 +33,11 @@ export class RecipeController extends PostgresController implements IRecipeContr
    */
   async getRecipes(req: Request, res: Response) {
     try {
-      await this.connect();
       const { rows } = await this.read('*', '$1', [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -51,7 +49,6 @@ export class RecipeController extends PostgresController implements IRecipeContr
    */
   async getRecipe(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.connect();
       const { rows } = await this.readById(req.params.id);
       if (rows.length > 0) {
         res.status(200).json(rows[0]);
@@ -61,7 +58,6 @@ export class RecipeController extends PostgresController implements IRecipeContr
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 
   /**
@@ -73,7 +69,6 @@ export class RecipeController extends PostgresController implements IRecipeContr
   async createRecipe(req: Request, res: Response) {
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
-      await this.connect();
       const { rows } = await this.create(keys, escapes, values);
       res.status(201).json(rows[0]);
     } catch (err) {
@@ -97,7 +92,6 @@ export class RecipeController extends PostgresController implements IRecipeContr
       values.push(req.params.id); // add last escaped value for where clause
 
       try {
-        await this.connect();
         const { rows } = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
         if (rows.length > 0) {
           res.status(200).json(rows[0]);
@@ -107,7 +101,6 @@ export class RecipeController extends PostgresController implements IRecipeContr
       } catch (err) {
         res.status(500).send(Boom.badImplementation(err));
       }
-      await this.disconnect();
     }
   }
 
@@ -121,7 +114,6 @@ export class RecipeController extends PostgresController implements IRecipeContr
   async deleteRecipe(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-      await this.connect();
       const response = await this.deleteById(id);
       if (response.rowCount > 0) {
         res.status(200).json(`Successfully deleted recipe (id=${id})`);
@@ -131,6 +123,5 @@ export class RecipeController extends PostgresController implements IRecipeContr
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
-    await this.disconnect();
   }
 }
