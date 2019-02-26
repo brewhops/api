@@ -9,5 +9,9 @@ let config = {
 if (process.env.NODE_ENV === 'test') {
     config = Object.assign({}, config, { user: process.env.TEST_PG_USER, database: process.env.TEST_PG_DATABASE, password: process.env.TEST_PG_PASSWORD, port: process.env.TEST_PG_PORT, host: process.env.TEST_PG_HOST });
 }
+// DATABASE_URL is defined by heroku
+if (process.env.NODE_ENV === 'production') {
+    config.connectionString = process.env.DATABASE_URL;
+}
 exports.pool = new pg_1.Pool(config);
 //# sourceMappingURL=db.js.map

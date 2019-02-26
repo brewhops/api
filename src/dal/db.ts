@@ -17,4 +17,9 @@ if (process.env.NODE_ENV === 'test') {
     };
 }
 
+// DATABASE_URL is defined by heroku
+if (process.env.NODE_ENV === 'production') {
+    config.connectionString = process.env.DATABASE_URL;
+}
+
 export const pool = new Pool(config);
