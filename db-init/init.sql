@@ -158,30 +158,31 @@ CREATE TABLE IF NOT EXISTS versions_audit (
 --
 
 CREATE TABLE IF NOT EXISTS tasks (
-  id            SERIAL        NOT NULL    PRIMARY KEY,
-  added_on      TIMESTAMPTZ   NOT NULL,
-  completed_on  TIMESTAMPTZ   NULL,
-  assigned      BOOLEAN       NOT NULL    DEFAULT FALSE,
-  batch_id      INTEGER       NOT NULL    REFERENCES batches(id),
-  action_id     INTEGER       NOT NULL    REFERENCES actions(id),
-  employee_id   INTEGER       NULL        REFERENCES employees(id),
-  update_user   INTEGER       NULL
+  id                SERIAL        NOT NULL    PRIMARY KEY,
+  added_on          TIMESTAMPTZ   NOT NULL,
+  completed_on      TIMESTAMPTZ   NULL,
+  assigned          BOOLEAN       NOT NULL    DEFAULT FALSE,
+  batch_id          INTEGER       NOT NULL    REFERENCES batches(id),
+  action_id         INTEGER       NOT NULL    REFERENCES actions(id),
+  exception_reason  VARCHAR(255)  NULL,
+  employee_id       INTEGER       NULL        REFERENCES employees(id),
+  update_user       INTEGER       NULL
 );
 
 
 CREATE TABLE IF NOT EXISTS tasks_audit (
-  id            SERIAL        NOT NULL    PRIMARY KEY,
-  operation     VARCHAR(6)    NOT NULL,
-  time_stamp    TIMESTAMPTZ   NOT NULL,
-
-  tasks_id      INTEGER       NOT NULL,
-  added_on      TIMESTAMPTZ   NOT NULL,
-  completed_on  TIMESTAMPTZ   NULL,
-  assigned      BOOLEAN       NOT NULL,
-  batch_id      INTEGER       NOT NULL,
-  action_id     INTEGER       NOT NULL,
-  employee_id   INTEGER       NULL,
-  update_user   INTEGER       NULL
+  id                SERIAL        NOT NULL    PRIMARY KEY,
+  operation         VARCHAR(6)    NOT NULL,
+  time_stamp        TIMESTAMPTZ   NOT NULL,
+  tasks_id          INTEGER       NOT NULL,
+  added_on          TIMESTAMPTZ   NOT NULL,
+  completed_on      TIMESTAMPTZ   NULL,
+  assigned          BOOLEAN       NOT NULL,
+  batch_id          INTEGER       NOT NULL,
+  action_id         INTEGER       NOT NULL,
+  exception_reason  VARCHAR(255)  NULL,
+  employee_id       INTEGER       NULL,
+  update_user       INTEGER       NULL
 );
 
 --
