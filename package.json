@@ -52,6 +52,7 @@
     ]
   },
   "dependencies": {
+    "@types/pg-pool": "0.0.3",
     "bcrypt": "^3.0.3",
     "boom": "^7.2.0",
     "chai-as-promised": "^7.1.1",
