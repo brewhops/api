@@ -106,7 +106,7 @@ async function insertDevBatches() {
     const tasksController = new controller_6.TaskController('tasks');
     let idx = 0;
     let iterations = 1;
-    for (let i = 1; i < 9; i++) {
+    for (let i = 1; i < 10; i++) {
         const batchResult = await batchesController.readById(i);
         const batch = {
             name: `Batch ${i}`,
