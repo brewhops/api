@@ -121,7 +121,7 @@ async function insertDevBatches() {
   let idx = 0;
   let iterations = 1;
 
-  for (let i = 1; i < 13; i++) {
+  for (let i = 1; i < 9; i++) {
     const batchResult: QueryResult = await batchesController.readById(i);
     const batch = {
       name: `Batch ${i}`,
