@@ -366,7 +366,8 @@ INSERT INTO actions (name, description, classname) VALUES
     ('Exception', 'Exception', 'exception'),
     ('Waiting for Diacetyl', 'Waiting for Diacetyl', 'wait-for-diacetyl'),
     ('Crashed', 'Crashed', 'crashed'),
-    ('Yeast Pull', 'Yeast Pull', 'yeast-pull');
+    ('Yeast Pull', 'Yeast Pull', 'yeast-pull'),
+    ('No Action', 'No Action', 'no-action');
 
 
 
