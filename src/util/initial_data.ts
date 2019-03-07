@@ -74,6 +74,10 @@ async function insertDevTanks() {
       in_use: true,
       update_user: 1
     };
+    if(i > 9) {
+      tank.status = 'available';
+      tank.in_use = false;
+    }
     if (rows.length === 0) {
       const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
       await tankController.create(keys, escapes, values);
@@ -82,17 +86,6 @@ async function insertDevTanks() {
       console.log(` ✔️ Tank '${tank.name}' exists.`);
     }
   }
-
-  // we need one tank that is not being used for testing
-  const tank: Tank = {
-    name: `F13`,
-    status: 'available',
-    in_use: false,
-    update_user: 1
-  };
-  const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
-  await tankController.create(keys, escapes, values);
-
 }
 
 async function insertDevRecipes() {
@@ -128,7 +121,7 @@ async function insertDevBatches() {
   let idx = 0;
   let iterations = 1;
 
-  for (let i = 1; i < 13; i++) {
+  for (let i = 1; i < 10; i++) {
     const batchResult: QueryResult = await batchesController.readById(i);
     const batch = {
       name: `Batch ${i}`,
