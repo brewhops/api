@@ -136,7 +136,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       const { rows } = await this.readById(req.params.id);
 
       if(rows.length > 0 ) {
-        if(await this.isAdmin(req.user) && !userMatchAuthToken(req.user, rows[0].username)) {
+        if(await this.isAdmin(req.user)) {
           const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
           res.status(200).json(`Deleted ${results.rowCount} user`);
         } else {
