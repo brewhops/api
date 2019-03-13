@@ -76,7 +76,8 @@ async function insertCSVTestData() {
               instructions: JSON.stringify([{
                 ingredient: 'hops',
                 ratio: 3
-              }])
+              }]),
+              update_user: 1
             };
             recipeIndexes[row['Recipe']] = Object.keys(recipeIndexes).length + 1;
           }
@@ -90,7 +91,8 @@ async function insertCSVTestData() {
               started_on: moment(row['Date']),
               completed_on: moment(row['Date']),
               recipe_id: recipeIndexes[row['Recipe']],
-              tank_id: tankIndexes[row['Tank']]
+              tank_id: tankIndexes[row['Tank']],
+              update_user: 1
             };
             batchIndexes[row['Batch']] = Object.keys(batchIndexes).length + 1;
           }
@@ -285,7 +287,8 @@ async function insertDevBatches() {
       generation: Math.floor(Math.random() * Math.floor(20)),
       started_on: new Date().toUTCString(),
       recipe_id: i,
-      tank_id: i
+      tank_id: i,
+      update_user: 1
     };
 
     if (batchResult.rows.length === 0) {
