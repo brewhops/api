@@ -132,7 +132,7 @@ async function insertCSVTestData() {
                         const { keys, values, escapes } = batchesController.splitObjectKeyVals(batch);
                         await batchesController.create(keys, escapes, values);
                         console.log(` + Added batch '${batch.name}'.`);
-                        const actionId = batchIndexes[batch.name] % 10;
+                        const actionId = batch.tank_id % 10;
                         if (actionId !== 0) {
                             const task = {
                                 assigned: true,
@@ -157,6 +157,44 @@ async function insertCSVTestData() {
                         const { keys, escapes, values } = batchesController.splitObjectKeyVals(version);
                         await batchesController.createInTable(keys, 'versions', escapes, values);
                         console.log(` + Added version for batch ${version.batch_id}.`);
+                    }
+                    for (const tankId of Object.values(tankIndexes)) {
+                        if (tankId % 10 !== 0) {
+                            const { rows } = await batchesController.read('*', 'tank_id = $1', [tankId]);
+                            if (rows.length > 0) {
+                                // Update batch
+                                {
+                                    // Find most recent batch for tank
+                                    const batch = rows.sort((a, b) => {
+                                        return moment_1.default.utc(b.started_on).diff(moment_1.default.utc(a.started_on));
+                                    })[0];
+                                    batch.completed_on = undefined;
+                                    batch.started_on = moment_1.default(batch.started_on);
+                                    const { keys, values, escapes } = batchesController.splitObjectKeyVals(batch);
+                                    keys.push('completed_on');
+                                    // tslint:disable: no-null-keyword
+                                    values.push(null);
+                                    // set an update
+                                    const { query, idx } = await batchesController.buildUpdateString(keys);
+                                    values.push(batch.id);
+                                    // update the batch
+                                    await batchesController.update(query, `id = \$${idx}`, values);
+                                }
+                                // Update tank
+                                {
+                                    const result = await tankController.readById(tankId);
+                                    const tank = result.rows[0];
+                                    tank.in_use = true;
+                                    tank.status = 'brewing';
+                                    const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
+                                    // set an update
+                                    const { query, idx } = await tankController.buildUpdateString(keys);
+                                    values.push(tankId);
+                                    // update the tank
+                                    await tankController.update(query, `id = \$${idx}`, values);
+                                }
+                            }
+                        }
                     }
                 }
             }
