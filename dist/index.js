@@ -32,7 +32,16 @@ app.use('/tasks', routes_6.routes());
 app.use('/versions', routes_7.routes());
 app.post('/init', async (req, res) => {
     try {
-        await initial_data_1.insertDevelopmentData();
+        await initial_data_1.insertDevelopmentData(false);
+        res.status(200).send('success');
+    }
+    catch (error) {
+        res.status(500).send(boom_1.default.badImplementation('failed'));
+    }
+});
+app.post('/init-live', async (req, res) => {
+    try {
+        await initial_data_1.insertDevelopmentData(true);
         res.status(200).send('success');
     }
     catch (error) {
@@ -42,7 +51,7 @@ app.post('/init', async (req, res) => {
 if (process.env.NODE_ENV !== 'test') {
     app.listen(process.env.PORT, async () => {
         if (process.env.NODE_ENV === 'production') {
-            await initial_data_1.insertDevelopmentData();
+            await initial_data_1.insertDevelopmentData(true);
         }
         // tslint:disable-next-line:no-console
         console.log(`Server running at port ${process.env.PORT}`);

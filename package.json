@@ -52,6 +52,7 @@
     ]
   },
   "dependencies": {
+    "@types/papaparse": "^4.5.9",
     "@types/pg-pool": "0.0.3",
     "bcrypt": "^3.0.3",
     "boom": "^7.2.0",
@@ -59,15 +60,16 @@
     "command-line-args": "^5.0.2",
     "cors": "^2.8.4",
     "cross-env": "^5.2.0",
+    "crypto-js": "^3.1.9-1",
     "dotenv": "^5.0.1",
     "express": "^4.16.4",
     "express-validation": "^1.0.2",
     "is": "^3.2.1",
     "joi": "^13.4.0",
     "jsonwebtoken": "^8.3.0",
+    "papaparse": "^4.6.3",
     "pg": "^7.4.3",
-    "uuid": "^3.2.1",
-    "crypto-js": "^3.1.9-1"
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.3.2",
