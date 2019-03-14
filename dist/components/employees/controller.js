@@ -122,7 +122,7 @@ class EmployeeController extends postgres_1.PostgresController {
             values.push(req.params.id); // add last escaped value for where clause
             const { rows } = await this.readById(req.params.id);
             if (rows.length > 0) {
-                if (await this.isAdmin(req.user) && !auth_2.userMatchAuthToken(req.user, rows[0].username)) {
+                if (await this.isAdmin(req.user)) {
                     const results = await this.update(query, `id = \$${idx}`, values); // eslint-disable-line
                     res.status(200).json(`Deleted ${results.rowCount} user`);
                 }

@@ -21,4 +21,4 @@ RUN npm run build
 EXPOSE 3000
 
 # sets the default command for this image
-CMD ["npm", "start"]
+CMD ["npm", "run", "debug"]
