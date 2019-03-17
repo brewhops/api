@@ -37,8 +37,6 @@ jobs:
       - run:
           name: Run unit tests
           command: npm test
-      - store_artifact:
-          path: coverage
       - codecov:
           upload:
               file: coverage/coverage-final.json
