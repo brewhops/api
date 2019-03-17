@@ -63,7 +63,7 @@ describe('ActionsController ', () => {
     const escapes = 'escapes';
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
     controller.create = jest.fn().mockResolvedValue({ rows });
-    await controller.getAction(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.createAction(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
@@ -73,7 +73,7 @@ describe('ActionsController ', () => {
     const escapes = 'escapes';
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
     controller.create = jest.fn().mockRejectedValue(new Error());
-    await controller.getAction(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.createAction(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 
@@ -84,7 +84,7 @@ describe('ActionsController ', () => {
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values });
     controller.buildUpdateString = jest.fn().mockReturnValue({ keys, values });
     controller.update = jest.fn().mockResolvedValue({ rows });
-    await controller.getAction(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.updateAction(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
@@ -96,22 +96,22 @@ describe('ActionsController ', () => {
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values });
     controller.buildUpdateString = jest.fn().mockReturnValue({ query, idx });
     controller.update = jest.fn().mockRejectedValue(new Error());
-    await controller.getAction(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.updateAction(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 
-  it('feleteAction success', async () => {
+  it('deleteAction success', async () => {
     const res = {
       rowCount: 2
     };
     controller.deleteById = jest.fn().mockResolvedValue(res);
-    await controller.getAction(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.deleteAction(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
   it('deleteAction error', async () => {
     controller.deleteById = jest.fn().mockRejectedValue(new Error());
-    await controller.getAction(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.deleteAction(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 });
