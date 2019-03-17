@@ -55,3 +55,6 @@ workflows:
       - unit_tests:
           requires:
             - build
+      - coverage:
+          requires:
+            - unit_tests
