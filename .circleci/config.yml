@@ -37,15 +37,14 @@ jobs:
       - run:
           name: Run unit tests
           command: npm test
-  coverage:
-    <<: *node
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/project
-      - codecov/upload:
-        file: ../coverage/coverage-final.json
-        token: 563c370f-9077-4e0b-8903-ddc14594f80f
+      - store_artifact:
+          path: coverage
+      - codecov:
+          upload:
+              file: coverage/coverage-final.json
+              token: 563c370f-9077-4e0b-8903-ddc14594f80f
+
+
 
 workflows:
   version: 2
@@ -55,6 +54,3 @@ workflows:
       - unit_tests:
           requires:
             - build
-      - coverage:
-          requires:
-            - unit_tests
