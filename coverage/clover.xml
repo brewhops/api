@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1552856645461" clover="3.2.0">
-  <project timestamp="1552856645461" name="All files">
-    <metrics statements="159" coveredstatements="56" conditionals="39" coveredconditionals="9" methods="47" coveredmethods="11" elements="245" coveredelements="76" complexity="0" loc="159" ncloc="159" packages="4" files="8" classes="8"/>
+<coverage generated="1552859706189" clover="3.2.0">
+  <project timestamp="1552859706189" name="All files">
+    <metrics statements="270" coveredstatements="155" conditionals="56" coveredconditionals="20" methods="64" coveredmethods="28" elements="390" coveredelements="203" complexity="0" loc="270" ncloc="270" packages="6" files="10" classes="10"/>
     <package name="dist.components.actions">
       <metrics statements="41" coveredstatements="17" conditionals="15" coveredconditionals="7" methods="7" coveredmethods="4"/>
       <file name="controller.js" path="C:\Projects\senior-capstone\brewhops-api\dist\components\actions\controller.js">
@@ -49,14 +49,84 @@
         <line num="119" count="1" type="stmt"/>
       </file>
     </package>
+    <package name="dist.components.batches">
+      <metrics statements="64" coveredstatements="58" conditionals="15" coveredconditionals="10" methods="9" coveredmethods="9"/>
+      <file name="controller.js" path="C:\Projects\senior-capstone\brewhops-api\dist\components\batches\controller.js">
+        <metrics statements="64" coveredstatements="58" conditionals="15" coveredconditionals="10" methods="9" coveredmethods="9"/>
+        <line num="2" count="1" type="cond" truecount="3" falsecount="0"/>
+        <line num="3" count="1" type="cond" truecount="3" falsecount="1"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="27" count="2" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="43" count="2" type="stmt"/>
+        <line num="44" count="2" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="59" count="2" type="stmt"/>
+        <line num="60" count="2" type="stmt"/>
+        <line num="61" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="62" count="1" type="stmt"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="69" count="1" type="stmt"/>
+        <line num="81" count="2" type="stmt"/>
+        <line num="86" count="2" type="stmt"/>
+        <line num="96" count="2" type="stmt"/>
+        <line num="98" count="2" type="stmt"/>
+        <line num="100" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="101" count="0" type="stmt"/>
+        <line num="104" count="2" type="stmt"/>
+        <line num="106" count="2" type="stmt"/>
+        <line num="107" count="2" type="stmt"/>
+        <line num="109" count="0" type="stmt"/>
+        <line num="112" count="2" type="stmt"/>
+        <line num="119" count="2" type="stmt"/>
+        <line num="131" count="2" type="stmt"/>
+        <line num="132" count="2" type="stmt"/>
+        <line num="133" count="2" type="stmt"/>
+        <line num="134" count="2" type="stmt"/>
+        <line num="136" count="2" type="stmt"/>
+        <line num="137" count="2" type="stmt"/>
+        <line num="138" count="2" type="stmt"/>
+        <line num="141" count="2" type="stmt"/>
+        <line num="152" count="2" type="stmt"/>
+        <line num="153" count="2" type="stmt"/>
+        <line num="154" count="2" type="stmt"/>
+        <line num="155" count="2" type="stmt"/>
+        <line num="156" count="2" type="stmt"/>
+        <line num="157" count="1" type="stmt"/>
+        <line num="160" count="2" type="stmt"/>
+        <line num="171" count="2" type="stmt"/>
+        <line num="173" count="2" type="stmt"/>
+        <line num="176" count="2" type="stmt"/>
+        <line num="177" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="178" count="1" type="stmt"/>
+        <line num="185" count="0" type="stmt"/>
+        <line num="189" count="1" type="stmt"/>
+        <line num="200" count="2" type="stmt"/>
+        <line num="201" count="2" type="stmt"/>
+        <line num="202" count="2" type="stmt"/>
+        <line num="205" count="2" type="stmt"/>
+        <line num="207" count="2" type="stmt"/>
+        <line num="208" count="2" type="stmt"/>
+        <line num="210" count="0" type="stmt"/>
+        <line num="211" count="0" type="stmt"/>
+        <line num="214" count="2" type="stmt"/>
+        <line num="218" count="1" type="stmt"/>
+      </file>
+    </package>
     <package name="dist.dal">
       <metrics statements="49" coveredstatements="17" conditionals="15" coveredconditionals="2" methods="17" coveredmethods="2"/>
       <file name="crud.js" path="C:\Projects\senior-capstone\brewhops-api\dist\dal\crud.js">
         <metrics statements="17" coveredstatements="5" conditionals="7" coveredconditionals="0" methods="13" coveredmethods="1"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="15" count="1" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
         <line num="23" count="0" type="stmt"/>
         <line num="36" count="0" type="stmt"/>
         <line num="49" count="0" type="stmt"/>
@@ -69,25 +139,25 @@
         <line num="126" count="0" type="stmt"/>
         <line num="136" count="0" type="stmt"/>
         <line num="148" count="0" type="stmt"/>
-        <line num="151" count="1" type="stmt"/>
+        <line num="151" count="2" type="stmt"/>
       </file>
       <file name="db.js" path="C:\Projects\senior-capstone\brewhops-api\dist\dal\db.js">
         <metrics statements="8" coveredstatements="7" conditionals="4" coveredconditionals="2" methods="0" coveredmethods="0"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="4" count="1" type="stmt"/>
-        <line num="9" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="10" count="1" type="stmt"/>
-        <line num="13" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="9" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="13" count="2" type="cond" truecount="1" falsecount="1"/>
         <line num="14" count="0" type="stmt"/>
-        <line num="16" count="1" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
       </file>
       <file name="postgres.js" path="C:\Projects\senior-capstone\brewhops-api\dist\dal\postgres.js">
         <metrics statements="24" coveredstatements="5" conditionals="4" coveredconditionals="0" methods="4" coveredmethods="1"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
         <line num="24" count="0" type="stmt"/>
         <line num="25" count="0" type="stmt"/>
         <line num="26" count="0" type="stmt"/>
@@ -107,7 +177,7 @@
         <line num="67" count="0" type="stmt"/>
         <line num="69" count="0" type="stmt"/>
         <line num="70" count="0" type="stmt"/>
-        <line num="76" count="1" type="stmt"/>
+        <line num="76" count="2" type="stmt"/>
       </file>
     </package>
     <package name="src.components.actions">
@@ -145,40 +215,93 @@
         <line num="119" count="0" type="stmt"/>
       </file>
     </package>
+    <package name="src.components.batches">
+      <metrics statements="47" coveredstatements="41" conditionals="2" coveredconditionals="1" methods="8" coveredmethods="8"/>
+      <file name="controller.ts" path="C:\Projects\senior-capstone\brewhops-api\src\components\batches\controller.ts">
+        <metrics statements="47" coveredstatements="41" conditionals="2" coveredconditionals="1" methods="8" coveredmethods="8"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="37" count="2" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
+        <line num="54" count="1" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
+        <line num="69" count="2" type="stmt"/>
+        <line num="71" count="1" type="stmt"/>
+        <line num="73" count="0" type="stmt"/>
+        <line num="76" count="1" type="stmt"/>
+        <line num="89" count="2" type="stmt"/>
+        <line num="106" count="2" type="stmt"/>
+        <line num="109" count="2" type="stmt"/>
+        <line num="113" count="0" type="stmt"/>
+        <line num="117" count="2" type="stmt"/>
+        <line num="118" count="2" type="stmt"/>
+        <line num="120" count="0" type="stmt"/>
+        <line num="122" count="2" type="stmt"/>
+        <line num="144" count="2" type="stmt"/>
+        <line num="145" count="2" type="stmt"/>
+        <line num="146" count="2" type="stmt"/>
+        <line num="147" count="2" type="stmt"/>
+        <line num="151" count="2" type="stmt"/>
+        <line num="153" count="2" type="stmt"/>
+        <line num="155" count="2" type="stmt"/>
+        <line num="168" count="2" type="stmt"/>
+        <line num="169" count="2" type="stmt"/>
+        <line num="170" count="2" type="stmt"/>
+        <line num="172" count="2" type="stmt"/>
+        <line num="173" count="1" type="stmt"/>
+        <line num="175" count="2" type="stmt"/>
+        <line num="189" count="2" type="stmt"/>
+        <line num="196" count="2" type="stmt"/>
+        <line num="199" count="1" type="stmt"/>
+        <line num="205" count="0" type="stmt"/>
+        <line num="208" count="1" type="stmt"/>
+        <line num="220" count="2" type="stmt"/>
+        <line num="227" count="2" type="stmt"/>
+        <line num="229" count="2" type="stmt"/>
+        <line num="230" count="2" type="stmt"/>
+        <line num="233" count="0" type="stmt"/>
+        <line num="235" count="0" type="stmt"/>
+        <line num="237" count="2" type="stmt"/>
+      </file>
+    </package>
     <package name="src.dal">
       <metrics statements="40" coveredstatements="11" conditionals="9" coveredconditionals="0" methods="17" coveredmethods="2"/>
       <file name="crud.ts" path="C:\Projects\senior-capstone\brewhops-api\src\dal\crud.ts">
         <metrics statements="16" coveredstatements="4" conditionals="7" coveredconditionals="0" methods="13" coveredmethods="1"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="40" count="1" type="stmt"/>
-        <line num="45" count="1" type="stmt"/>
-        <line num="46" count="1" type="stmt"/>
-        <line num="55" count="0" type="stmt"/>
-        <line num="69" count="0" type="stmt"/>
-        <line num="91" count="0" type="stmt"/>
-        <line num="108" count="0" type="stmt"/>
-        <line num="118" count="0" type="stmt"/>
-        <line num="131" count="0" type="stmt"/>
-        <line num="150" count="0" type="stmt"/>
-        <line num="162" count="0" type="stmt"/>
-        <line num="178" count="0" type="stmt"/>
-        <line num="193" count="0" type="stmt"/>
-        <line num="204" count="0" type="stmt"/>
-        <line num="217" count="0" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="46" count="2" type="stmt"/>
+        <line num="47" count="2" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="92" count="0" type="stmt"/>
+        <line num="109" count="0" type="stmt"/>
+        <line num="119" count="0" type="stmt"/>
+        <line num="132" count="0" type="stmt"/>
+        <line num="151" count="0" type="stmt"/>
+        <line num="163" count="0" type="stmt"/>
+        <line num="179" count="0" type="stmt"/>
+        <line num="194" count="0" type="stmt"/>
+        <line num="205" count="0" type="stmt"/>
+        <line num="218" count="0" type="stmt"/>
       </file>
       <file name="db.ts" path="C:\Projects\senior-capstone\brewhops-api\src\dal\db.ts">
         <metrics statements="4" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="10" count="1" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
-        <line num="25" count="1" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
       </file>
       <file name="postgres.ts" path="C:\Projects\senior-capstone\brewhops-api\src\dal\postgres.ts">
         <metrics statements="20" coveredstatements="4" conditionals="2" coveredconditionals="0" methods="4" coveredmethods="1"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="22" count="1" type="stmt"/>
-        <line num="26" count="1" type="stmt"/>
-        <line num="28" count="1" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="26" count="2" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
         <line num="39" count="0" type="stmt"/>
         <line num="40" count="0" type="stmt"/>
         <line num="41" count="0" type="stmt"/>
