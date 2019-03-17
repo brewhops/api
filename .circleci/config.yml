@@ -43,7 +43,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/project
-      - codecov_upload:
+      - codecov/upload:
         file: ../coverage/coverage-final.json
         token: 563c370f-9077-4e0b-8903-ddc14594f80f
 
