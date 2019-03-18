@@ -14,8 +14,6 @@ get_latest_version: &getVersion
     source $BASH_ENV
 
 version: 2
-orbs:
-  codecov: codecov/codecov@1.0.2
 jobs:
   build:
     <<: *node
@@ -37,10 +35,6 @@ jobs:
       - run:
           name: Run unit tests
           command: npm test
-      - codecov:
-          upload:
-              file: coverage/coverage-final.json
-              token: 563c370f-9077-4e0b-8903-ddc14594f80f
 
 
 
