@@ -6,6 +6,7 @@ import { Batch, Version } from './types';
 export interface IBatchesController extends IPostgresController {
   getBatches: RequestHandler;
   getBatchesByTank: RequestHandler;
+  getBatchesByRecipe: RequestHandler;
   getBatch: RequestHandler;
   createBatch: RequestHandler;
   updateBatch: RequestHandler;
@@ -42,7 +43,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
   }
 
   /**
-   * Returns all versions from the cooresponding batch
+   * Returns all versions from the coresponding batch
    * @param {Request} req
    * @param {Response} res
    * @param {NextFunction} next
@@ -51,6 +52,22 @@ export class BatchesController extends PostgresController implements IBatchesCon
   async getBatchesByTank(req: Request, res: Response, next: NextFunction) {
     try {
       const { rows } = await this.read('*', 'tank_id = $1', [req.params.tankId]);
+      res.status(200).json(rows);
+    } catch (err) {
+      res.status(500).send(Boom.badImplementation(err));
+    }
+  }
+
+  /**
+   * Returns all versions from the coresponding batch
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof TaskController
+   */
+  async getBatchesByRecipe(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { rows } = await this.read('*', 'recipe_id = $1', [req.params.recipeId]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
