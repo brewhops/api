@@ -33,7 +33,7 @@ class BatchesController extends postgres_1.PostgresController {
         }
     }
     /**
-     * Returns all versions from the cooresponding batch
+     * Returns all versions from the coresponding batch
      * @param {Request} req
      * @param {Response} res
      * @param {NextFunction} next
@@ -42,6 +42,22 @@ class BatchesController extends postgres_1.PostgresController {
     async getBatchesByTank(req, res, next) {
         try {
             const { rows } = await this.read('*', 'tank_id = $1', [req.params.tankId]);
+            res.status(200).json(rows);
+        }
+        catch (err) {
+            res.status(500).send(boom_1.default.badImplementation(err));
+        }
+    }
+    /**
+     * Returns all versions from the coresponding batch
+     * @param {Request} req
+     * @param {Response} res
+     * @param {NextFunction} next
+     * @memberof TaskController
+     */
+    async getBatchesByRecipe(req, res, next) {
+        try {
+            const { rows } = await this.read('*', 'recipe_id = $1', [req.params.recipeId]);
             res.status(200).json(rows);
         }
         catch (err) {
