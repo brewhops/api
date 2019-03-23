@@ -6,6 +6,12 @@ describe('ActionsController ', () => {
     let tableName;
     let controller;
     // tslint:disable:no-any no-unsafe-any
+    const idx = 1;
+    const query = 'query';
+    const rows = ['TEST'];
+    const keys = 'keys';
+    const values = 'values';
+    const escapes = 'escapes';
     let request = {};
     let response = {};
     let nextFunction = {};
@@ -49,28 +55,18 @@ describe('ActionsController ', () => {
         expect(response.status).toHaveBeenCalledWith(500);
     });
     it('createAction success', async () => {
-        const rows = ['TEST'];
-        const keys = 'keys';
-        const values = 'values';
-        const escapes = 'escapes';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
         controller.create = jest.fn().mockResolvedValue({ rows });
         await controller.createAction(request, response, nextFunction);
         expect(response.status).toHaveBeenCalledWith(200);
     });
     it('createAction error', async () => {
-        const keys = 'keys';
-        const values = 'values';
-        const escapes = 'escapes';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
         controller.create = jest.fn().mockRejectedValue(new Error());
         await controller.createAction(request, response, nextFunction);
         expect(response.status).toHaveBeenCalledWith(500);
     });
     it('updateAction success', async () => {
-        const rows = ['TEST'];
-        const keys = 'keys';
-        const values = 'values';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values });
         controller.buildUpdateString = jest.fn().mockReturnValue({ keys, values });
         controller.update = jest.fn().mockResolvedValue({ rows });
@@ -78,10 +74,6 @@ describe('ActionsController ', () => {
         expect(response.status).toHaveBeenCalledWith(200);
     });
     it('updateAction error', async () => {
-        const idx = 1;
-        const query = 'query';
-        const keys = 'keys';
-        const values = 'values';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values });
         controller.buildUpdateString = jest.fn().mockReturnValue({ query, idx });
         controller.update = jest.fn().mockRejectedValue(new Error());
@@ -89,10 +81,7 @@ describe('ActionsController ', () => {
         expect(response.status).toHaveBeenCalledWith(500);
     });
     it('deleteAction success', async () => {
-        const res = {
-            rowCount: 2
-        };
-        controller.deleteById = jest.fn().mockResolvedValue(res);
+        controller.deleteById = jest.fn().mockResolvedValue({ rowCount: 2 });
         await controller.deleteAction(request, response, nextFunction);
         expect(response.status).toHaveBeenCalledWith(200);
     });

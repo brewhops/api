@@ -8,6 +8,12 @@ describe('ActionsController ', () => {
   let tableName: string;
   let controller: IActionController;
   // tslint:disable:no-any no-unsafe-any
+  const idx = 1;
+  const query = 'query';
+  const rows = ['TEST'];
+  const keys = 'keys';
+  const values = 'values';
+  const escapes = 'escapes';
   let request: any = {};
   let response: any = {};
   let nextFunction: any = {};
@@ -57,10 +63,7 @@ describe('ActionsController ', () => {
   });
 
   it('createAction success', async () => {
-    const rows = ['TEST'];
-    const keys = 'keys';
-    const values = 'values';
-    const escapes = 'escapes';
+
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
     controller.create = jest.fn().mockResolvedValue({ rows });
     await controller.createAction(<Request>request, <Response>response, <NextFunction>nextFunction);
@@ -68,9 +71,6 @@ describe('ActionsController ', () => {
   });
 
   it('createAction error', async () => {
-    const keys = 'keys';
-    const values = 'values';
-    const escapes = 'escapes';
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
     controller.create = jest.fn().mockRejectedValue(new Error());
     await controller.createAction(<Request>request, <Response>response, <NextFunction>nextFunction);
@@ -78,9 +78,6 @@ describe('ActionsController ', () => {
   });
 
   it('updateAction success', async () => {
-    const rows = ['TEST'];
-    const keys = 'keys';
-    const values = 'values';
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values });
     controller.buildUpdateString = jest.fn().mockReturnValue({ keys, values });
     controller.update = jest.fn().mockResolvedValue({ rows });
@@ -89,10 +86,6 @@ describe('ActionsController ', () => {
   });
 
   it('updateAction error', async () => {
-    const idx = 1;
-    const query = 'query';
-    const keys = 'keys';
-    const values = 'values';
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values });
     controller.buildUpdateString = jest.fn().mockReturnValue({ query, idx });
     controller.update = jest.fn().mockRejectedValue(new Error());
@@ -101,10 +94,7 @@ describe('ActionsController ', () => {
   });
 
   it('deleteAction success', async () => {
-    const res = {
-      rowCount: 2
-    };
-    controller.deleteById = jest.fn().mockResolvedValue(res);
+    controller.deleteById = jest.fn().mockResolvedValue({ rowCount: 2 });
     await controller.deleteAction(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
