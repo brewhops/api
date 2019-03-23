@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const controller_1 = require("../controller");
-// import * as request from 'supertest';
 describe('BatchesController ', () => {
     let tableName;
     let controller;
     // tslint:disable:no-any no-unsafe-any
+    const keys = 'keys';
+    const values = 'values';
+    const escapes = 'escapes';
     let request = {};
     let response = {};
     let nextFunction = {};
@@ -69,9 +71,6 @@ describe('BatchesController ', () => {
         expect(response.status).toHaveBeenCalledWith(500);
     });
     it('updateBatch success', async () => {
-        const keys = 'keys';
-        const values = 'values';
-        const escapes = 'escapes';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
         controller.readById = jest.fn().mockResolvedValue({ rowCount: 2 });
         controller.buildUpdateString = jest.fn().mockResolvedValue({ query: '', idx: '' });
@@ -81,9 +80,6 @@ describe('BatchesController ', () => {
         expect(response.status).toHaveBeenCalledWith(200);
     });
     it('updateBatch error', async () => {
-        const keys = 'keys';
-        const values = 'values';
-        const escapes = 'escapes';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
         controller.readById = jest.fn().mockResolvedValue({ rowCount: 2 });
         controller.buildUpdateString = jest.fn().mockResolvedValue({ query: '', idx: '' });
@@ -103,9 +99,6 @@ describe('BatchesController ', () => {
             update_user: 2
         };
         request.body = batch;
-        const keys = 'keys';
-        const values = 'values';
-        const escapes = 'escapes';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
         controller.create = jest.fn().mockResolvedValue({});
         await controller.createBatch(request, response, nextFunction);
@@ -123,9 +116,6 @@ describe('BatchesController ', () => {
             update_user: 2
         };
         request.body = batch;
-        const keys = 'keys';
-        const values = 'values';
-        const escapes = 'escapes';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
         controller.create = jest.fn().mockRejectedValue(new Error());
         await controller.createBatch(request, response, nextFunction);
@@ -156,9 +146,6 @@ describe('BatchesController ', () => {
         expect(response.status).toHaveBeenCalledWith(500);
     });
     it('closeBatch success', async () => {
-        const keys = 'keys';
-        const values = 'values';
-        const escapes = 'escapes';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
         controller.buildUpdateString = jest.fn().mockResolvedValue({ query: '', idx: 1 });
         controller.deleteById = jest.fn().mockResolvedValue({});
@@ -166,9 +153,6 @@ describe('BatchesController ', () => {
         expect(response.status).toHaveBeenCalledWith(200);
     });
     it('closeBatch error', async () => {
-        const keys = 'keys';
-        const values = 'values';
-        const escapes = 'escapes';
         controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
         controller.buildUpdateString = jest.fn().mockResolvedValue({ query: '', idx: 1 });
         controller.deleteById = jest.fn().mockRejectedValue(new Error());

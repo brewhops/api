@@ -24,7 +24,6 @@
     "start": "cross-env NODE_ENV=production &&  node dist/index.js",
     "build": "tsc",
     "test": "jest --coverage",
-    "test-intg": "cross-env  NODE_ENV=test docker-compose -f DEV.docker-compose.yaml up -d test-database; sleep 10; cross-env NODE_ENV=test TEST_PG_HOST=localhost TEST_PG_PORT=45758 mocha --reporter spec 'test/components/*.js' --file test/dbSetup.js --exit; NODE_ENV=test docker-compose -f DEV.docker-compose.yaml stop test-database;",
     "dev": "cross-env NODE_ENV=development docker-compose up database web-server",
     "debug": "NODE_ENV=development nodemon --legacy-watch --watch ./dist --inspect=0.0.0.0:9222 --nolazy",
     "build-images": "cross-env NODE_ENV=development docker-compose up --build database web-server",
