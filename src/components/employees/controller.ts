@@ -162,7 +162,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       if(rows.length > 0 ) {
         if(await this.isAdmin(req.user) && !userMatchAuthToken(req.user, rows[0].username)) {
           const results = await this.deleteById(req.params.id);
-          res.json(results.rows);
+          res.status(200).json(results.rows);
         } else {
           res.status(401).send(Boom.unauthorized('Not authorized.'));
         }
