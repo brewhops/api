@@ -182,7 +182,7 @@ class EmployeeController extends postgres_1.PostgresController {
         }
     }
     /**
-     * Determines whether the surrent user is an administrator.
+     * Determines whether the current user is an administrator.
      * @param {string} username
      * @returns
      * @memberof EmployeeController
