@@ -43,6 +43,10 @@ describe('EmployeeController ', () => {
     nextFunction = jest.fn();
   });
 
+  beforeEach(() => {
+    controller = new EmployeeController(tableName);
+  });
+
   it('getEmployee success', async () => {
     controller.readById = jest.fn().mockResolvedValue({ rows });
     await controller.getEmployee(<Request>request, <Response>response, <NextFunction>nextFunction);
@@ -123,7 +127,7 @@ describe('EmployeeController ', () => {
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values });
     controller.buildUpdateString = jest.fn().mockReturnValue({ query, idx });
     controller.readById = jest.fn().mockResolvedValue({ rows });
-    controller.isAdmin = jest.fn().mockResolvedValue(true);
+    controller.isAdmin = jest.fn().mockResolvedValueOnce(true);
     controller.update = jest.fn().mockResolvedValue({ rows, rowCount: 1 });
     await controller.updateEmployee(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
@@ -141,7 +145,7 @@ describe('EmployeeController ', () => {
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values });
     controller.buildUpdateString = jest.fn().mockReturnValue({ query, idx });
     controller.readById = jest.fn().mockResolvedValue({ rows });
-    controller.isAdmin = jest.fn().mockResolvedValue(false);
+    controller.isAdmin = jest.fn().mockResolvedValueOnce(false);
     await controller.updateEmployee(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(401);
   });
@@ -150,7 +154,7 @@ describe('EmployeeController ', () => {
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values });
     controller.buildUpdateString = jest.fn().mockReturnValue({ query, idx });
     controller.readById = jest.fn().mockResolvedValue({ rows });
-    controller.isAdmin = jest.fn().mockResolvedValue(true);
+    controller.isAdmin = jest.fn().mockResolvedValueOnce(true);
     controller.update = jest.fn().mockRejectedValue(new Error());
     await controller.updateEmployee(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
@@ -158,7 +162,7 @@ describe('EmployeeController ', () => {
 
   it('deleteEmployee success', async () => {
     controller.readById = jest.fn().mockResolvedValue({ rows: [{ username }] });
-    controller.isAdmin = jest.fn().mockResolvedValue(true);
+    controller.isAdmin = jest.fn().mockResolvedValueOnce(true);
     controller.deleteById = jest.fn().mockResolvedValue({ rows });
     await controller.deleteEmployee(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
@@ -172,7 +176,7 @@ describe('EmployeeController ', () => {
 
   it('deleteEmployee employee not deleted', async () => {
     controller.readById = jest.fn().mockResolvedValue({ rows: [{ username }] });
-    controller.isAdmin = jest.fn().mockResolvedValue(true);
+    controller.isAdmin = jest.fn().mockResolvedValueOnce(true);
     controller.deleteById = jest.fn().mockResolvedValue({ rows: [] });
     await controller.deleteEmployee(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(401);
@@ -180,40 +184,30 @@ describe('EmployeeController ', () => {
 
   it('deleteEmployee error', async () => {
     controller.readById = jest.fn().mockResolvedValue({ rows: [{ username }] });
-    controller.isAdmin = jest.fn().mockResolvedValue(true);
+    controller.isAdmin = jest.fn().mockResolvedValueOnce(true);
     controller.deleteById = jest.fn().mockRejectedValue(new Error());
     await controller.deleteEmployee(<Request>request, <Response>response, <NextFunction>nextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 
-  it('verifyAdmin accepted', async () => {
-    controller.isAdmin = jest.fn().mockResolvedValue(true);
-    await controller.verifyAdmin(<Request>request, <Response>response, <NextFunction>nextFunction);
-    expect(response.status).toHaveBeenCalledWith(200);
-  });
-
-  it('verifyAdmin rejected', async () => {
-    controller.isAdmin = jest.fn().mockRejectedValue(new Error());
-    await controller.verifyAdmin(<Request>request, <Response>response, <NextFunction>nextFunction);
-    expect(response.status).toHaveBeenCalledWith(200);
-  });
-
   it('isAdmin accepted', async () => {
-    controller.readByUsername = jest.fn().mockResolvedValue({
-      rows: [{
-        admin: true
-      }]
-    });
-
-    expect(await controller.isAdmin(username)).toEqual(true);
+    const employee = {
+      rows: [{ admin: true }]
+    };
+    controller.readByUsername = jest.fn().mockResolvedValueOnce(employee);
+    const result: boolean = await controller.isAdmin(username);
+    expect(controller.readByUsername).toHaveBeenCalledWith(username);
+    expect(result).toEqual(true);
   });
 
   it('isAdmin rejected', async () => {
-    controller.readByUsername = jest.fn().mockResolvedValue({
-      rows: [{}]
-    });
-
-    expect(await controller.isAdmin(username)).toEqual(undefined);
+    const employee = {
+      rows: [{ admin: false }]
+    };
+    controller.readByUsername = jest.fn().mockResolvedValueOnce(employee);
+    const result: boolean = await controller.isAdmin(username);
+    expect(controller.readByUsername).toHaveBeenCalledWith(username);
+    expect(result).toEqual(false);
   });
 
   it('isAdmin error', async () => {
@@ -223,5 +217,17 @@ describe('EmployeeController ', () => {
     } catch (err) {
       expect(err).toEqual(new Error());
     }
+  });
+
+  it('verifyAdmin accepted', async () => {
+    controller.isAdmin = jest.fn().mockResolvedValueOnce(true);
+    await controller.verifyAdmin(<Request>request, <Response>response, <NextFunction>nextFunction);
+    expect(response.status).toHaveBeenCalledWith(200);
+  });
+
+  it('verifyAdmin rejected', async () => {
+    controller.isAdmin = jest.fn().mockRejectedValueOnce(new Error());
+    await controller.verifyAdmin(<Request>request, <Response>response, <NextFunction>nextFunction);
+    expect(response.status).toHaveBeenCalledWith(200);
   });
 });

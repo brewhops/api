@@ -192,7 +192,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
   }
 
   /**
-   * Determines whether the surrent user is an administrator.
+   * Determines whether the current user is an administrator.
    * @param {string} username
    * @returns
    * @memberof EmployeeController
