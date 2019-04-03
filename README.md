@@ -30,8 +30,6 @@ The minimum requirements are as follows
 * PGUSER
 * PGDATABASE
 * PGPASSWORD
-* PGPORT
-* PGHOST
 * PORT
 
 Everything beginning with PG will be used to configure the postgreSQL docker container, and the Express connections to that container. For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
@@ -44,35 +42,42 @@ Everything except for the PGPORT and PGHOST can be set to whatever you want it t
 
 Your env file requires
 
-* PGPORT=32769
-* PGHOST=localhost
+* __PGUSER__: the name of database user the api will use to access the database.
+* __PGPASSWORD__: the password of the database user.
+* __PGDATABASE__: the name of the database which the api will run off of.
 
 Then
 
-1. `docker-compose up` will start the development database.
-1. `npm run dev` will start the API.
+1. Make sure to use node version 10 as it needs to match the development docker container (which uses node 10).
+1. `npm install` will install all of the dependencies.
+1. `npm run watch-ts` will have the typescript compiler watch the source files for changes and re-transpile them 
+1. `npm run dev-build` will build a new Docker image for the api
+1. `npm run dev` will start the development database and web server in Docker.
+
 
 
 If you are going to do testing, you need the following in the *.env* file
 
 * TEST_PG_USER
-* TEST_PG_DATABASE
 * TEST_PG_PASSWORD
-* TEST_PG_PORT
 * TEST_PG_HOST
+
+It is easiest to have theses match your development credientials and database name.
 
 #### Production
 
-Your env file requires
+Your env file requires all of the environment variables from the development section (exculding the TEST variables) plus:
 
-* PGPORT=5432
-* PGHOST=database
+* PGPORT=5432 ??? __TODO__
+* PGHOST=database ??? __TODO__
 
 Then
 
-1. `docker-compose -f docker-compose-prod.yaml up` will start the production database and API.
+1. `npm run prod` will start the production database and API.
 
-### Checking the database
+### Checking the database (manually)
+
+__NOTE__: for the automatic psql instance check the `npm` commands section.
 
 To connect to the docker container and interact directly with the database, follow these steps
 
@@ -91,3 +96,12 @@ A few things to note:
   * eg. `SELECT * FROM actions;` selects everything from the actions table
 * `\q` to quit the psql shell
 * `exit` to exit the docker container
+
+## `npm` commands
+* __dev__: starts the development docker environment.  This mounts the project to the docker container and then runs nodemon.  For this to work, your local node version (the one used to run `npm install`) must be version 11 as well.
+* __dev-clean__: clean's the docker compose environment up.  This allows your development environment to effectively be deleted so you can start from scratch.
+* __dev-build__: rebuilds the dockerfiles that are defined in the docker compose file.  Run this is these are changed.
+* __dev-psql__: this automatically connects you with a psql instance to the development database (only if running).
+* __prod-*__: all of the above commands also have production counterparts.  Replace `dev` with `prod` and they will work.
+* __test-intg__: runs the current tests (which are integration tests) without any hassle.  It launches the test database, waits for it to initialize, runs the tests, then closes the database.
+

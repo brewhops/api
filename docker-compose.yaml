@@ -1,29 +1,51 @@
 version: '3.6'
 services:
-  database:
-     image: postgres
-     restart: always
-     environment:
-        POSTGRES_PASSWORD: ${PGPASSWORD}
-        POSTGRES_USER: ${PGUSER}
-        POSTGRES_DB: ${PGDATABASE}
-     ports:
-       - ${PGPORT}:5432
-     volumes:
-        - ./db-init:/docker-entrypoint-initdb.d
-        - postgres-data:/var/lib/postgresql/data
-  testDB:
+   database:
+      image: postgres
+      restart: always
+      volumes:
+         - ./db-init:/docker-entrypoint-initdb.d
+         - postgres_data:/var/lib/postgresql/data
+      ports:
+        - 5432:5432
+      env_file:
+         - ./.env
+
+   test-database:
     image: postgres
     restart: always
-    environment:
-       POSTGRES_PASSWORD: ${TEST_PG_PASSWORD}
-       POSTGRES_USER: ${TEST_PG_USER}
-       POSTGRES_DB: ${TEST_PG_DATABASE}
-    ports:
-      - ${TEST_PG_PORT}:5432
     volumes:
        - ./db-init:/docker-entrypoint-initdb.d
+    ports:
+        - 45758:5432
+    env_file:
+         - ./.env
+
+   web-server:
+      build:
+         context: .
+         dockerfile: Dockerfile
+      image: brewhops-api_dev
+      restart: always
+      links:
+         - 'database'
+      volumes:
+        - ./dist:/user/dist
+      environment:
+         PORT: 3000
+         PGHOST: 'database'
+         TEST_PG_PORT: 5432
+         TEST_PG_HOST: 'test-database'
+         NODE_ENV: '${NODE_ENV}'
+      ports:
+         - 3000:3000
+         - 9222:9222
+      env_file:
+         - ./.env
+      depends_on:
+         - database
 
 volumes:
-  postgres-data:
-    name: brewhops-postgress-data
+  postgres_data:
+    name: brewhops-postgres-data_dev
+    driver: local
