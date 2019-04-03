@@ -9,6 +9,7 @@ import { pool } from './db';
  * @interface ICrudController
  */
 export interface ICrudController {
+  pool: Pool;
   tableName: () => string;
   create: (columns: any, conditions: any, escaped: any[]) => Promise<QueryResult>;
   createInTable: (

@@ -1,4 +1,4 @@
-import { PostgresController, IPostgresController } from '../../dal/postgres';
+ import { PostgresController, IPostgresController } from '../../dal/postgres';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Boom from 'boom';
 import is from 'is';
