@@ -1,6 +1,4 @@
-# BrewhopsAPI
-
-[![CircleCI](https://circleci.com/gh/danvanhorn/brewhops-api.svg?style=svg&circle-token=0f17dce14c506204bc95e1e986c8f3f99cd725ec)]
+# BrewhopsAPI ![CircleCI](https://circleci.com/gh/danvanhorn/brewhops-api.svg?style=svg&circle-token=0f17dce14c506204bc95e1e986c8f3f99cd725ec)
 
 ## Purpose of API:
 The general purpose of the API is to keep track of how a batch of beer is being brewed over time. There are some peripheral information pieces such as employees that are working on the system, the tanks that the batches are being brewed in, actions associated with those tanks, and the recipes for a brew.
@@ -38,29 +36,10 @@ Everything beginning with PG will be used to configure the postgreSQL docker con
 The PORT is the port the express app will expose for the routes.
 
 #### Development
-1. `npm install` will install all of the dependencies.
+1. `npm i` will install all of the dependencies.
 1. `npm run watch-ts` will have the typescript compiler watch the source files for changes and re-transpile them 
-1. `npm run dev-build` will build a new Docker image for the api
-1. `npm run dev` will start the development database and web server in Docker.
-
-If you are going to do testing, you need the following in the *.env* file
-
-* TEST_PG_USER
-* TEST_PG_PASSWORD
-* TEST_PG_HOST
-
-It is easiest to have theses match your development credientials and database name.
-
-#### Production
-
-Your env file requires all of the environment variables from the development section (exculding the TEST variables) plus:
-
-* PGPORT=5432 ??? __TODO__
-* PGHOST=database ??? __TODO__
-
-Then
-
-1. `npm run prod` will start the production database and API.
+1. `npm run build-images` will run `docker-compose`, build new images, and run the api.
+1. `npm run dev` will run `docker-compose`, and run the api.
 
 ### Checking the database (manually)
 
@@ -90,5 +69,5 @@ A few things to note:
 * __dev-build__: rebuilds the dockerfiles that are defined in the docker compose file.  Run this is these are changed.
 * __dev-psql__: this automatically connects you with a psql instance to the development database (only if running).
 * __prod-*__: all of the above commands also have production counterparts.  Replace `dev` with `prod` and they will work.
-* __test-intg__: runs the current tests (which are integration tests) without any hassle.  It launches the test database, waits for it to initialize, runs the tests, then closes the database.
+* __test__: runs the current tests.
 
