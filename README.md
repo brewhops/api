@@ -27,14 +27,12 @@ This *.env* file should never be committed, you can rename the *example.env* fil
 
 It contains the following environment variables
 
-* PGUSER
-* PGDATABASE
-* PGPASSWORD
-* PORT
+* PGUSER     -- The PostGres username
+* PGDATABASE -- The PostGres database name 
+* PGPASSWORD -- The PostGres database password
+* PORT       -- The Port that the database connects to
 
-Everything beginning with PG will be used to configure the postgreSQL docker container, and the Express connections to that container. For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
-
-The PORT is the port the express app will expose for the routes.
+For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
 
 #### Development
 1. `npm i` will install all of the dependencies.
