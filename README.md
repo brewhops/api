@@ -35,7 +35,7 @@ It contains the following environment variables
 For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
 
 ## Development
-1. `mv example.env .env` will enable the [default configuration](example.env).
+1. `cp example.env .env` will enable the [default configuration](example.env).
 1. `npm i` will install all of the dependencies.
 1. `npm run watch-ts` will have the typescript compiler watch the source files for changes and re-transpile them 
 1. `npm run build-images` will run `docker-compose`, build new images, and run the api.
