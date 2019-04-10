@@ -1,31 +1,26 @@
-# NinkasiServer
+# BrewhopsAPI
+
+[![CircleCI](https://circleci.com/gh/danvanhorn/brewhops-api.svg?style=svg&circle-token=0f17dce14c506204bc95e1e986c8f3f99cd725ec)]
 
 ## Purpose of API:
 The general purpose of the API is to keep track of how a batch of beer is being brewed over time. There are some peripheral information pieces such as employees that are working on the system, the tanks that the batches are being brewed in, actions associated with those tanks, and the recipes for a brew.
 
-## Security Mechanisms:
-The API uses JWT (Json Web Tokens) based authorization to ensure that only valid users are permitted to preform actions on table when requests are made. When a user is created, or signs in, they will provide a password for authentication, after their password and username are verified they will be given a time based JWT for all their requests.
+## Requirements
+*npm
+*Docker
+*Docker compose
 
-The API will also escape/validate submitted data to prevent injection attacks and to prevent illogical values from being stored in the database. Most of this kind of validation will be handled by third-party validators, like npm’s [validator](https://github.com/chriso/validator.js), as well as custom validators that validate types of data that are unique to the API. Injection attacks will also be prevented by using prepared statements when querying the database.
+## Postman
+*postman
 
-The API protects both the user’s privacy and any of the API’s architectural secrets. To protect the former, the API takes precautions like avoiding exposing any of the user’s sensitive data in route specifications. To protect the latter, it performs responsible error handling such that the user only ever sees custom error messages instead of default debugging information that could potentially reveal sensitive information about the API.
-
-## Resources
-
-This project uses
-* Docker
-* PostgreSQL
-* Express
-
-Express uses the [pg](https://node-postgres.com/) package to interact with the postgreSQL database.
-
+## Test Data
 
 ## Startup
 
 Both development and production environments require the use of a *.env* file to get environment variables.
-This *.env* file should never be committed.
+This *.env* file should never be committed, you can rename the *example.env* file in the project to *.env* and it will work.
 
-The minimum requirements are as follows
+It contains the following environment variables
 
 * PGUSER
 * PGDATABASE
@@ -36,25 +31,11 @@ Everything beginning with PG will be used to configure the postgreSQL docker con
 
 The PORT is the port the express app will expose for the routes.
 
-Everything except for the PGPORT and PGHOST can be set to whatever you want it to.
-
 #### Development
-
-Your env file requires
-
-* __PGUSER__: the name of database user the api will use to access the database.
-* __PGPASSWORD__: the password of the database user.
-* __PGDATABASE__: the name of the database which the api will run off of.
-
-Then
-
-1. Make sure to use node version 10 as it needs to match the development docker container (which uses node 10).
 1. `npm install` will install all of the dependencies.
 1. `npm run watch-ts` will have the typescript compiler watch the source files for changes and re-transpile them 
 1. `npm run dev-build` will build a new Docker image for the api
 1. `npm run dev` will start the development database and web server in Docker.
-
-
 
 If you are going to do testing, you need the following in the *.env* file
 
