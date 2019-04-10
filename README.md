@@ -3,10 +3,11 @@
 ## Purpose of API:
 The general purpose of the API is to keep track of how a batch of beer is being brewed over time. There are some peripheral information pieces such as employees that are working on the system, the tanks that the batches are being brewed in, actions associated with those tanks, and the recipes for a brew.
 
+
 ## Requirements
-* npm
-* Docker
-* Docker compose
+* [npm](https://www.npmjs.com/get-npm)
+* [Docker](https://docs.docker.com/install/)
+* [Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Postman
 The postman collection at the root of this repo contains documentation for all of the avaiable api endpoints.
