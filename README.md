@@ -10,7 +10,7 @@ The general purpose of the API is to keep track of how a batch of beer is being 
 
 ## Postman
 The postman collection at the root of this repo contains documentation for all of the avaiable api endpoints.
-* Download [postman](https://www.getpostman.com/)
+* [postman](https://www.getpostman.com/)
 
 ## Test Data
 Once the application has started the `init-live` endpoint needs to be hit to initialize the test data for the application.  Once hit (after success) this can take between 10 seconds to a minute to load all of the data.  The following curl command can be used to hit the endpoint:
