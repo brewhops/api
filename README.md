@@ -34,13 +34,13 @@ It contains the following environment variables
 
 For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
 
-#### Development
+## Development
 1. `npm i` will install all of the dependencies.
 1. `npm run watch-ts` will have the typescript compiler watch the source files for changes and re-transpile them 
 1. `npm run build-images` will run `docker-compose`, build new images, and run the api.
 1. `npm run dev` will run `docker-compose`, and run the api.
 
-### Checking the database (manually)
+## Checking the database (manually)
 
 __NOTE__: for the automatic psql instance check the `npm` commands section.
 
