@@ -9,15 +9,9 @@ The general purpose of the API is to keep track of how a batch of beer is being 
 * Docker compose
 
 ## Postman
-The postman collection at the root of this repo contains documentation for all of the avaiable api endpoints.
-* Download [postman](https://www.getpostman.com/)
+* postman
 
 ## Test Data
-Once the application has started the `init-live` endpoint needs to be hit to initialize the test data for the application.  Once hit (after success) this can take between 10 seconds to a minute to load all of the data.  The following curl command can be used to hit the endpoint:
-```
-curl -X POST http://localhost:3000/init-live
-```
-Or, postman could also be used to hit this endpoint instead of the curl command.
 
 ## Startup
 
@@ -26,22 +20,23 @@ This *.env* file should never be committed, you can rename the *example.env* fil
 
 It contains the following environment variables
 
-* PGUSER
-* PGDATABASE
-* PGPASSWORD
-* PORT
+* PGUSER     -- The PostGres username
+* PGDATABASE -- The PostGres database name 
+* PGPASSWORD -- The PostGres database password
+* PORT       -- The Port that the database connects to
+
 
 Everything beginning with PG will be used to configure the postgreSQL docker container, and the Express connections to that container. For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
 
 The PORT is the port the express app will expose for the routes.
 
-## Development
+#### Development
 1. `npm i` will install all of the dependencies.
 1. `npm run watch-ts` will have the typescript compiler watch the source files for changes and re-transpile them 
 1. `npm run build-images` will run `docker-compose`, build new images, and run the api.
 1. `npm run dev` will run `docker-compose`, and run the api.
 
-## Checking the database (manually)
+### Checking the database (manually)
 
 __NOTE__: for the automatic psql instance check the `npm` commands section.
 
