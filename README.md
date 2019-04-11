@@ -1,81 +1,47 @@
-# NinkasiServer
+# BrewhopsAPI ![CircleCI](https://circleci.com/gh/danvanhorn/brewhops-api.svg?style=svg&circle-token=0f17dce14c506204bc95e1e986c8f3f99cd725ec)
 
 ## Purpose of API:
 The general purpose of the API is to keep track of how a batch of beer is being brewed over time. There are some peripheral information pieces such as employees that are working on the system, the tanks that the batches are being brewed in, actions associated with those tanks, and the recipes for a brew.
 
-## Security Mechanisms:
-The API uses JWT (Json Web Tokens) based authorization to ensure that only valid users are permitted to preform actions on table when requests are made. When a user is created, or signs in, they will provide a password for authentication, after their password and username are verified they will be given a time based JWT for all their requests.
 
-The API will also escape/validate submitted data to prevent injection attacks and to prevent illogical values from being stored in the database. Most of this kind of validation will be handled by third-party validators, like npm’s [validator](https://github.com/chriso/validator.js), as well as custom validators that validate types of data that are unique to the API. Injection attacks will also be prevented by using prepared statements when querying the database.
-
-The API protects both the user’s privacy and any of the API’s architectural secrets. To protect the former, the API takes precautions like avoiding exposing any of the user’s sensitive data in route specifications. To protect the latter, it performs responsible error handling such that the user only ever sees custom error messages instead of default debugging information that could potentially reveal sensitive information about the API.
-
-## Resources
-
-This project uses
-* Docker
-* PostgreSQL
-* Express
-
-Express uses the [pg](https://node-postgres.com/) package to interact with the postgreSQL database.
-
+## Requirements
+* [npm](https://www.npmjs.com/get-npm)
+* [Docker](https://docs.docker.com/install/)
+* [Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Startup
 
 Both development and production environments require the use of a *.env* file to get environment variables.
-This *.env* file should never be committed.
+This *.env* file should never be committed, you can rename the *example.env* file in the project to *.env* and it will work.
 
-The minimum requirements are as follows
+It contains the following environment variables
 
-* PGUSER
-* PGDATABASE
-* PGPASSWORD
-* PORT
+* PGUSER     -- The PostGres username
+* PGDATABASE -- The PostGres database name 
+* PGPASSWORD -- The PostGres database password
+* PORT       -- The Port that the database connects to
 
-Everything beginning with PG will be used to configure the postgreSQL docker container, and the Express connections to that container. For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
+For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
 
-The PORT is the port the express app will expose for the routes.
+## Development
+1. `cp example.env .env` will enable the [default configuration](example.env).
+1. `npm i` will install all of the dependencies.
+1. Run `npm run watch-ts` in a different terminal, this will trigger the typescript compiler to watch the source files for changes and re-transpile them.
+1. `npm run build-images` will run `docker-compose`, build new images, and run the api.
+1. `npm run dev` will run `docker-compose`, and run the api.
 
-Everything except for the PGPORT and PGHOST can be set to whatever you want it to.
+## Postman
+The postman collection at the root of this repo contains documentation for all of the avaiable api endpoints.
+* [postman](https://www.getpostman.com/)
 
-#### Development
+## Test Data
+Once the application has started the `init-live` endpoint needs to be hit to initialize the test data for the application.  Once hit (after success) this can take between 10 seconds to a minute to load all of the data.  The following curl command can be used to hit the endpoint:
+```
+curl -X POST http://localhost:3000/init-live
+```
+Or, postman could also be used to hit this endpoint instead of the curl command.
 
-Your env file requires
-
-* __PGUSER__: the name of database user the api will use to access the database.
-* __PGPASSWORD__: the password of the database user.
-* __PGDATABASE__: the name of the database which the api will run off of.
-
-Then
-
-1. Make sure to use node version 10 as it needs to match the development docker container (which uses node 10).
-1. `npm install` will install all of the dependencies.
-1. `npm run watch-ts` will have the typescript compiler watch the source files for changes and re-transpile them 
-1. `npm run dev-build` will build a new Docker image for the api
-1. `npm run dev` will start the development database and web server in Docker.
-
-
-
-If you are going to do testing, you need the following in the *.env* file
-
-* TEST_PG_USER
-* TEST_PG_PASSWORD
-* TEST_PG_HOST
-
-It is easiest to have theses match your development credientials and database name.
-
-#### Production
-
-Your env file requires all of the environment variables from the development section (exculding the TEST variables) plus:
-
-* PGPORT=5432 ??? __TODO__
-* PGHOST=database ??? __TODO__
-
-Then
-
-1. `npm run prod` will start the production database and API.
-
-### Checking the database (manually)
+## Checking the database (manually)
 
 __NOTE__: for the automatic psql instance check the `npm` commands section.
 
@@ -103,5 +69,5 @@ A few things to note:
 * __dev-build__: rebuilds the dockerfiles that are defined in the docker compose file.  Run this is these are changed.
 * __dev-psql__: this automatically connects you with a psql instance to the development database (only if running).
 * __prod-*__: all of the above commands also have production counterparts.  Replace `dev` with `prod` and they will work.
-* __test-intg__: runs the current tests (which are integration tests) without any hassle.  It launches the test database, waits for it to initialize, runs the tests, then closes the database.
+* __test__: runs the current tests.
 
