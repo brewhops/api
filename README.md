@@ -9,17 +9,6 @@ The general purpose of the API is to keep track of how a batch of beer is being 
 * [Docker](https://docs.docker.com/install/)
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
-## Postman
-The postman collection at the root of this repo contains documentation for all of the avaiable api endpoints.
-* [postman](https://www.getpostman.com/)
-
-## Test Data
-Once the application has started the `init-live` endpoint needs to be hit to initialize the test data for the application.  Once hit (after success) this can take between 10 seconds to a minute to load all of the data.  The following curl command can be used to hit the endpoint:
-```
-curl -X POST http://localhost:3000/init-live
-```
-Or, postman could also be used to hit this endpoint instead of the curl command.
-
 ## Startup
 
 Both development and production environments require the use of a *.env* file to get environment variables.
@@ -37,9 +26,20 @@ For more information on the PG environment variables, check out the [official po
 ## Development
 1. `cp example.env .env` will enable the [default configuration](example.env).
 1. `npm i` will install all of the dependencies.
-1. `npm run watch-ts` will have the typescript compiler watch the source files for changes and re-transpile them 
+1. Run `npm run watch-ts` in a different terminal, this will trigger the typescript compiler to watch the source files for changes and re-transpile them.
 1. `npm run build-images` will run `docker-compose`, build new images, and run the api.
 1. `npm run dev` will run `docker-compose`, and run the api.
+
+## Postman
+The postman collection at the root of this repo contains documentation for all of the avaiable api endpoints.
+* [postman](https://www.getpostman.com/)
+
+## Test Data
+Once the application has started the `init-live` endpoint needs to be hit to initialize the test data for the application.  Once hit (after success) this can take between 10 seconds to a minute to load all of the data.  The following curl command can be used to hit the endpoint:
+```
+curl -X POST http://localhost:3000/init-live
+```
+Or, postman could also be used to hit this endpoint instead of the curl command.
 
 ## Checking the database (manually)
 
