@@ -24,6 +24,8 @@ function routes() {
     // [POST] section
     router.post('/new', validate(validator_1.BatchesValidator.createBatch), auth_1.requireAuthentication, async (req, res, next) => controller.createBatch(req, res, next));
     router.post('/update', validate(validator_1.BatchesValidator.updateBatch), auth_1.requireAuthentication, async (req, res, next) => controller.updateBatch(req, res, next));
+    // [PATCH] section
+    router.patch('/id/:id', auth_1.requireAuthentication, async (req, res, next) => controller.patchBatch(req, res, next));
     // [DELETE] section
     router.delete('/id/:id', auth_1.requireAuthentication, async (req, res, next) => controller.deleteBatch(req, res, next));
     router.delete('/close/:id', auth_1.requireAuthentication, async (req, res, next) => controller.closeBatch(req, res, next));
