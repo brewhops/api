@@ -158,7 +158,37 @@ class BatchesController extends postgres_1.PostgresController {
         }
     }
     /**
-     * Updates an existing batch.
+     * Patches an existing batch.
+     * @param {Request} req
+     * @param {Response} res
+     * @param {NextFunction} next
+     * @memberof BatchesController
+     */
+    async patchBatch(req, res, next) {
+        const batchId = req.params.id;
+        // Get active batch
+        const batchResults = await this.readById(batchId);
+        const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
+        // if the item does not exist
+        if (batchResults.rowCount === 0) {
+            res.status(404).end();
+        }
+        else {
+            try {
+                // set an update
+                const { query, idx } = await this.buildUpdateString(keys);
+                values.push(batchId);
+                // update the batch
+                await this.update(query, `id = \$${idx}`, values);
+                res.status(204).end();
+            }
+            catch (err) {
+                res.status(400).send(boom_1.default.badRequest(err));
+            }
+        }
+    }
+    /**
+     * Creates a new batch.
      * @param {Request} req
      * @param {Response} res
      * @param {NextFunction} next
