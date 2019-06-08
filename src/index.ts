@@ -53,9 +53,9 @@ app.post('/init-live', async (req: Request, res: Response) => {
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(process.env.PORT, async () => {
-    if(process.env.NODE_ENV === 'production') {
-      await insertDevelopmentData(true);
-    }
+    // if(process.env.NODE_ENV === 'production') {
+    //   await insertDevelopmentData(true);
+    // }
     // tslint:disable-next-line:no-console
     console.log(`Server running at port ${process.env.PORT}`);
   });
