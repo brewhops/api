@@ -25,6 +25,9 @@ export function routes(): Router {
   router.post('/new', validate(BatchesValidator.createBatch), requireAuthentication, async (req, res, next) => controller.createBatch(req, res, next));
   router.post('/update', validate(BatchesValidator.updateBatch), requireAuthentication, async (req, res, next) => controller.updateBatch(req, res, next));
 
+  // [PATCH] section
+  router.patch('/id/:id', requireAuthentication, async (req, res, next) => controller.patchBatch(req, res, next));
+
   // [DELETE] section
   router.delete('/id/:id', requireAuthentication, async (req, res, next) => controller.deleteBatch(req, res, next));
   router.delete('/close/:id', requireAuthentication, async (req, res, next) => controller.closeBatch(req, res, next));
