@@ -1,11 +1,8 @@
 {
-  "name": "NinkasiServer",
+  "name": "api",
   "version": "0.0.1",
   "description": "An express based REST API for tracking brewing data",
   "main": "./dist/index.js",
-  "engines": {
-    "node": "11.6.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ConnorChristensen/NinkasiServer.git"
