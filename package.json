@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/ConnorChristensen/NinkasiServer#readme",
   "scripts": {
-    "start": "cross-env NODE_ENV=production &&  node dist/index.js",
+    "start": "cross-env NODE_ENV=production && node dist/index.js",
     "build": "tsc",
     "now-build": "npm run build",
     "test": "jest --coverage",
