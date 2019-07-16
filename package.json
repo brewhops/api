@@ -23,6 +23,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production &&  node dist/index.js",
     "build": "tsc",
+    "now-build": "npm run build",
     "test": "jest --coverage",
     "dev": "cross-env NODE_ENV=development docker-compose up database web-server",
     "debug": "NODE_ENV=development nodemon --legacy-watch --watch ./dist --inspect=0.0.0.0:9222 --nolazy",

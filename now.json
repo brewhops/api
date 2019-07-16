@@ -2,6 +2,6 @@
   "version": 2,
   "name": "api",
   "builds": [
-    { "src": "src/**/*.js", "use": "@now/node" }
+    { "src": "dist/**/*.js", "use": "@now/node" }
   ]
 }
