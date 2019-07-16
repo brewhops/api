@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "api",
+  "alias": "api.brewhops.now.sh",
   "builds": [
     { "src": "src/**/*.ts", "use": "@now/node" }
   ]
