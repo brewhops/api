@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "name": "my-express-project",
+  "builds": [
+    { "src": "api/**/*.js", "use": "@now/node" }
+  ]
+}
