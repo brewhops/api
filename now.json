@@ -3,6 +3,6 @@
   "name": "api",
   "alias": "api.brewhops.now.sh",
   "builds": [
-    { "src": "src/**/*.ts", "use": "@now/node" }
+    { "src": "src/**/*.ts", "use": "@now/node-server" }
   ]
 }
