@@ -3,6 +3,9 @@
   "name": "api",
   "alias": "api",
   "builds": [
-    { "src": "dist/**/*.js", "use": "@now/node" }
+    { "src": "./src/index.ts", "use": "@now/node-server" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/src/index.ts" }
   ]
 }
