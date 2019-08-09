@@ -1,10 +1,18 @@
 {
   "version": 2,
   "name": "api",
-  "build": {
-    "env": {
-      "DB_CONNECTION_STRING": "@connection_string"
-    }
+  "env": {
+    "IS_NOW": "true",
+    "DB_USER": "@db_user",
+    "DB_PASSWORD": "@db_password",
+    "DB_HOST": "@db_host",
+    "DB_PORT": "@db_port",
+    "DB_DEV_USER": "@db_dev_user",
+    "DB_DEV_PASSWORD": "@db_dev_password",
+    "DB_DEV_HOST": "@db_dev_host",
+    "SERVER_CA": "@server-ca",
+    "CLIENT_KEY": "@client-key",
+    "CLIENT_CERT": "@client-cert"
   },
   "builds": [{ "src": "src/index.ts", "use": "@now/node@canary" }],
   "routes": [

@@ -32,7 +32,7 @@ app.use('/batches', BatchesRoutes());
 app.use('/tasks', TasksRoutes());
 app.use('/versions', VersionsRoutes());
 
-app.get('/test', async (req: Request, res: Response) => res.status(200).send('hello world'));
+app.get('/test', async (req: Request, res: Response) => res.status(200).send(`hello world: ${JSON.stringify(process.env)}`));
 
 app.post('/init', async (req: Request, res: Response) => {
   try {
