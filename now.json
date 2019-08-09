@@ -1,11 +1,16 @@
 {
   "version": 2,
   "name": "api",
-  "alias": "api",
-  "builds": [
-    { "src": "./src/index.ts", "use": "@now/node-server" }
-  ],
+  "build": {
+    "env": {
+      "DB_CONNECTION_STRING": "@connection_string"
+    }
+  },
+  "builds": [{ "src": "src/index.ts", "use": "@now/node@canary" }],
   "routes": [
-    { "src": "/(.*)", "dest": "/dist/index.js" }
+    {
+      "src": "/(.*)",
+      "dest": "src/index.ts"
+    }
   ]
 }
