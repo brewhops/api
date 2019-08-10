@@ -11,9 +11,6 @@ import { routes as VersionsRoutes } from './components/versions/routes';
 import { insertDevelopmentData } from './utils/initial_data';
 import Boom from 'boom';
 
-import { cert, key, ca } from './dal/certs';
-import { decrypt } from './utils/decrypt';
-
 // tslint:disable:no-any no-unsafe-any
 dotenv.config();
 
@@ -36,11 +33,7 @@ app.use('/tasks', TasksRoutes());
 app.use('/versions', VersionsRoutes());
 
 app.get('/test', async (req: Request, res: Response) => {
-  res.status(200).send(JSON.stringify({
-    ca: decrypt(ca),
-    key: decrypt(key),
-    cert: decrypt(cert)
-  }));
+  res.status(200).send('hello world!');
 });
 
 app.post('/init', async (req: Request, res: Response) => {
