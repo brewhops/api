@@ -1,4 +1,6 @@
 import { PoolConfig, Pool } from 'pg';
+import { cert, key, ca } from './certs';
+import { decrypt } from '../utils/decrypt';
 
 let config: PoolConfig = {
     max: 20,
@@ -19,7 +21,7 @@ if (process.env.NODE_ENV === 'test') {
 
 // DATABASE_URL is defined by heroku
 if (process.env.IS_NOW) {
-    const { NODE_ENV, SERVER_CA: ca, CLIENT_CERT: cert, CLIENT_KEY: key} = process.env;
+    const { NODE_ENV } = process.env;
     if(NODE_ENV === 'production') {
         const { DB_USER: user, DB_NAME: database, DB_HOST: host, DB_PASSWORD: password, DB_PORT: port } = process.env;
         config = { ...config, user, database, password, host, port: <number | undefined>port };
@@ -27,7 +29,12 @@ if (process.env.IS_NOW) {
         const { DB_DEV_USER: user, DB_DEV_NAME: database, DB_DEV_HOST: host, DB_DEV_PASSWORD: password, DB_PORT: port } = process.env;
         config = { ...config, user, database, password, host, port: <number | undefined>port };
     }
-    config.ssl = { ca, key, cert, rejectUnauthorized: false };
+    config.ssl = {
+        ca: decrypt(ca),
+        key: decrypt(key),
+        cert: decrypt(cert),
+        rejectUnauthorized: false
+    };
 }
 
 export const pool = new Pool(config);

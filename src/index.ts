@@ -8,8 +8,11 @@ import { routes as RecipesRoutes } from './components/recipes/routes';
 import { routes as BatchesRoutes } from './components/batches/routes';
 import { routes as TasksRoutes } from './components/tasks/routes';
 import { routes as VersionsRoutes } from './components/versions/routes';
-import { insertDevelopmentData } from './util/initial_data';
+import { insertDevelopmentData } from './utils/initial_data';
 import Boom from 'boom';
+
+import { cert, key, ca } from './dal/certs';
+import { decrypt } from './utils/decrypt';
 
 // tslint:disable:no-any no-unsafe-any
 dotenv.config();
@@ -32,7 +35,13 @@ app.use('/batches', BatchesRoutes());
 app.use('/tasks', TasksRoutes());
 app.use('/versions', VersionsRoutes());
 
-app.get('/test', async (req: Request, res: Response) => res.status(200).send(`hello world: ${JSON.stringify(process.env)}`));
+app.get('/test', async (req: Request, res: Response) => {
+  res.status(200).send(JSON.stringify({
+    ca: decrypt(ca),
+    key: decrypt(key),
+    cert: decrypt(cert)
+  }));
+});
 
 app.post('/init', async (req: Request, res: Response) => {
   try {

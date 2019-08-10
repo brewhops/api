@@ -3,7 +3,7 @@ import { Request, Response, RequestHandler } from 'express';
 import CryptoJS from 'crypto-js';
 import Boom from 'boom';
 import { generateAuthToken } from '../../middleware/auth';
-import { userMatchAuthToken } from '../../util/auth';
+import { userMatchAuthToken } from '../../utils/auth';
 import is from 'is';
 
 const saltRounds = 8;
