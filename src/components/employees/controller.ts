@@ -1,12 +1,8 @@
 import { PostgresController, IPostgresController } from '../../dal/postgres';
 import { Request, Response, RequestHandler } from 'express';
-import CryptoJS from 'crypto-js';
 import Boom from 'boom';
 import { generateAuthToken } from '../../middleware/auth';
 import { userMatchAuthToken } from '../../utils/auth';
-import is from 'is';
-
-const saltRounds = 8;
 
 const safeUserData = 'id, first_name, last_name, username, phone, admin';
 
