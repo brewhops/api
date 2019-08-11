@@ -1,39 +1,45 @@
-import { PoolConfig, Pool } from 'pg';
-import { cert, key, ca } from './certs';
-import { decrypt } from '../utils/decrypt';
+import { Pool, PoolConfig } from "pg";
+import { decrypt } from "../utils/decrypt";
+import { ca, cert, key } from "./certs";
 
 let config: PoolConfig = {
-    max: 20,
+    connectionTimeoutMillis: 20000,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 20000
+    max: 20,
 };
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === "test") {
     config = {
         ...config,
-        user: process.env.TEST_PG_USER,
         database: process.env.TEST_PG_DATABASE,
+        host: process.env.TEST_PG_HOST,
         password: process.env.TEST_PG_PASSWORD,
-        port: <number | undefined>process.env.TEST_PG_PORT,
-        host: process.env.TEST_PG_HOST
+        port: process.env.TEST_PG_PORT as number | undefined,
+        user: process.env.TEST_PG_USER,
     };
 }
 
 // DATABASE_URL is defined by heroku
 if (process.env.IS_NOW) {
     const { NODE_ENV } = process.env;
-    if(NODE_ENV === 'production') {
+    if (NODE_ENV === "production") {
         const { DB_USER: user, DB_NAME: database, DB_HOST: host, DB_PASSWORD: password, DB_PORT: port } = process.env;
-        config = { ...config, user, database, password, host, port: <number | undefined>port };
-    } else if (NODE_ENV === 'development') {
-        const { DB_DEV_USER: user, DB_DEV_NAME: database, DB_DEV_HOST: host, DB_DEV_PASSWORD: password, DB_PORT: port } = process.env;
-        config = { ...config, user, database, password, host, port: <number | undefined>port };
+        config = { ...config, user, database, password, host, port: port as number | undefined };
+    } else if (NODE_ENV === "development") {
+        const {
+            DB_DEV_USER: user,
+            DB_DEV_NAME: database,
+            DB_DEV_HOST: host,
+            DB_DEV_PASSWORD: password,
+            DB_PORT: port,
+        } = process.env;
+        config = { ...config, user, database, password, host, port: port as number | undefined };
     }
     config.ssl = {
         ca: decrypt(ca),
-        key: decrypt(key),
         cert: decrypt(cert),
-        rejectUnauthorized: false
+        key: decrypt(key),
+        rejectUnauthorized: false,
     };
 }
 

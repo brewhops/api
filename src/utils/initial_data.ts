@@ -1,27 +1,27 @@
-import { EmployeeController, IEmployeeController } from '../components/employees/controller';
-import { Employee } from '../components/employees/types';
-import { TankController, ITankController } from '../components/tanks/controller';
-import { Tank } from '../components/tanks/types';
-import { QueryResult } from 'pg';
-import { BatchesController, IBatchesController } from '../components/batches/controller';
-import { RecipeController, IRecipeController } from '../components/recipes/controller';
-import { Recipe } from '../components/recipes/types';
-import CryptoJS from 'crypto-js';
-import { IVersionController, VersionController } from '../components/versions/controller';
-import { ITaskController, TaskController } from '../components/tasks/controller';
-import Papa from 'papaparse';
-import fs from 'fs';
-import moment from 'moment';
+import CryptoJS from "crypto-js";
+import fs from "fs";
+import moment from "moment";
+import Papa from "papaparse";
+import { QueryResult } from "pg";
+import { BatchesController, IBatchesController } from "../components/batches/controller";
+import { EmployeeController, IEmployeeController } from "../components/employees/controller";
+import { Employee } from "../components/employees/types";
+import { IRecipeController, RecipeController } from "../components/recipes/controller";
+import { Recipe } from "../components/recipes/types";
+import { ITankController, TankController } from "../components/tanks/controller";
+import { Tank } from "../components/tanks/types";
+import { ITaskController, TaskController } from "../components/tasks/controller";
+import { IVersionController, VersionController } from "../components/versions/controller";
 
-// tslint:disable: no-console no-unsafe-any no-any
+// tslint:disable: no-console no-unsafe-any no-any object-literal-sort-keys no-shadowed-variable
 
 function encryptPassword(password: string) {
 
   return CryptoJS.SHA3(password).toString();
 }
 
-const start = new Date('2018-10-01');
-const end = new Date('2018-10-16');
+const start = new Date("2018-10-01");
+const end = new Date("2018-10-16");
 
 const getDateArray = (): Date[] => {
   const arr = [];
@@ -37,7 +37,7 @@ const getDateArray = (): Date[] => {
 
 // tslint:disable: max-func-body-length
 async function insertCSVTestData() {
-  fs.readFile('./src/util/test_data.csv','utf8', (err, data) => {
+  fs.readFile("./src/util/test_data.csv", "utf8", (err, data) => {
     Papa.parse(data, {
       header: true,
       dynamicTyping: true,
@@ -58,69 +58,69 @@ async function insertCSVTestData() {
 
         for (const row of results.data) {
 
-          if (!(row['Tank'] in tanks)) {
-            tanks[row['Tank']] = {
-              name: row['Tank'],
-              status: 'available',
+          if (!(row.Tank in tanks)) {
+            tanks[row.Tank] = {
+              name: row.Tank,
+              status: "available",
               in_use: false,
-              update_user: 1
+              update_user: 1,
             };
-            tankIndexes[row['Tank']] = Object.keys(tankIndexes).length + 1;
+            tankIndexes[row.Tank] = Object.keys(tankIndexes).length + 1;
           }
 
-          if(!(row['Recipe'] in recipes)) {
-            recipes[row['Recipe']] = {
-              name: row['Recipe'],
-              airplane_code: row['Recipe'],
+          if (!(row.Recipe in recipes)) {
+            recipes[row.Recipe] = {
+              name: row.Recipe,
+              airplane_code: row.Recipe,
               yeast: 5,
               instructions: JSON.stringify([{
-                ingredient: 'hops',
-                ratio: 3
+                ingredient: "hops",
+                ratio: 3,
               }]),
-              update_user: 1
+              update_user: 1,
             };
-            recipeIndexes[row['Recipe']] = Object.keys(recipeIndexes).length + 1;
+            recipeIndexes[row.Recipe] = Object.keys(recipeIndexes).length + 1;
           }
 
-          if (!(row['Batch'] in batches)) {
-            batches[row['Batch']] = {
-              name: row['Batch'],
-              volume: row['Volume'],
-              bright: row['Bright'],
-              generation: row['Generation'],
-              started_on: moment(row['Date']),
-              completed_on: moment(row['Date']),
-              recipe_id: recipeIndexes[row['Recipe']],
-              tank_id: tankIndexes[row['Tank']],
-              update_user: 1
+          if (!(row.Batch in batches)) {
+            batches[row.Batch] = {
+              name: row.Batch,
+              volume: row.Volume,
+              bright: row.Bright,
+              generation: row.Generation,
+              started_on: moment(row.Date),
+              completed_on: moment(row.Date),
+              recipe_id: recipeIndexes[row.Recipe],
+              tank_id: tankIndexes[row.Tank],
+              update_user: 1,
             };
-            batchIndexes[row['Batch']] = Object.keys(batchIndexes).length + 1;
+            batchIndexes[row.Batch] = Object.keys(batchIndexes).length + 1;
           }
 
-          const date = moment(row['Date']);
-          if (batches[row['Batch']].started_on > date) {
-            batches[row['Batch']].started_on = date;
+          const date = moment(row.Date);
+          if (batches[row.Batch].started_on > date) {
+            batches[row.Batch].started_on = date;
           }
-          if (batches[row['Batch']].completed_on < date) {
-            batches[row['Batch']].completed_on = date;
+          if (batches[row.Batch].completed_on < date) {
+            batches[row.Batch].completed_on = date;
           }
 
           versions.push({
-            SG: row['SG'],
-            PH: row['pH'],
-            ABV: row['ABV'],
-            temperature: row['Temperature'],
-            pressure: row['Pressure'],
+            SG: row.SG,
+            PH: row.pH,
+            ABV: row.ABV,
+            temperature: row.Temperature,
+            pressure: row.Pressure,
             measured_on: date,
-            batch_id: batchIndexes[row['Batch']],
-            update_user: 1
+            batch_id: batchIndexes[row.Batch],
+            update_user: 1,
           });
 
         }
 
         // Insert data
 
-        const tankController: ITankController = new TankController('tanks');
+        const tankController: ITankController = new TankController("tanks");
         for (const tank of Object.values(tanks)) {
           const { rows }: QueryResult = await tankController.readById(tankIndexes[tank.name]);
           if (rows.length === 0) {
@@ -132,7 +132,7 @@ async function insertCSVTestData() {
           }
         }
 
-        const recipeController: IRecipeController = new RecipeController('recipes');
+        const recipeController: IRecipeController = new RecipeController("recipes");
         for (const recipe of Object.values(recipes)) {
           const { rows }: QueryResult = await recipeController.readById(recipeIndexes[recipe.name]);
           if (rows.length === 0) {
@@ -146,8 +146,8 @@ async function insertCSVTestData() {
 
         let exists = false;
 
-        const batchesController: IBatchesController = new BatchesController('batches');
-        const tasksController: ITaskController = new TaskController('tasks');
+        const batchesController: IBatchesController = new BatchesController("batches");
+        const tasksController: ITaskController = new TaskController("tasks");
         for (const batch of Object.values(batches)) {
           const batchResult: QueryResult = await batchesController.readById(batchIndexes[batch.name]);
           if (batchResult.rows.length === 0) {
@@ -163,11 +163,11 @@ async function insertCSVTestData() {
                 action_id: actionId,
                 employee_id: 1,
                 added_on: batch.started_on,
-                update_user: 1
+                update_user: 1,
               };
 
-              const {keys, escapes, values} = tasksController.splitObjectKeyVals(task);
-              await tasksController.createInTable(keys, 'tasks', escapes, values);
+              const { keys, escapes, values } = tasksController.splitObjectKeyVals(task);
+              await tasksController.createInTable(keys, "tasks", escapes, values);
               console.log(` + Added task  '${batch.name}'.`);
             }
           } else {
@@ -177,15 +177,15 @@ async function insertCSVTestData() {
         }
 
         if (!exists) {
-          for(const version of versions) {
+          for (const version of versions) {
             const {keys, escapes, values} = batchesController.splitObjectKeyVals(version);
-            await batchesController.createInTable(keys, 'versions', escapes, values);
+            await batchesController.createInTable(keys, "versions", escapes, values);
             console.log(` + Added version for batch ${version.batch_id}.`);
           }
 
           for (const tankId of Object.values(tankIndexes)) {
             if (tankId % 10 !== 0) {
-              const { rows } = await batchesController.read('*', 'tank_id = $1', [tankId]);
+              const { rows } = await batchesController.read("*", "tank_id = $1", [tankId]);
 
               if (rows.length > 0) {
 
@@ -199,7 +199,7 @@ async function insertCSVTestData() {
                   batch.completed_on = undefined;
                   batch.started_on = moment(batch.started_on);
                   const { keys, values, escapes } = batchesController.splitObjectKeyVals(batch);
-                  keys.push('completed_on');
+                  keys.push("completed_on");
                   // tslint:disable: no-null-keyword
                   values.push(null);
                   // set an update
@@ -215,7 +215,7 @@ async function insertCSVTestData() {
                   const tank = result.rows[0];
 
                   tank.in_use = true;
-                  tank.status = 'brewing';
+                  tank.status = "brewing";
                   const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
                   // set an update
                   const { query, idx } = await tankController.buildUpdateString(keys);
@@ -228,21 +228,21 @@ async function insertCSVTestData() {
           }
         }
 
-      }
+      },
     });
   });
 }
 
 async function insertDevAdmin() {
-  const employeeController: IEmployeeController = new EmployeeController('employees');
+  const employeeController: IEmployeeController = new EmployeeController("employees");
 
   const user: Employee = {
-    first_name: 'General',
-    last_name: 'Kenobi',
-    username: 'admin',
-    phone: '555-867-5309',
+    first_name: "General",
+    last_name: "Kenobi",
+    username: "admin",
+    phone: "555-867-5309",
     admin: true,
-    password: encryptPassword('password')
+    password: encryptPassword("password"),
   };
 
   try {
@@ -253,30 +253,30 @@ async function insertDevAdmin() {
       // No existing user, add admin
       const { keys, values, escapes } = employeeController.splitObjectKeyVals(user);
       await employeeController.create(keys, escapes, values);
-      console.log(' + Added test admin user.');
+      console.log(" + Added test admin user.");
     } else {
       // Existing user
-      console.log(' ✔️ Test admin exists.');
+      console.log(" ✔️ Test admin exists.");
     }
   } catch (e) {
-    console.log(' x Error inserting test admin user.', e);
+    console.log(" x Error inserting test admin user.", e);
   }
 
 }
 
 async function insertDevTanks() {
-  const tankController: ITankController = new TankController('tanks');
+  const tankController: ITankController = new TankController("tanks");
 
   for (let i = 1; i < 13; i++) {
     const { rows }: QueryResult = await tankController.readById(i);
     const tank: Tank = {
       name: `F${i}`,
-      status: 'brewing',
+      status: "brewing",
       in_use: true,
-      update_user: 1
+      update_user: 1,
     };
-    if(i > 9) {
-      tank.status = 'available';
+    if (i > 9) {
+      tank.status = "available";
       tank.in_use = false;
     }
     if (rows.length === 0) {
@@ -290,18 +290,18 @@ async function insertDevTanks() {
 }
 
 async function insertDevRecipes() {
-  const recipeController: IRecipeController = new RecipeController('recipes');
+  const recipeController: IRecipeController = new RecipeController("recipes");
 
   for (let i = 1; i < 13; i++) {
     const { rows }: QueryResult = await recipeController.readById(i);
     const recipe: Recipe = {
       name: `Recipe ${i}`,
-      airplane_code: 'ABC',
+      airplane_code: "ABC",
       yeast: 5,
       instructions: JSON.stringify([{
-        ingredient: 'hops',
-        ratio: `${i}`
-      }])
+        ingredient: "hops",
+        ratio: `${i}`,
+      }]),
     };
     if (rows.length === 0) {
       const { keys, values, escapes } = recipeController.splitObjectKeyVals(recipe);
@@ -315,8 +315,8 @@ async function insertDevRecipes() {
 }
 
 async function insertDevBatches() {
-  const batchesController: IBatchesController = new BatchesController('batches');
-  const versionsController: IVersionController = new VersionController('versions');
+  const batchesController: IBatchesController = new BatchesController("batches");
+  const versionsController: IVersionController = new VersionController("versions");
 
   let idx = 0;
   let iterations = 1;
@@ -332,7 +332,7 @@ async function insertDevBatches() {
       started_on: new Date().toUTCString(),
       recipe_id: i,
       tank_id: i,
-      update_user: 1
+      update_user: 1,
     };
 
     if (batchResult.rows.length === 0) {
@@ -355,12 +355,12 @@ async function insertDevBatches() {
         pressure: Math.random() * Math.floor(12),
         measured_on: dateArray[dateIter].toUTCString(),
         batch_id: i,
-        update_user: 1
+        update_user: 1,
       };
       dateIter++;
       if (versionResult.rows.length === 0) {
         const {keys, escapes, values} = batchesController.splitObjectKeyVals(version);
-        await batchesController.createInTable(keys, 'versions', escapes, values);
+        await batchesController.createInTable(keys, "versions", escapes, values);
         console.log(` + Added version ${j}.`);
       } else {
         console.log(` ✔️ Version ${j} exists.`);
@@ -372,7 +372,7 @@ async function insertDevBatches() {
 }
 
 async function insertDevTasks() {
-  const tasksController: ITaskController = new TaskController('tasks');
+  const tasksController: ITaskController = new TaskController("tasks");
 
   for (let i = 1; i < 10; i++) {
     const tasksResult: QueryResult = await tasksController.readById(i);
@@ -382,19 +382,18 @@ async function insertDevTasks() {
       action_id: (i % 9) + 1,
       employee_id: 1,
       added_on: new Date().toUTCString(),
-      update_user: 1
+      update_user: 1,
     };
 
     if (tasksResult.rows.length === 0) {
       const {keys, escapes, values} = tasksController.splitObjectKeyVals(task);
-      await tasksController.createInTable(keys, 'tasks', escapes, values);
+      await tasksController.createInTable(keys, "tasks", escapes, values);
       console.log(` + Added task ${i}.`);
     } else {
       console.log(` ✔️ Task ${i} exists.`);
     }
   }
 }
-
 
 export async function insertDevelopmentData(useTestData: boolean) {
   try {

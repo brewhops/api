@@ -1,8 +1,8 @@
-import { PostgresController, IPostgresController } from '../../dal/postgres';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import Boom from 'boom';
-import { Task } from './types';
-import { QueryResult } from 'pg';
+import Boom from "boom";
+import { NextFunction, Request, RequestHandler, Response } from "express";
+import { QueryResult } from "pg";
+import { IPostgresController, PostgresController } from "../../dal/postgres";
+import { Task } from "./types";
 
 // tslint:disable: no-unsafe-any
 
@@ -33,9 +33,9 @@ export class TaskController extends PostgresController implements ITaskControlle
    * @param {NextFunction} next
    * @memberof TaskController
    */
-  async getTasks(req: Request, res: Response, next: NextFunction) {
+  public async getTasks(req: Request, res: Response, next: NextFunction) {
     try {
-      const { rows } = await this.read('*', '$1', [true]);
+      const { rows } = await this.read("*", "$1", [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
@@ -49,9 +49,9 @@ export class TaskController extends PostgresController implements ITaskControlle
    * @param {NextFunction} next
    * @memberof TaskController
    */
-  async getTasksByBatch(req: Request, res: Response, next: NextFunction) {
+  public async getTasksByBatch(req: Request, res: Response, next: NextFunction) {
     try {
-      const { rows } = await this.read('*', 'batch_id = $1', [req.params.batchId]);
+      const { rows } = await this.read("*", "batch_id = $1", [req.params.batchId]);
 
       res.status(200).json(rows);
     } catch (err) {
@@ -66,7 +66,7 @@ export class TaskController extends PostgresController implements ITaskControlle
    * @param {NextFunction} next
    * @memberof TaskController
    */
-  async createTask(req: Request, res: Response, next: NextFunction) {
+  public async createTask(req: Request, res: Response, next: NextFunction) {
     const { id, ...taskInfo } = req.body;
 
     try {
@@ -74,7 +74,7 @@ export class TaskController extends PostgresController implements ITaskControlle
         `SELECT * FROM tasks
         WHERE completed_on IS NULL
         AND batch_id = $1`,
-        [taskInfo.batch_id]
+        [taskInfo.batch_id],
       );
 
       if (taskExists.rowCount === 0) {
@@ -89,18 +89,18 @@ export class TaskController extends PostgresController implements ITaskControlle
           if (results.rows.length === 1) {
             res.status(201).json(results.rows[0]);
           } else {
-            res.status(500).send('Failed to retrieve object after creation.');
+            res.status(500).send("Failed to retrieve object after creation.");
           }
 
         } else {
-          res.status(400).send(Boom.badRequest('You can not close a task that has not yet been opened'));
+          res.status(400).send(Boom.badRequest("You can not close a task that has not yet been opened"));
         }
 
       } else {
-        res.status(400).send(Boom.badRequest('You can only have one open task per batch.'));
+        res.status(400).send(Boom.badRequest("You can only have one open task per batch."));
       }
 
-    } catch(err) {
+    } catch (err) {
       res.status(500).send(Boom.badRequest(err));
     }
 
@@ -113,7 +113,7 @@ export class TaskController extends PostgresController implements ITaskControlle
    * @param {NextFunction} next
    * @memberof TaskController
    */
-  async updateTask(req: Request, res: Response, next: NextFunction) {
+  public async updateTask(req: Request, res: Response, next: NextFunction) {
     const { id, ...taskInfo } = req.body;
 
     try {
@@ -134,7 +134,7 @@ export class TaskController extends PostgresController implements ITaskControlle
         }
 
       } else {
-        res.status(400).send(Boom.badRequest('Must include task id.'));
+        res.status(400).send(Boom.badRequest("Must include task id."));
       }
 
     } catch (err) {

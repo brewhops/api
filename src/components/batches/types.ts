@@ -1,4 +1,4 @@
-export type Version = {
+export interface Version {
   id?: number;
   sg: number;
   ph: number;
@@ -9,19 +9,18 @@ export type Version = {
   completed?: boolean;
   batch_id?: number;
   update_user?: number;
-};
+}
 
-export type BatchAction = {
+export interface BatchAction {
   id: number;
   completed: boolean;
   assigned: boolean;
   employee: {
     id: number;
   };
-};
+}
 
-
-export type Batch = {
+export interface Batch {
   id?: number;
   name: string;
   volume: number;
@@ -32,4 +31,4 @@ export type Batch = {
   recipe_id: number;
   tank_id: number;
   update_user?: number;
-};
+}

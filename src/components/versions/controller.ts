@@ -1,6 +1,6 @@
-import { PostgresController, IPostgresController } from '../../dal/postgres';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import Boom from 'boom';
+import Boom from "boom";
+import { NextFunction, Request, RequestHandler, Response } from "express";
+import { IPostgresController, PostgresController } from "../../dal/postgres";
 
 // tslint:disable: no-unsafe-any
 
@@ -28,7 +28,7 @@ export class VersionController extends PostgresController implements IVersionCon
    * @param {NextFunction} next
    * @memberof TaskController
    */
-  async getVersionsByBatch(req: Request, res: Response, next: NextFunction) {
+  public async getVersionsByBatch(req: Request, res: Response, next: NextFunction) {
     const { batchId } = req.params;
     try {
       const { rows } = await this.pool.query(`SELECT * FROM versions WHERE batch_id = ${batchId}`);

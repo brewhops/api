@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction, Router } from 'express';
-import { VersionController, IVersionController } from './controller';
-import Boom from 'boom';
+import Boom from "boom";
+import { NextFunction, Request, Response, Router } from "express";
+import { IVersionController, VersionController } from "./controller";
 
 // tslint:disable: no-unsafe-any
 
@@ -10,16 +10,19 @@ import Boom from 'boom';
  * @returns {Router}
  */
 export function routes(): Router {
-  const controller: IVersionController = new VersionController('versions');
+  const controller: IVersionController = new VersionController("versions");
   const router: Router = Router();
 
   // tslint:disable-next-line: no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
   // [GET] section
-  router.get('/batch/:batchId', async (req, res, next) => controller.getVersionsByBatch(req, res, next));
+  router.get("/batch/:batchId", async (req, res, next) => controller.getVersionsByBatch(req, res, next));
 
-  router.use('*', (req: Request, res: Response) => res.status(400).send(Boom.badRequest(`${req.originalUrl} doesn't exist`)));
+  router.use(
+    "*",
+    (req: Request, res: Response) => res.status(400).send(Boom.badRequest(`${req.originalUrl} doesn't exist`)),
+  );
 
   return router;
 }

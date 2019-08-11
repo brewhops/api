@@ -1,5 +1,5 @@
-import Joi from 'joi';
-import { JOIResult } from '../../types';
+import Joi from "joi";
+import { JOIResult } from "../../types";
 
 export interface IActionValidator {
   createAction: () => JOIResult;
@@ -16,20 +16,20 @@ export const ActionValidator: IActionValidator = {
     return {
       body: Joi.object()
         .keys({
+          description: Joi.string().required(),
           name: Joi.string().required(),
-          description: Joi.string().required()
         })
-        .unknown(false)
+        .unknown(false),
     };
   },
   updateAction(): JOIResult {
     return {
       body: Joi.object()
         .keys({
+          description: Joi.string(),
           name: Joi.string(),
-          description: Joi.string()
         })
-        .unknown(false)
+        .unknown(false),
     };
-  }
+  },
 };

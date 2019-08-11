@@ -1,7 +1,7 @@
-import { PostgresController, IPostgresController } from '../../dal/postgres';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import Boom from 'boom';
-import { Batch, Version } from './types';
+import Boom from "boom";
+import { NextFunction, Request, RequestHandler, Response } from "express";
+import { IPostgresController, PostgresController } from "../../dal/postgres";
+import { Batch, Version } from "./types";
 
 export interface IBatchesController extends IPostgresController {
   getBatches: RequestHandler;
@@ -34,9 +34,9 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {Response} res
    * @memberof BatchesController
    */
-  async getBatches(req: Request, res: Response) {
+  public async getBatches(req: Request, res: Response) {
     try {
-      const { rows } = await this.read('*', '$1', [true]);
+      const { rows } = await this.read("*", "$1", [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
@@ -50,9 +50,9 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {NextFunction} next
    * @memberof TaskController
    */
-  async getBatchesByTank(req: Request, res: Response, next: NextFunction) {
+  public async getBatchesByTank(req: Request, res: Response, next: NextFunction) {
     try {
-      const { rows } = await this.read('*', 'tank_id = $1', [req.params.tankId]);
+      const { rows } = await this.read("*", "tank_id = $1", [req.params.tankId]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
@@ -66,9 +66,9 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {NextFunction} next
    * @memberof TaskController
    */
-  async getBatchesByRecipe(req: Request, res: Response, next: NextFunction) {
+  public async getBatchesByRecipe(req: Request, res: Response, next: NextFunction) {
     try {
-      const { rows } = await this.read('*', 'recipe_id = $1', [req.params.recipeId]);
+      const { rows } = await this.read("*", "recipe_id = $1", [req.params.recipeId]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
@@ -82,7 +82,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {NextFunction} next
    * @memberof BatchesController
    */
-  async getBatch(req: Request, res: Response, next: NextFunction) {
+  public async getBatch(req: Request, res: Response, next: NextFunction) {
     try {
       const results = await this.readById(req.params.id);
       if (results.rowCount > 0) {
@@ -102,7 +102,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {Response} res
    * @memberof BatchesController
    */
-  async updateBatch(req: Request, res: Response) {
+  public async updateBatch(req: Request, res: Response) {
     // make a shorthand for out body so organizing is easier
     const input = req.body;
 
@@ -112,14 +112,14 @@ export class BatchesController extends PostgresController implements IBatchesCon
 
     // pull the info from the input about the batch
     const batch: Batch = {
-      name: String(input.name),
-      volume: Number(input.volume),
       bright: Number(input.bright),
       generation: Number(input.generation),
-      started_on: new Date().toUTCString(),
+      name: String(input.name),
       recipe_id: Number(input.recipe_id),
+      started_on: new Date().toUTCString(),
       tank_id: Number(input.tank_id),
-      update_user: Number(input.update_user)
+      update_user: Number(input.update_user),
+      volume: Number(input.volume),
     };
     let { keys, values, escapes } = this.splitObjectKeyVals(batch);
 
@@ -147,15 +147,15 @@ export class BatchesController extends PostgresController implements IBatchesCon
 
     // pull the information for our version
     const version = {
-      sg: input.sg,
-      ph: input.ph,
       abv: input.abv,
-      temperature: input.temperature,
-      pressure: input.pressure,
-      // if our measured on time was not given, set it to now
-      measured_on: input.measured_on ? input.measured_on : new Date().toUTCString(),
       batch_id: input.batch_id,
-      update_user: input.update_user
+      measured_on: input.measured_on ? input.measured_on : new Date().toUTCString(),
+      ph: input.ph,
+      pressure: input.pressure,
+      sg: input.sg,
+      temperature: input.temperature,
+      // if our measured on time was not given, set it to now
+      update_user: input.update_user,
     };
 
     // rebuild the keys, values and escapes, but do it with the version object
@@ -166,7 +166,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
 
     // put our version info in the versions table
     try {
-      const result = await this.createInTable(keys, 'versions', escapes, values);
+      const result = await this.createInTable(keys, "versions", escapes, values);
 
       res.status(201).end();
     } catch (err) {
@@ -182,7 +182,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {NextFunction} next
    * @memberof BatchesController
    */
-  async patchBatch(req: Request, res: Response, next: NextFunction) {
+  public async patchBatch(req: Request, res: Response, next: NextFunction) {
     const batchId = req.params.id;
 
     // Get active batch
@@ -215,7 +215,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {NextFunction} next
    * @memberof BatchesController
    */
-  async createBatch(req: Request, res: Response, next: NextFunction) {
+  public async createBatch(req: Request, res: Response, next: NextFunction) {
     const batch: Batch = req.body;
     batch.started_on =  new Date().toUTCString();
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
@@ -234,13 +234,13 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {NextFunction} next
    * @memberof BatchesController
    */
-  async deleteBatch(req: Request, res: Response, next: NextFunction) {
+  public async deleteBatch(req: Request, res: Response, next: NextFunction) {
     try {
       // remove the versions tied to that batch
       const versions = await this.pool.query(
         `DELETE FROM versions
         WHERE batch_id = $1`,
-        [req.params.id]
+        [req.params.id],
       );
 
       // remove the batch
@@ -248,9 +248,9 @@ export class BatchesController extends PostgresController implements IBatchesCon
 
       if (batch.rowCount > 0) {
         res.status(200).json({
-          msg: 'Success',
+          deletedBatches: batch.rowCount,
           deletedVersions: versions.rowCount,
-          deletedBatches: batch.rowCount
+          msg: "Success",
         });
       } else {
         next();
@@ -267,24 +267,24 @@ export class BatchesController extends PostgresController implements IBatchesCon
    * @param {NextFunction} next
    * @memberof BatchesController
    */
-  async closeBatch(req: Request, res: Response, next: NextFunction) {
+  public async closeBatch(req: Request, res: Response, next: NextFunction) {
     const batchId = req.params.id;
 
     try {
       const batch = {
-        completed_on: new Date().toUTCString()
+        completed_on: new Date().toUTCString(),
       };
 
-      const { keys, values, escapes } = this.splitObjectKeyVals(batch);
+      const { keys, values } = this.splitObjectKeyVals(batch);
       // set an update
       const { query, idx } = await this.buildUpdateString(keys);
       values.push(batchId);
 
       // update the batch
-      const results = await this.update(query, `id = \$${idx}`, values);
+      await this.update(query, `id = \$${idx}`, values);
 
       res.status(200).end();
-    } catch(err) {
+    } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
   }

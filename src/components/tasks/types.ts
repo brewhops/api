@@ -1,4 +1,4 @@
-export type Task = {
+export interface Task {
     id?: number;
     added_on?: string;
     completed_on?: string;
@@ -8,4 +8,4 @@ export type Task = {
     exception_reason?: string;
     employee_id?: number;
     update_user?: number;
-};
+}
