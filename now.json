@@ -10,15 +10,20 @@
     "DB_DEV_USER": "@db_dev_user",
     "DB_DEV_PASSWORD": "@db_dev_password",
     "DB_DEV_HOST": "@db_dev_host",
+    "AUTH_KEY": "@auth_key",    
     "ALGORITHM": "@encrypt_algorithm",
     "KEY": "@encrypt_key",
     "IV": "@encrypt_iv"
   },
-  "builds": [{ "src": "src/index.ts", "use": "@now/node@canary" }],
+  "builds": [{ "src": "src/**/*.ts", "use": "@now/node@canary" }],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/index.ts"
-    }
+    { "src": "/actions/(.*)", "dest": "src/components/actions/index.ts"},
+    { "src": "/batches/(.*)", "dest": "src/components/batches/index.ts"},
+    { "src": "/employees/(.*)", "dest": "src/components/employees/index.ts"},
+    { "src": "/recipes/(.*)", "dest": "src/components/recipes/index.ts"},
+    { "src": "/tanks/(.*)", "dest": "src/components/tanks/index.ts"},
+    { "src": "/tasks/(.*)", "dest": "src/components/tasks/index.ts"},
+    { "src": "/versions/(.*)", "dest": "src/components/versions/index.ts"},
+    { "src": "/(.*)", "dest": "src/index.ts"}
   ]
 }
