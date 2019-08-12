@@ -25,7 +25,7 @@ if (process.env.IS_NOW) {
     if (NODE_ENV === "production") {
         const { DB_USER: user, DB_NAME: database, DB_HOST: host, DB_PASSWORD: password, DB_PORT: port } = process.env;
         config = { ...config, user, database, password, host, port: port as number | undefined };
-    } else if (NODE_ENV === "development") {
+    } else if (NODE_ENV === "staging") {
         const {
             DB_DEV_USER: user,
             DB_DEV_NAME: database,
