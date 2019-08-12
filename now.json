@@ -15,7 +15,17 @@
     "KEY": "@encrypt_key",
     "IV": "@encrypt_iv"
   },
-  "builds": [{ "src": "src/**/*.ts", "use": "@now/node@canary" }],
+  "builds": [
+    { "src": "src/components/actions/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/batches/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/employees/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/recipes/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/tanks/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/tasks/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/versions/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/versions/index.ts", "use": "@now/node@canary" },
+    { "src": "src/index.ts", "use": "@now/node@canary" }
+  ],
   "routes": [
     { "src": "/actions/(.*)", "dest": "src/components/actions/index.ts"},
     { "src": "/batches/(.*)", "dest": "src/components/batches/index.ts"},
