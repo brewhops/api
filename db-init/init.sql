@@ -11,6 +11,15 @@
 --    tasks
 
 --
+-- Table structure for table `clients`
+--
+
+CREATE TABLE IF NOT EXISTS clients (
+  id          SERIAL        NOT NULL    PRIMARY KEY,
+  name        VARCHAR(255)  NOT NULL
+)
+
+--
 -- Table structure for table `employees`
 --
 
@@ -21,7 +30,8 @@ CREATE TABLE IF NOT EXISTS employees (
   username    VARCHAR(255)  NOT NULL    UNIQUE,
   password    VARCHAR(255)  NOT NULL,
   phone       CHAR(12)      NULL,
-  admin       BOOLEAN       NOT NULL
+  admin       BOOLEAN       NOT NULL,
+  client_id   INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 --
@@ -32,7 +42,8 @@ CREATE TABLE IF NOT EXISTS actions (
   id          SERIAL        NOT NULL    PRIMARY KEY,
   name        VARCHAR(255)  NOT NULL,
   description TEXT          NULL,
-  classname   VARCHAR(20)   NOT NULL
+  classname   VARCHAR(20)   NOT NULL,
+  client_id   INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 --
@@ -44,7 +55,8 @@ CREATE TABLE IF NOT EXISTS tanks (
   name          VARCHAR(255)  NOT NULL,
   status        VARCHAR(255)  NOT NULL,
   in_use        BOOLEAN       NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 CREATE TABLE IF NOT EXISTS tanks_audit (
@@ -56,7 +68,8 @@ CREATE TABLE IF NOT EXISTS tanks_audit (
   name          VARCHAR(255)  NOT NULL,
   status        VARCHAR(255)  NOT NULL,
   in_use        BOOLEAN       NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 --
@@ -69,7 +82,8 @@ CREATE TABLE IF NOT EXISTS recipes (
   airplane_code VARCHAR(50)   NOT NULL,
   yeast         INT           NULL,
   instructions  JSONB         NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 CREATE TABLE IF NOT EXISTS recipes_audit (
@@ -82,7 +96,8 @@ CREATE TABLE IF NOT EXISTS recipes_audit (
   airplane_code VARCHAR(50)   NOT NULL,
   yeast         INT           NULL,
   instructions  JSONB         NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 --
@@ -99,7 +114,8 @@ CREATE TABLE IF NOT EXISTS batches (
   completed_on  TIMESTAMPTZ   NULL,
   recipe_id     INTEGER       NOT NULL    REFERENCES recipes(id) ,
   tank_id       INTEGER       NOT NULL    REFERENCES tanks(id),
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 CREATE TABLE IF NOT EXISTS batches_audit (
@@ -116,7 +132,8 @@ CREATE TABLE IF NOT EXISTS batches_audit (
   completed_on  TIMESTAMPTZ   NULL,
   recipe_id     INTEGER       NOT NULL,
   tank_id       INTEGER       NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 --
