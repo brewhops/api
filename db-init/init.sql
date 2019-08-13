@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS tanks_audit (
   status        VARCHAR(255)  NOT NULL,
   in_use        BOOLEAN       NOT NULL,
   update_user   INTEGER       NULL,
-  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
+  client_id     INTEGER       NOT NULL
 );
 
 --
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS recipes_audit (
   yeast         INT           NULL,
   instructions  JSONB         NOT NULL,
   update_user   INTEGER       NULL,
-  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
+  client_id     INTEGER       NOT NULL
 );
 
 --
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS batches_audit (
   recipe_id     INTEGER       NOT NULL,
   tank_id       INTEGER       NOT NULL,
   update_user   INTEGER       NULL,
-  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
+  client_id     INTEGER       NOT NULL
 );
 
 --
