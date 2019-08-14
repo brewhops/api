@@ -19,25 +19,27 @@ if (process.env.NODE_ENV === "test") {
 
 if (process.env.IS_NOW) {
     const { NODE_ENV } = process.env;
-    // if (NODE_ENV === "production") {
-    //     const {
-    //         DB_USER: user,
-    //         DB_NAME: database,
-    //         DB_HOST: host,
-    //         DB_PASSWORD: password,
-    //         DB_PORT: port,
-    //     } = process.env;
-    //     config = { ...config, user, database, password, host, port: port as number | undefined };
-    // } else if (NODE_ENV === "staging") {
-    const {
-            DB_STAGING_USER: user,
-            DB_STAGING_NAME: database,
-            DB_STAGING_HOST: host,
-            DB_STAGING_PASSWORD: password,
-            DB_STAGING_PORT: port,
+    if (NODE_ENV === "production-live") {
+        // for manual deployments that point at the prod db
+        const {
+            DB_USER: user,
+            DB_NAME: database,
+            DB_HOST: host,
+            DB_PASSWORD: password,
+            DB_PORT: port,
         } = process.env;
-    config = { ...config, user, database, password, host, port: port as number | undefined };
-    // }
+        config = { ...config, user, database, password, host, port: port as number | undefined };
+    } else if (NODE_ENV === "production") {
+        // all deployments with 'now' default to production on push, so we will use it as our staging env
+        const {
+                DB_STAGING_USER: user,
+                DB_STAGING_NAME: database,
+                DB_STAGING_HOST: host,
+                DB_STAGING_PASSWORD: password,
+                DB_STAGING_PORT: port,
+            } = process.env;
+        config = { ...config, user, database, password, host, port: port as number | undefined };
+    }
 }
 
 export const pool = new Pool(config);
