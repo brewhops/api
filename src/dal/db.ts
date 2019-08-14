@@ -17,7 +17,6 @@ if (process.env.NODE_ENV === "test") {
     };
 }
 
-// DATABASE_URL is defined by heroku
 if (process.env.IS_NOW) {
     const { NODE_ENV } = process.env;
     if (NODE_ENV === "production") {
