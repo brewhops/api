@@ -11,7 +11,8 @@
     "DB_STAGING_USER": "@db_staging_user",
     "DB_STAGING_PASSWORD": "@db_staging_password",
     "DB_STAGING_HOST": "@db_staging_endpoint",
-    "DB_STAGING_PORT": "@db_staging_port"
+    "DB_STAGING_PORT": "@db_staging_port",
+    "AUTH_KEY": "@auth_key"
   },
   "builds": [
     { "src": "src/components/actions/index.ts", "use": "@now/node@canary" },
