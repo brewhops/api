@@ -1,5 +1,4 @@
 import { Pool, PoolConfig } from "pg";
-import { ca, cert, key } from "./certs";
 
 let config: PoolConfig = {
     connectionTimeoutMillis: 20000,
