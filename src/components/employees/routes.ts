@@ -16,6 +16,11 @@ export function routes(): Router {
   // tslint:disable-next-line:no-void-expression
   router.use((req: Request, res: Response, next: NextFunction) => next()); // init
 
+  // TODO: Remove this endpoint, it is just a production test
+  router.get("/test", async (req: Request, res: Response) => {
+    res.status(200).send(`hello world! from employees route. NODE_ENV=${process.env.NODE_ENV}`);
+  });
+
   // [GET] section
   router.get("/", async (req, res, next) => controller.getEmployees(req, res, next));
   router.get("/admin/:username", async (req, res, next) => controller.verifyAdmin(req, res, next));

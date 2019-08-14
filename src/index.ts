@@ -36,8 +36,9 @@ if (!process.env.IS_NOW) {
   app.use("/versions", VersionsRoutes());
 }
 
+// TODO: remove this health check in production
 app.get("/test", async (req: Request, res: Response) => {
-  res.status(200).send("hello world!");
+  res.status(200).send(`hello world! from root route. NODE_ENV=${process.env.NODE_ENV}`);
 });
 
 app.post("/init", async (req: Request, res: Response) => {
