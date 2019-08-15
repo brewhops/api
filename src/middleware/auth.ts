@@ -1,10 +1,8 @@
 // Thanks Rob!
 
-import jwt, { VerifyErrors } from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
-import Boom from 'boom';
-
-const secretKey = 'SuperSecret';
+import Boom from "boom";
+import { NextFunction, Request, Response } from "express";
+import jwt, { VerifyErrors } from "jsonwebtoken";
 
 // tslint:disable-next-line:no-any
 export async function generateAuthToken(userID: any) {
@@ -12,9 +10,9 @@ export async function generateAuthToken(userID: any) {
     const payload = { sub: userID };
     jwt.sign(
       payload,
-      secretKey,
+      process.env.AUTH_KEY as string,
       {
-        expiresIn: '24h'
+        expiresIn: "24h",
       },
       (err, token) => {
         if (err) {
@@ -22,25 +20,27 @@ export async function generateAuthToken(userID: any) {
         } else {
           resolve(token);
         }
-      }
+      },
     );
   });
 }
 
+// tslint:disable: no-unsafe-any
+
 export function requireAuthentication(req: Request, res: Response, next: NextFunction) {
   // tslint:disable-next-line:no-backbone-get-set-outside-model
-  const authHeader = req.get('Authorization') || '';
-  const authHeaderParts = authHeader.split(' ');
-  const token = authHeaderParts[0] === 'Bearer' ? authHeaderParts[1] : '';
+  const authHeader = req.get("Authorization") || "";
+  const authHeaderParts = authHeader.split(" ");
+  const token = authHeaderParts[0] === "Bearer" ? authHeaderParts[1] : "";
 
   // tslint:disable-next-line:no-any
-  jwt.verify(token, secretKey, (err: VerifyErrors, payload: any) => {
+  jwt.verify(token, process.env.AUTH_KEY as string, (err: VerifyErrors, payload: any) => {
     if (!err) {
       // tslint:disable-next-line:no-unsafe-any
       req.user = payload.sub;
       next();
     } else {
-      res.status(401).send(Boom.unauthorized('Invalid authentication token'));
+      res.status(401).send(Boom.unauthorized("Invalid authentication token"));
     }
   });
 }

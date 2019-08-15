@@ -1,11 +1,11 @@
- import { PostgresController, IPostgresController } from '../../dal/postgres';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import Boom from 'boom';
-import is from 'is';
+  import Boom from "boom";
+  import { NextFunction, Request, RequestHandler, Response } from "express";
+  import is from "is";
+  import { IPostgresController, PostgresController } from "../../dal/postgres";
 
 // tslint:disable: no-unsafe-any
 
-export interface IActionController extends IPostgresController {
+  export interface IActionController extends IPostgresController {
   getActions: RequestHandler;
   getAction: RequestHandler;
   createAction: RequestHandler;
@@ -20,7 +20,7 @@ export interface IActionController extends IPostgresController {
  * @extends {PostgresController}
  * @implements {IActionController}
  */
-export class ActionController extends PostgresController implements IActionController {
+  export class ActionController extends PostgresController implements IActionController {
   constructor(tableName: string) {
     super(tableName);
   }
@@ -30,9 +30,9 @@ export class ActionController extends PostgresController implements IActionContr
    * @param req
    * @param res
    */
-  async getActions(req: Request, res: Response) {
+  public async getActions(req: Request, res: Response) {
     try {
-      const { rows } = await this.read('*', '$1', [true]);
+      const { rows } = await this.read("*", "$1", [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
@@ -45,7 +45,7 @@ export class ActionController extends PostgresController implements IActionContr
    * @param res
    * @param next
    */
-  async getAction(req: Request, res: Response, next: NextFunction) {
+  public async getAction(req: Request, res: Response, next: NextFunction) {
     try {
       const { rows } = await this.readById(req.params.id);
       if (rows.length > 0) {
@@ -63,7 +63,7 @@ export class ActionController extends PostgresController implements IActionContr
    * @param req
    * @param res
    */
-  async createAction(req: Request, res: Response) {
+  public async createAction(req: Request, res: Response) {
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
       const { rows } = await this.create(keys, escapes, values);
@@ -79,9 +79,9 @@ export class ActionController extends PostgresController implements IActionContr
    * @param res
    * @param next
    */
-  async updateAction(req: Request, res: Response, next: NextFunction) {
+  public async updateAction(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
-      res.status(400).send(Boom.badRequest('Request does not match valid form'));
+      res.status(400).send(Boom.badRequest("Request does not match valid form"));
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
@@ -106,7 +106,7 @@ export class ActionController extends PostgresController implements IActionContr
    * @param res
    * @param next
    */
-  async deleteAction(req: Request, res: Response, next: NextFunction) {
+  public async deleteAction(req: Request, res: Response, next: NextFunction) {
     const {id} = req.params;
     try {
       const response = await this.deleteById(id);

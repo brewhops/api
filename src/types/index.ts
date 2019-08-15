@@ -1,5 +1,5 @@
-import Joi from 'joi';
+import Joi from "joi";
 
-export type JOIResult = {
+export interface JOIResult {
   body: Joi.ObjectSchema;
-};
+}

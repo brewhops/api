@@ -1,8 +1,8 @@
-import { IVersionController, VersionController } from '../controller';
-import { Response, Request } from 'express';
-import { NextFunction } from 'connect';
+import { NextFunction } from "connect";
+import { Request, Response } from "express";
+import { IVersionController, VersionController } from "../controller";
 
-describe('VersionController ', () => {
+describe("VersionController ", () => {
 
   let tableName: string;
   let controller: IVersionController;
@@ -12,32 +12,32 @@ describe('VersionController ', () => {
   let nextFunction: any = {};
 
   beforeAll(() => {
-    tableName = 'versions';
+    tableName = "versions";
     controller = new VersionController(tableName);
     request = {
       params: {
-        batchId: '1'
-      }
+        batchId: "1",
+      },
     };
     response = {
       status: jest.fn().mockImplementation(() => ({
         json: jest.fn(),
-        send: jest.fn()
-      }))
+        send: jest.fn(),
+      })),
     };
     nextFunction = jest.fn();
   });
 
-  it('getVersionsByBatch success', async () => {
-    const rows = ['TEST'];
+  it("getVersionsByBatch success", async () => {
+    const rows = ["TEST"];
     controller.pool.query = jest.fn().mockResolvedValue({ rows });
-    await controller.getVersionsByBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.getVersionsByBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
-  it('getVersionsByBatch error', async () => {
+  it("getVersionsByBatch error", async () => {
     controller.pool.query  = jest.fn().mockRejectedValue(new Error());
-    await controller.getVersionsByBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.getVersionsByBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 });

@@ -1,4 +1,4 @@
-import { CrudController, ICrudController } from './crud';
+import { CrudController, ICrudController } from "./crud";
 
 // tslint:disable:no-any no-unsafe-any
 export interface IPostgresController extends ICrudController {
@@ -7,11 +7,11 @@ export interface IPostgresController extends ICrudController {
   buildUpdateString: (keys: any) => any;
 }
 
-export type KeyValueResult = {
+export interface KeyValueResult {
   keys: string[];
   values: string[];
   escapes: string[];
-};
+}
 
 /**
  * A further extension of the CrudController class for some reason. Stay tuned...
@@ -25,7 +25,7 @@ export class PostgresController extends CrudController implements IPostgresContr
   constructor(collName: string) {
     super(collName);
     // Production URL
-    this.url = '';
+    this.url = "";
   }
 
   /**
@@ -35,7 +35,7 @@ export class PostgresController extends CrudController implements IPostgresContr
    * @returns
    * @memberof PostgresController
    */
-  splitObjectKeyVals(obj: { [index: string]: any }): KeyValueResult {
+  public splitObjectKeyVals(obj: { [index: string]: any }): KeyValueResult {
     const keys = [];
     const values = [];
     const escapes = [];
@@ -53,9 +53,9 @@ export class PostgresController extends CrudController implements IPostgresContr
     }
 
     return {
+      escapes,
       keys,
       values,
-      escapes
     };
   }
 
@@ -67,7 +67,7 @@ export class PostgresController extends CrudController implements IPostgresContr
    * @returns
    * @memberof PostgresController
    */
-  buildQueryByID(key: string, value: string): string {
+  public buildQueryByID(key: string, value: string): string {
     return `${key} = ${value}`;
   }
 
@@ -78,7 +78,7 @@ export class PostgresController extends CrudController implements IPostgresContr
    * @returns {*}
    * @memberof PostgresController
    */
-  buildUpdateString(keys: string[]): any {
+  public buildUpdateString(keys: string[]): any {
     let query = ``;
     let idx = 1;
     for (const key of keys) {
@@ -89,8 +89,8 @@ export class PostgresController extends CrudController implements IPostgresContr
     query = query.substring(0, query.length - 2); // remove trailing ', '
 
     return {
+      idx,
       query,
-      idx
     };
   }
 }

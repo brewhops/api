@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "name": "api",
+  "env": {
+    "IS_NOW": "true",
+    "DB_USER": "@db_user",
+    "DB_PASSWORD": "@db_password",
+    "DB_HOST": "@db_host",
+    "DB_PORT": "@db_port",
+    "DB_STAGING_NAME": "@db_staging_name",
+    "DB_STAGING_USER": "@db_staging_user",
+    "DB_STAGING_PASSWORD": "@db_staging_password",
+    "DB_STAGING_HOST": "@db_staging_endpoint",
+    "DB_STAGING_PORT": "@db_staging_port",
+    "AUTH_KEY": "@auth_key"
+  },
+  "builds": [
+    { "src": "src/components/actions/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/batches/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/employees/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/recipes/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/tanks/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/tasks/index.ts", "use": "@now/node@canary" },
+    { "src": "src/components/versions/index.ts", "use": "@now/node@canary" },
+    { "src": "src/index.ts", "use": "@now/node@canary" }
+  ],
+  "routes": [
+    { "src": "/actions/(.*)", "dest": "/src/components/actions/index.ts"},
+    { "src": "/batches/(.*)", "dest": "/src/components/batches/index.ts"},
+    { "src": "/employees/(.*)", "dest": "/src/components/employees/index.ts"},
+    { "src": "/recipes/(.*)", "dest": "/src/components/recipes/index.ts"},
+    { "src": "/tanks/(.*)", "dest": "/src/components/tanks/index.ts"},
+    { "src": "/tasks/(.*)", "dest": "/src/components/tasks/index.ts"},
+    { "src": "/versions/(.*)", "dest": "/src/components/versions/index.ts"},
+    { "src": "/(.*)", "dest": "/src/index.ts"}
+  ]
+}

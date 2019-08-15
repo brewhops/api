@@ -1,7 +1,6 @@
-import { ICrudController, CrudController } from '../crud';
+import { CrudController, ICrudController } from "../crud";
 
-
-describe('CrudController ', () => {
+describe("CrudController ", () => {
 
   let tableName: string;
   let controller: ICrudController;
@@ -10,107 +9,107 @@ describe('CrudController ', () => {
   let escapes: string[];
 
   beforeAll(() => {
-    tableName = 'test-table';
+    tableName = "test-table";
     controller = new CrudController(tableName);
-    escapes = ['escapes'];
-    columns = 'columns';
-    conditions = 'conditions';
+    escapes = ["escapes"];
+    columns = "columns";
+    conditions = "conditions";
   });
 
   beforeEach(() => {
     controller = new CrudController(tableName);
   });
 
-  it('create', async () => {
+  it("create", async () => {
     controller.pool.query = jest.fn();
     await controller.create(columns, conditions, escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
       `INSERT INTO ${tableName} (${columns}) VALUES (${conditions}) RETURNING *`,
-      escapes
+      escapes,
     );
   });
 
-  it('createInTable', async () => {
+  it("createInTable", async () => {
     controller.pool.query = jest.fn();
     await controller.createInTable(columns, tableName, conditions, escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
       `INSERT INTO ${tableName} (${columns}) VALUES (${conditions}) RETURNING *`,
-      escapes
+      escapes,
     );
   });
 
-  it('read', async () => {
+  it("read", async () => {
     controller.pool.query = jest.fn();
     await controller.read(columns, conditions, escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
-      `SELECT ${columns} FROM ${tableName} WHERE (${conditions})`, escapes
+      `SELECT ${columns} FROM ${tableName} WHERE (${conditions})`, escapes,
     );
   });
 
-  it('readById', async () => {
+  it("readById", async () => {
     controller.pool.query = jest.fn();
     await controller.readById(escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
       `SELECT * FROM ${tableName} WHERE id = $1`,
-      [escapes]
+      [escapes],
     );
   });
 
-  it('readByUsername', async () => {
+  it("readByUsername", async () => {
     controller.pool.query = jest.fn();
     await controller.readByUsername(columns);
     expect(controller.pool.query).toHaveBeenCalledWith(
-      `SELECT * FROM ${tableName} WHERE username = $1`, [columns]
+      `SELECT * FROM ${tableName} WHERE username = $1`, [columns],
     );
   });
 
-  it('readInTable', async () => {
+  it("readInTable", async () => {
     controller.pool.query = jest.fn();
     await controller.readInTable(columns, tableName, conditions, escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
-      `Select ${columns} FROM ${tableName} WHERE ${conditions}`, escapes
+      `Select ${columns} FROM ${tableName} WHERE ${conditions}`, escapes,
     );
   });
 
-  it('update', async () => {
+  it("update", async () => {
     controller.pool.query = jest.fn();
     await controller.update(columns, conditions, escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
       `UPDATE ${tableName} SET ${columns} WHERE ${conditions} RETURNING *`,
-      escapes
+      escapes,
     );
   });
 
-  it('updateInTable', async () => {
+  it("updateInTable", async () => {
     controller.pool.query = jest.fn();
     await controller.updateInTable(columns, tableName, conditions, escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
       `UPDATE ${tableName} SET ${columns} WHERE ${conditions} RETURNING *`,
-      escapes
+      escapes,
     );
   });
 
-  it('delete', async () => {
+  it("delete", async () => {
     controller.pool.query = jest.fn();
     await controller.delete(conditions, escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
-      `DELETE FROM ${tableName} WHERE ${conditions}`, escapes
+      `DELETE FROM ${tableName} WHERE ${conditions}`, escapes,
     );
   });
 
-  it('deleteById', async () => {
+  it("deleteById", async () => {
     controller.pool.query = jest.fn();
     await controller.deleteById(escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
-      `DELETE FROM ${tableName} WHERE id = $1`, [escapes]
+      `DELETE FROM ${tableName} WHERE id = $1`, [escapes],
     );
   });
 
-  it('deleteByTable', async () => {
+  it("deleteByTable", async () => {
     controller.pool.query = jest.fn();
     await controller.deleteInTable(tableName, conditions, escapes);
     expect(controller.pool.query).toHaveBeenCalledWith(
-      `DELETE FROM ${tableName} WHERE ${conditions}`, escapes
+      `DELETE FROM ${tableName} WHERE ${conditions}`, escapes,
     );
   });
 

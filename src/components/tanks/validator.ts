@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from "joi";
 
 /**
  * Validates the tank information
@@ -10,23 +10,23 @@ export const TankValidator = {
     return {
       body: Joi.object()
         .keys({
+          in_use: Joi.boolean().required(),
           name: Joi.string().required(),
           status: Joi.string().required(),
-          in_use: Joi.boolean().required()
         })
-        .unknown(false)
+        .unknown(false),
     };
   },
   get updateTank() {
     return {
       body: Joi.object()
         .keys({
+          in_use: Joi.boolean(),
           name: Joi.string(),
           status: Joi.string(),
-          in_use: Joi.boolean(),
-          update_user: Joi.number()
+          update_user: Joi.number(),
         })
-        .unknown(false)
+        .unknown(false),
     };
-  }
+  },
 };
