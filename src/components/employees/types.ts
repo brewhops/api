@@ -6,4 +6,5 @@ export interface Employee {
   password?: string;
   phone: string;
   admin: boolean;
+  client_id: number;
 }

@@ -31,4 +31,5 @@ export interface Batch {
   recipe_id: number;
   tank_id: number;
   update_user?: number;
+  client_id: number;
 }

@@ -4,4 +4,5 @@ export interface Recipe {
     yeast: number;
     instructions: {};
     update_user?: number;
+    client_id: number;
 }
