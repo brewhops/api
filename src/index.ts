@@ -26,7 +26,7 @@ app.use(
   (err: Error, req: Request, res: Response, next: NextFunction) => res.status(400).send(Boom.badRequest(err.message)),
 );
 
-if (!process.env.IS_NOW) {
+if (process.env.IS_NOW === "false") {
   app.use("/employees", EmployeesRoutes());
   app.use("/tanks", TanksRoutes());
   app.use("/actions", ActionsRoutes());
