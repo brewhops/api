@@ -77,7 +77,7 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       } else {
         const { rows } = await this.create(keys, escapes, values, safeUserData);
         const returnedUser = rows[0];
-        returnedUser.token = await generateAuthToken(returnedUser.username);
+        returnedUser.token = await generateAuthToken(returnedUser.username, returnedUser.client_id);
         res.status(201).json(rows[0]);
       }
     } catch (err) {
@@ -99,11 +99,13 @@ export class EmployeeController extends PostgresController implements IEmployeeC
         res.status(401).send(Boom.unauthorized("Not authorized"));
       } else {
         const id = prevUser.rows[0].id;
+        const client_id = prevUser.rows[0].client_id;
+        const username = prevUser.rows[0].username;
         const stored = prevUser.rows[0].password;
         // tslint:disable-next-line:possible-timing-attack
         const match = password === stored;
         if (match) {
-          const token = await generateAuthToken(req.body.username);
+          const token = await generateAuthToken(username, client_id);
           res.status(200).json({
             id,
             token,
