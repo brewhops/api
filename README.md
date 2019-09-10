@@ -14,18 +14,20 @@ The general purpose of the API is to keep track of how a batch of beer is being 
 Both development and production environments require the use of a *.env* file to get environment variables.
 This *.env* file should never be committed, you can rename the *example.env* file in the project to *.env* and it will work.
 
-It contains the following environment variables
+It contains the following environment variables that are all required for local development with Docker.
 
 * PGUSER     -- The PostGres username
 * PGDATABASE -- The PostGres database name 
 * PGPASSWORD -- The PostGres database password
 * PORT       -- The Port that the database connects to
+* IS_NOW     -- Required to expose all routes
+* AUTH_KEY   -- Secret key for authorization
 
 For more information on the PG environment variables, check out the [official postgres docker container docs](https://hub.docker.com/_/postgres/)
 
 ## Development
 1. `cp example.env .env` will enable the [default configuration](example.env).
-1. `npm i` will install all of the dependencies.
+1. `npm ci` will install all of the dependencies.
 1. Run `npm run watch-ts` in a different terminal, this will trigger the typescript compiler to watch the source files for changes and re-transpile them.
 1. `npm run build-images` will run `docker-compose`, build new images, and run the api.
 1. `npm run dev` will run `docker-compose`, and run the api.
