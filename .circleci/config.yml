@@ -21,7 +21,7 @@ jobs:
       - checkout
       - run:
           name: Install Dependencies
-          command: npm ci
+          command: npm i
       - persist_to_workspace:
           root: ~/project
           paths: 
