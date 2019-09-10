@@ -72,10 +72,17 @@ A few things to note:
 * `exit` to exit the docker container
 
 ## `npm` commands
-* __dev__: starts the development docker environment.  This mounts the project to the docker container and then runs nodemon.  For this to work, your local node version (the one used to run `npm install`) must be version 11 as well.
-* __dev-clean__: clean's the docker compose environment up.  This allows your development environment to effectively be deleted so you can start from scratch.
-* __dev-build__: rebuilds the dockerfiles that are defined in the docker compose file.  Run this is these are changed.
-* __dev-psql__: this automatically connects you with a psql instance to the development database (only if running).
-* __prod-*__: all of the above commands also have production counterparts.  Replace `dev` with `prod` and they will work.
-* __test__: runs the current tests.
+*__start__: Starts the server using vanilla NodeJs.
+*__build__: Runs the typescript compiler on the source code.
+*__now-dev__: used by the `now` cli when running `now dev`. There is no need to run this manually.
+*__now-build__: used by the `now` cli when running `now dev`. There is no need to run this manually.
+*__test__: Runs unit tests with Jest.
+*__dev__: Starts the development docker environment with the most recently built images. NodeJs version must be version 11.
+*__debug__: Used by docker to start the server for local development with a debugging port enabled.
+*__psql__: Opens a terminal and starts psql on the currently running postgres instance on docker.
+*__lint__: Runs the linter on the project to enforce code styling based on our `tslint.json` configuration.
+*__watch-ts__: Starts the typescript compiler in watch mode to automatically update the currently running docker api instance with new changes.
+
+
+
 
