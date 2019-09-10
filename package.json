@@ -29,7 +29,9 @@
     "psql": "docker run -it --rm --network=brewhops-api_default --env-file '.env' -e PGHOST=database postgres psql",
     "lint": "tslint -c ./tslint.json -p ./tsconfig.json --fix",
     "format": "prettier --single-quote --print-width 100 --write src/**/*.ts",
-    "watch-ts": "tsc -w -p ./tsconfig.json"
+    "watch-ts": "tsc -w -p ./tsconfig.json",
+    "deploy": "now --target production -e NODE_ENV=\"production-live\"",
+    "deploy-staging": "now --target production -e NODE_ENV=\"production\""
   },
   "husky": {
     "hooks": {
