@@ -8,6 +8,7 @@ The general purpose of the API is to keep track of how a batch of beer is being 
 * [npm](https://www.npmjs.com/get-npm)
 * [Docker](https://docs.docker.com/install/)
 * [Docker Compose](https://docs.docker.com/compose/install/)
+* [Postman](https://www.getpostman.com/)
 
 ## Startup
 
@@ -33,15 +34,20 @@ For more information on the PG environment variables, check out the [official po
 1. `npm run dev` will run `docker-compose`, and run the api.
 
 ## Postman
-The postman collection at the root of this repo contains documentation for all of the avaiable api endpoints.
-* [postman](https://www.getpostman.com/)
+The postman collections at the root of this repo contains documentation for all of the avaiable api endpoints. It contains *.collection.json and *.environment.json that will need to be imported into postman so that authentication is automated for all requests.
+* [Postman](https://www.getpostman.com/)
+
 
 ## Test Data
-Once the application has started the `init-live` endpoint needs to be hit to initialize the test data for the application.  Once hit (after success) this can take between 10 seconds to a minute to load all of the data.  The following curl command can be used to hit the endpoint:
+Once the application has started the `init`(small data set) or `init-live`(large data set) endpoint needs to be hit to initialize the test data for the application.  Once hit (after success) this can take between 10 seconds to a minute to load all of the data. 
+
+Our Postman collections contain these routes, aptly named `init` and `init-live`.
+
+If you prefer, the following curl commands can be used to hit both endpoints:
 ```
+curl -X POST http://localhost:3000/init
 curl -X POST http://localhost:3000/init-live
 ```
-Or, postman could also be used to hit this endpoint instead of the curl command.
 
 ## Checking the database (manually)
 
