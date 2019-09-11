@@ -28,7 +28,6 @@
     "build-images": "cross-env NODE_ENV=development docker-compose up --build database web-server",
     "psql": "docker run -it --rm --network=brewhops-api_default --env-file '.env' -e PGHOST=database postgres psql",
     "lint": "tslint -c ./tslint.json -p ./tsconfig.json --fix",
-    "format": "prettier --single-quote --print-width 100 --write src/**/*.ts",
     "watch-ts": "tsc -w -p ./tsconfig.json",
     "deploy": "now --target production -e NODE_ENV=\"production-live\"",
     "deploy-staging": "now --target production -e NODE_ENV=\"production\""
@@ -42,11 +41,10 @@
   "lint-staged": {
     "src/**/*.ts": [
       "tslint -c ./tslint.json -p ./tsconfig.json --fix",
-      "prettier --single-quote --print-width 100",
       "git add"
     ],
     "src/**/*.{js,json}": [
-      "prettier --single-quote --print-width 100",
+      "prettier --single-quote --print-width 100 --write",
       "git add"
     ]
   },
