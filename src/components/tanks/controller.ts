@@ -1,7 +1,7 @@
-import { PostgresController, IPostgresController } from '../../dal/postgres';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import is from 'is';
-import Boom from 'boom';
+import Boom from "boom";
+import { NextFunction, Request, RequestHandler, Response } from "express";
+import is from "is";
+import { IPostgresController, PostgresController } from "../../dal/postgres";
 
 // tslint:disable:no-any no-unsafe-any
 export interface ITankController extends IPostgresController {
@@ -31,9 +31,9 @@ export class TankController extends PostgresController implements ITankControlle
    * @param {Response} res
    * @memberof TankController
    */
-  async getTanks(req: Request, res: Response) {
+  public async getTanks(req: Request, res: Response) {
     try {
-      const { rows } = await this.read('*', '$1', [true]);
+      const { rows } = await this.read("*", "$1", [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
@@ -47,7 +47,7 @@ export class TankController extends PostgresController implements ITankControlle
    * @param {NextFunction} next
    * @memberof TankController
    */
-  async getTank(req: Request, res: Response, next: NextFunction) {
+  public async getTank(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
       // get the tank by that ID
@@ -72,7 +72,7 @@ export class TankController extends PostgresController implements ITankControlle
    * @param {NextFunction} next
    * @memberof TankController
    */
-  async getTankMonitoring(req: Request, res: Response, next: NextFunction) {
+  public async getTankMonitoring(req: Request, res: Response, next: NextFunction) {
     /* get most recent:
      * tank number
      * pressure
@@ -107,7 +107,7 @@ export class TankController extends PostgresController implements ITankControlle
    * @param {Response} res
    * @memberof TankController
    */
-  async createTank(req: Request, res: Response) {
+  public async createTank(req: Request, res: Response) {
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
       const { rows } = await this.create(keys, escapes, values);
@@ -124,10 +124,10 @@ export class TankController extends PostgresController implements ITankControlle
    * @param {NextFunction} next
    * @memberof TankController
    */
-  async updateTank(req: Request, res: Response, next: NextFunction) {
+  public async updateTank(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     if (is.empty(req.body)) {
-      res.status(400).send(Boom.badRequest('Request does not match valid form'));
+      res.status(400).send(Boom.badRequest("Request does not match valid form"));
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
@@ -152,7 +152,7 @@ export class TankController extends PostgresController implements ITankControlle
    * @param {NextFunction} next
    * @memberof TankController
    */
-  async deleteTank(req: Request, res: Response, next: NextFunction) {
+  public async deleteTank(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
       const { rowCount } = await this.deleteById(id);

@@ -1,11 +1,8 @@
 {
-  "name": "NinkasiServer",
+  "name": "api",
   "version": "0.0.1",
   "description": "An express based REST API for tracking brewing data",
   "main": "./dist/index.js",
-  "engines": {
-    "node": "11.6.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ConnorChristensen/NinkasiServer.git"
@@ -21,36 +18,39 @@
   },
   "homepage": "https://github.com/ConnorChristensen/NinkasiServer#readme",
   "scripts": {
-    "start": "cross-env NODE_ENV=production &&  node dist/index.js",
+    "start": "cross-env NODE_ENV=production && node dist/index.js",
     "build": "tsc",
+    "now-dev": "npm run build",
+    "now-build": "npm run build",
     "test": "jest --coverage",
     "dev": "cross-env NODE_ENV=development docker-compose up database web-server",
     "debug": "NODE_ENV=development nodemon --legacy-watch --watch ./dist --inspect=0.0.0.0:9222 --nolazy",
     "build-images": "cross-env NODE_ENV=development docker-compose up --build database web-server",
     "psql": "docker run -it --rm --network=brewhops-api_default --env-file '.env' -e PGHOST=database postgres psql",
     "lint": "tslint -c ./tslint.json -p ./tsconfig.json --fix",
-    "format": "prettier --single-quote --print-width 100 --write src/**/*.ts",
-    "watch-ts": "tsc -w -p ./tsconfig.json"
+    "watch-ts": "tsc -w -p ./tsconfig.json",
+    "deploy": "now --target production -e NODE_ENV=\"production-live\"",
+    "deploy-staging": "now --target production -e NODE_ENV=\"production\""
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm run build",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
     "src/**/*.ts": [
       "tslint -c ./tslint.json -p ./tsconfig.json --fix",
-      "prettier --single-quote --print-width 100",
       "git add"
     ],
     "src/**/*.{js,json}": [
-      "prettier --single-quote --print-width 100",
+      "prettier --single-quote --print-width 100 --write",
       "git add"
     ]
   },
   "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -92,7 +92,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^7.3.2",
+    "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^7.3.1",
     "@osu-cass/tslint-config": "^2.0.0",
     "@types/bcrypt": "^3.0.0",

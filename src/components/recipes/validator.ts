@@ -1,5 +1,5 @@
-import Joi from 'joi';
-import { JOIResult } from '../../types/index';
+import Joi from "joi";
+import { JOIResult } from "../../types/index";
 
 export interface RecipeValidator {
   createRecipe: () => JOIResult;
@@ -14,24 +14,24 @@ export const RecipeValidator = {
     return {
       body: Joi.object()
         .keys({
-          name: Joi.string().required(),
           airplane_code: Joi.string().required(),
+          instructions: Joi.object().unknown(),
+          name: Joi.string().required(),
           yeast: Joi.number(),
-          instructions: Joi.object().unknown()
         })
-        .unknown(false)
+        .unknown(false),
     };
   },
   updateRecipe() {
     return {
       body: Joi.object()
         .keys({
-          name: Joi.string(),
           airplane_code: Joi.string(),
+          instructions: Joi.object().unknown(),
+          name: Joi.string(),
           yeast: Joi.number(),
-          instructions: Joi.object().unknown()
         })
-        .unknown(false)
+        .unknown(false),
     };
-  }
+  },
 };

@@ -1,7 +1,7 @@
-import { PostgresController, IPostgresController } from '../../dal/postgres';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import Boom from 'boom';
-import is from 'is';
+import Boom from "boom";
+import { NextFunction, Request, RequestHandler, Response } from "express";
+import is from "is";
+import { IPostgresController, PostgresController } from "../../dal/postgres";
 
 // tslint:disable:no-floating-promises no-any no-unsafe-any
 
@@ -31,9 +31,9 @@ export class RecipeController extends PostgresController implements IRecipeContr
    * @param {Response} res
    * @memberof RecipeController
    */
-  async getRecipes(req: Request, res: Response) {
+  public async getRecipes(req: Request, res: Response) {
     try {
-      const { rows } = await this.read('*', '$1', [true]);
+      const { rows } = await this.read("*", "$1", [true]);
       res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
@@ -47,7 +47,7 @@ export class RecipeController extends PostgresController implements IRecipeContr
    * @param {NextFunction} next
    * @memberof RecipeController
    */
-  async getRecipe(req: Request, res: Response, next: NextFunction) {
+  public async getRecipe(req: Request, res: Response, next: NextFunction) {
     try {
       const { rows } = await this.readById(req.params.id);
       if (rows.length > 0) {
@@ -66,7 +66,7 @@ export class RecipeController extends PostgresController implements IRecipeContr
    * @param {Response} res
    * @memberof RecipeController
    */
-  async createRecipe(req: Request, res: Response) {
+  public async createRecipe(req: Request, res: Response) {
     const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
     try {
       const { rows } = await this.create(keys, escapes, values);
@@ -83,9 +83,9 @@ export class RecipeController extends PostgresController implements IRecipeContr
    * @param {NextFunction} next
    * @memberof RecipeController
    */
-  async updateRecipe(req: Request, res: Response, next: NextFunction) {
+  public async updateRecipe(req: Request, res: Response, next: NextFunction) {
     if (is.empty(req.body)) {
-      res.status(400).send(Boom.badRequest('Request does not match valid form'));
+      res.status(400).send(Boom.badRequest("Request does not match valid form"));
     } else {
       const { keys, values } = this.splitObjectKeyVals(req.body);
       const { query, idx } = this.buildUpdateString(keys);
@@ -111,7 +111,7 @@ export class RecipeController extends PostgresController implements IRecipeContr
    * @param {NextFunction} next
    * @memberof RecipeController
    */
-  async deleteRecipe(req: Request, res: Response, next: NextFunction) {
+  public async deleteRecipe(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
       const response = await this.deleteById(id);

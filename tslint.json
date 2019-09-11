@@ -1,3 +1,6 @@
 {
-  "extends": "@osu-cass/tslint-config"
+  "extends": "tslint:recommended",
+  "rules": {
+    "interface-name": false
+  }
 }

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bdb776f7-0070-4f6d-bc12-0f7e64c45fae",
+		"_postman_id": "966b078e-b91a-44aa-85cb-a64ed677b40c",
 		"name": "brewhops-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -23,10 +23,6 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/employees/id/{{employee-id}}",
 							"host": [
@@ -189,10 +185,6 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/employees/",
 							"host": [
@@ -250,10 +242,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/employees/admin/admin",
 							"host": [
@@ -309,10 +297,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/tanks/id/{{tank-id}}",
 							"host": [
@@ -367,10 +351,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/tanks/monitoring",
 							"host": [
@@ -429,10 +409,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/tanks/",
 							"host": [
@@ -456,10 +432,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/actions",
 							"host": [
@@ -518,10 +490,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/actions/id/{{action-id}}",
 							"host": [
@@ -621,10 +589,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/recipes",
 							"host": [
@@ -684,10 +648,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/recipes/id/{{recipe-id}}",
 							"host": [
@@ -888,10 +848,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/batches/id/{{batch-id}}",
 							"host": [
@@ -953,10 +909,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/batches/recipe/{{recipe-id}}",
 							"host": [
@@ -1017,10 +969,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/batches",
 							"host": [
@@ -1043,10 +991,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/tasks",
 							"host": [
@@ -1120,10 +1064,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/tasks/batch/{{batch-id}}",
 							"host": [
@@ -1170,10 +1110,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{api-domain}}/versions/batch/1",
 							"host": [
@@ -1259,39 +1195,45 @@
 	],
 	"variable": [
 		{
-			"id": "a701cddd-ac33-4185-983a-7ea720422507",
+			"id": "d69f219e-65ce-47a0-9a3c-6e671f4e290c",
 			"key": "api-domain",
 			"value": "http://localhost:3000",
 			"type": "string"
 		},
 		{
-			"id": "becc032c-8afc-447e-99a0-2d382eca067b",
+			"id": "6963395a-def2-4ed8-b957-d2cdf2cc29f9",
 			"key": "employee-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "ef25adf4-e540-479b-95b7-da3cdc2de302",
+			"id": "d5bfdafa-f843-4d7c-a6c0-7047064b3f64",
 			"key": "tank-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "90185298-49c9-47b2-b25a-f47770404051",
+			"id": "8657ab33-a935-4932-9934-c626f2092991",
 			"key": "action-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "10d5ebcf-8b24-4105-aef6-69d8d53b8635",
+			"id": "65048b32-f08e-45df-a5c7-b23eb707b769",
 			"key": "recipe-id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "fc9db5c4-5e45-4950-b543-386de2073918",
+			"id": "f6e181ca-031f-454d-a7ff-3abdb604aa5e",
 			"key": "batch-id",
 			"value": "1",
+			"type": "string"
+		},
+		{
+			"id": "dc28f628-5c20-4b99-8a9b-fcb890be2ac5",
+			"key": "password",
+			"value": "password",
 			"type": "string"
 		}
 	]

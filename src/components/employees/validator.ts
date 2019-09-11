@@ -1,5 +1,5 @@
-import Joi from 'joi';
-import { JOIResult } from '../../types';
+import Joi from "joi";
+import { JOIResult } from "../../types";
 
 export interface IEmployeeValidator {
   createEmployee: () => JOIResult;
@@ -15,38 +15,38 @@ export const EmployeeValidator: IEmployeeValidator = {
     return {
       body: Joi.object()
         .keys({
+          admin: Joi.boolean(),
           first_name: Joi.string().required(),
           last_name: Joi.string().required(),
-          username: Joi.string().required(),
           password: Joi.string().required(),
           phone: Joi.string(),
-          admin: Joi.boolean()
+          username: Joi.string().required(),
         })
-        .unknown(false)
+        .unknown(false),
     };
   },
   updateEmployee() {
     return {
       body: Joi.object()
         .keys({
+          admin: Joi.boolean(),
           first_name: Joi.string(),
           last_name: Joi.string(),
-          username: Joi.string(),
           password: Joi.string(),
           phone: Joi.string(),
-          admin: Joi.boolean()
+          username: Joi.string(),
         })
-        .unknown(false)
+        .unknown(false),
     };
   },
   login() {
     return {
       body: Joi.object()
         .keys({
+          password: Joi.string().required(),
           username: Joi.string().required(),
-          password: Joi.string().required()
         })
-        .unknown(false)
+        .unknown(false),
     };
-  }
+  },
 };

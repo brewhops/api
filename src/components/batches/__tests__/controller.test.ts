@@ -1,185 +1,185 @@
-import { IBatchesController, BatchesController } from '../controller';
-import { Response, Request } from 'express';
-import { NextFunction } from 'connect';
-import { Batch } from '../types';
-import { Pool } from 'pg';
+import { NextFunction } from "connect";
+import { Request, Response } from "express";
+import { Pool } from "pg";
+import { BatchesController, IBatchesController } from "../controller";
+import { Batch } from "../types";
 
-describe('BatchesController ', () => {
+describe("BatchesController ", () => {
 
   let tableName: string;
   let controller: IBatchesController;
   // tslint:disable:no-any no-unsafe-any
-  const keys = 'keys';
-  const values = 'values';
-  const escapes = 'escapes';
+  const keys = "keys";
+  const values = "values";
+  const escapes = "escapes";
   let request: any = {};
   let response: any = {};
   let nextFunction: any = {};
 
   beforeAll(() => {
-    tableName = 'batches';
+    tableName = "batches";
     controller = new BatchesController(tableName);
     request = {
-      params: {
-        id: '1',
-        tankId: '1'
-      },
       body: {
-        batch_id: '1'
-      }
+        batch_id: "1",
+      },
+      params: {
+        id: "1",
+        tankId: "1",
+      },
     };
     response = {
       status: jest.fn().mockImplementation(() => ({
         json: jest.fn(),
-        send: jest.fn()
-      }))
+        send: jest.fn(),
+      })),
     };
     nextFunction = jest.fn();
   });
 
-  it('getBatches success', async () => {
-    const rows = ['TEST'];
+  it("getBatches success", async () => {
+    const rows = ["TEST"];
     controller.read = jest.fn().mockResolvedValue({ rows });
-    await controller.getBatches(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.getBatches(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
-  it('getBatches error', async () => {
+  it("getBatches error", async () => {
     controller.read = jest.fn().mockRejectedValue(new Error());
-    await controller.getBatches(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.getBatches(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 
-  it('getBatchesByTank success', async () => {
+  it("getBatchesByTank success", async () => {
     const results = {
-      rows: ['test'],
-      rowCount: 2
+      rowCount: 2,
+      rows: ["test"],
     };
     controller.read = jest.fn().mockResolvedValue(results);
-    await controller.getBatchesByTank(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.getBatchesByTank(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
-  it('getBatchesByTank error', async () => {
+  it("getBatchesByTank error", async () => {
     controller.read = jest.fn().mockRejectedValue(new Error());
-    await controller.getBatchesByTank(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.getBatchesByTank(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 
-  it('getBatch success', async () => {
+  it("getBatch success", async () => {
     const results = {
-      rows: ['test'],
-      rowCount: 2
+      rowCount: 2,
+      rows: ["test"],
     };
     controller.readById = jest.fn().mockResolvedValue(results);
-    await controller.getBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.getBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
-  it('getBatch error', async () => {
+  it("getBatch error", async () => {
     controller.readById = jest.fn().mockRejectedValue(new Error());
-    await controller.getBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.getBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 
-  it('updateBatch success', async () => {
+  it("updateBatch success", async () => {
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
     controller.readById = jest.fn().mockResolvedValue({ rowCount: 2 });
-    controller.buildUpdateString = jest.fn().mockResolvedValue({ query: '', idx: ''});
+    controller.buildUpdateString = jest.fn().mockResolvedValue({ query: "", idx: ""});
     controller.update = jest.fn().mockResolvedValue({});
     controller.createInTable = jest.fn().mockResolvedValue({});
-    await controller.updateBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.updateBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
-  it('updateBatch error', async () => {
+  it("updateBatch error", async () => {
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
     controller.readById = jest.fn().mockResolvedValue({ rowCount: 2 });
-    controller.buildUpdateString = jest.fn().mockResolvedValue({ query: '', idx: ''});
+    controller.buildUpdateString = jest.fn().mockResolvedValue({ query: "", idx: ""});
     controller.update = jest.fn().mockRejectedValue(new Error());
-    await controller.updateBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.updateBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 
-  it('createBatch success', async () => {
+  it("createBatch success", async () => {
     const batch: Batch = {
-      name: '',
-      volume: 2,
       bright: 2,
       generation: 2,
-      started_on: new Date().toUTCString(),
+      name: "",
       recipe_id: 2,
+      started_on: new Date().toUTCString(),
       tank_id: 2,
-      update_user: 2
+      update_user: 2,
+      volume: 2,
     };
 
     request.body = batch;
 
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
     controller.create = jest.fn().mockResolvedValue({});
-    await controller.createBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.createBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
-  it('createBatch error', async () => {
+  it("createBatch error", async () => {
     const batch: Batch = {
-      name: '',
-      volume: 2,
       bright: 2,
       generation: 2,
-      started_on: new Date().toUTCString(),
+      name: "",
       recipe_id: 2,
+      started_on: new Date().toUTCString(),
       tank_id: 2,
-      update_user: 2
+      update_user: 2,
+      volume: 2,
     };
 
     request.body = batch;
 
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes });
     controller.create = jest.fn().mockRejectedValue(new Error());
-    await controller.createBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.createBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 
-  it('deleteBatch success', async () => {
+  it("deleteBatch success", async () => {
     const batch = {
-      rowCount: 2
+      rowCount: 2,
     };
     // tslint:disable-next-line:no-object-literal-type-assertion
     controller.pool = {
-      query: jest.fn().mockReturnValue({ rowCount: 2 })
+      query: jest.fn().mockReturnValue({ rowCount: 2 }),
     } as unknown as Pool;
     controller.deleteById = jest.fn().mockResolvedValue(batch);
-    await controller.deleteBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.deleteBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
-  it('deleteBatch error', async () => {
+  it("deleteBatch error", async () => {
     const batch = {
-      rowCount: 2
+      rowCount: 2,
     };
     // tslint:disable-next-line:no-object-literal-type-assertion
     controller.pool = {
-      query: jest.fn().mockReturnValue({ rowCount: 2 })
+      query: jest.fn().mockReturnValue({ rowCount: 2 }),
     } as unknown as Pool;
     controller.deleteById = jest.fn().mockRejectedValue(new Error());
-    await controller.deleteBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.deleteBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 
-  it('closeBatch success', async () => {
+  it("closeBatch success", async () => {
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes});
-    controller.buildUpdateString = jest.fn().mockResolvedValue({ query: '', idx: 1});
+    controller.buildUpdateString = jest.fn().mockResolvedValue({ query: "", idx: 1});
     controller.deleteById = jest.fn().mockResolvedValue({});
-    await controller.closeBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.closeBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(200);
   });
 
-  it('closeBatch error', async () => {
+  it("closeBatch error", async () => {
     controller.splitObjectKeyVals = jest.fn().mockReturnValue({ keys, values, escapes});
-    controller.buildUpdateString = jest.fn().mockResolvedValue({ query: '', idx: 1});
+    controller.buildUpdateString = jest.fn().mockResolvedValue({ query: "", idx: 1});
     controller.deleteById = jest.fn().mockRejectedValue(new Error());
-    await controller.closeBatch(<Request>request, <Response>response, <NextFunction>nextFunction);
+    await controller.closeBatch(request as Request, response as Response, nextFunction as NextFunction);
     expect(response.status).toHaveBeenCalledWith(500);
   });
 });
