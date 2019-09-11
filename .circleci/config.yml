@@ -22,10 +22,5 @@ jobs:
           name: test
           command: npm test
       - store_artifacts:
-          path: coverage-final.json
-          prefix: tests
-      - store_artifacts:
           path: coverage
           prefix: coverage
-      - store_test_results:
-          path: coverage-final.json
