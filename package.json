@@ -22,7 +22,7 @@
     "build": "tsc",
     "now-dev": "npm run build",
     "now-build": "npm run build",
-    "test": "npm run build && nyc jest --coverage",
+    "test": "jest --coverage",
     "dev": "cross-env NODE_ENV=development docker-compose up database web-server",
     "debug": "NODE_ENV=development nodemon --legacy-watch --watch ./dist --inspect=0.0.0.0:9222 --nolazy",
     "build-images": "cross-env NODE_ENV=development docker-compose up --build database web-server",
