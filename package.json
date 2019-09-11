@@ -51,6 +51,8 @@
     ]
   },
   "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
     "moduleFileExtensions": [
       "ts",
       "tsx",

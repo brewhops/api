@@ -1,48 +1,30 @@
-node_defaults: &node
-  docker:
-    - image: circleci/node
-
-dev_filter: &devOnly
-  branches:
-    only: dev
-
-get_latest_version: &getVersion
-  name: Set TAG_VERSION and update PATH
-  command: >
-    echo 'export TAG_VERSION=$((git describe --tags $(git rev-list
-    --tags --max-count=1)) | cut -c 2-)' >> $BASH_ENV
-    source $BASH_ENV
-
-version: 2
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.5
 jobs:
   build:
-    <<: *node
+    working_directory: ~/api
+    docker:
+      - image: circleci/node:11
     steps:
       - checkout
       - run:
-          name: Install Dependencies
-          command: npm ci
-      - persist_to_workspace:
-          root: ~/project
-          paths: 
-            - node_modules
-  unit_tests:
-    <<: *node
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/project
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: Run unit tests
+          name: install-npm-wee
+          command: npm i
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: test
           command: npm test
-
-
-
-workflows:
-  version: 2
-  build_test_deploy:
-    jobs:
-      - build
-      - unit_tests:
-          requires:
-            - build
+      - store_artifacts:
+          path: coverage
+          prefix: coverage
+      - codecov/upload:
+        file: coverage/coverage-final.json
