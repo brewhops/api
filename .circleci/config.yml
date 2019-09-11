@@ -4,16 +4,17 @@ jobs:
     working_directory: ~/api
     docker:
       - image: circleci/node:4.8.2
+      - image: mongo:3.4.4
     steps:
       - checkout
       - run:
           name: update-npm
-          command: 'sudo npm install -g npm'
+          command: 'sudo npm install -g npm@latest'
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: install-npm
-          command: npm install
+          name: install-npm-wee
+          command: npm i
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
