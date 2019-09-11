@@ -72,16 +72,16 @@ A few things to note:
 * `exit` to exit the docker container
 
 ## `npm` commands
-*__start__: Starts the server using vanilla NodeJs.
-*__build__: Runs the typescript compiler on the source code.
-*__now-dev__: used by the `now` cli when running `now dev`. There is no need to run this manually.
-*__now-build__: used by the `now` cli when running `now dev`. There is no need to run this manually.
-*__test__: Runs unit tests with Jest.
-*__dev__: Starts the development docker environment with the most recently built images. NodeJs version must be version 11.
-*__debug__: Used by docker to start the server for local development with a debugging port enabled.
-*__psql__: Opens a terminal and starts psql on the currently running postgres instance on docker.
-*__lint__: Runs the linter on the project to enforce code styling based on our `tslint.json` configuration.
-*__watch-ts__: Starts the typescript compiler in watch mode to automatically update the currently running docker api instance with new changes.
+* __start__: Starts the server using vanilla NodeJs.
+* __build__: Runs the typescript compiler on the source code.
+* __now-dev__: used by the `now` cli when running `now dev`. There is no need to run this manually.
+* __now-build__: used by the `now` cli when running `now dev`. There is no need to run this manually.
+* __test__: Runs unit tests with Jest.
+* __dev__: Starts the development docker environment with the most recently built images. NodeJs version must be version 11.
+* __debug__: Used by docker to start the server for local development with a debugging port enabled.
+* __psql__: Opens a terminal and starts psql on the currently running postgres instance on docker.
+* __lint__: Runs the linter on the project to enforce code styling based on our `tslint.json` configuration.
+* __watch-ts__: Starts the typescript compiler in watch mode to automatically update the currently running docker api instance with new changes.
 
 
 
