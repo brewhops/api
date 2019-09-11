@@ -1,4 +1,4 @@
-# BrewhopsAPI ![CircleCI](https://circleci.com/gh/danvanhorn/brewhops-api.svg?style=svg&circle-token=0f17dce14c506204bc95e1e986c8f3f99cd725ec)
+# BrewhopsAPI ![CircleCI](https://circleci.com/gh/danvanhorn/brewhops-api.svg?style=svg&circle-token=0f17dce14c506204bc95e1e986c8f3f99cd725ec) [![codecov](https://codecov.io/gh/brewhops/api/branch/master/graph/badge.svg)](https://codecov.io/gh/brewhops/api)
 
 ## Purpose of API:
 The general purpose of the API is to keep track of how a batch of beer is being brewed over time. There are some peripheral information pieces such as employees that are working on the system, the tanks that the batches are being brewed in, actions associated with those tanks, and the recipes for a brew.
