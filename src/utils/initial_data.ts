@@ -37,7 +37,7 @@ const getDateArray = (): Date[] => {
 
 // tslint:disable: max-func-body-length
 async function insertCSVTestData() {
-  fs.readFile("./src/util/test_data.csv", "utf8", (err, data) => {
+  fs.readFile("./src/utils/test_data.csv", "utf8", (err, data) => {
     Papa.parse(data, {
       header: true,
       dynamicTyping: true,
