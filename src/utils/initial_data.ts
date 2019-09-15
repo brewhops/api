@@ -63,6 +63,7 @@ async function insertCSVTestData() {
               name: row.Tank,
               status: "available",
               in_use: false,
+              disabled: false,
               update_user: 1,
             };
             tankIndexes[row.Tank] = Object.keys(tankIndexes).length + 1;
@@ -215,6 +216,7 @@ async function insertCSVTestData() {
                   const tank = result.rows[0];
 
                   tank.in_use = true;
+                  tank.disabled = false;
                   tank.status = "brewing";
                   const { keys, values, escapes } = tankController.splitObjectKeyVals(tank);
                   // set an update
@@ -273,6 +275,7 @@ async function insertDevTanks() {
       name: `F${i}`,
       status: "brewing",
       in_use: true,
+      disabled: false,
       update_user: 1,
     };
     if (i > 9) {

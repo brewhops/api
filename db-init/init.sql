@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS tanks (
   name          VARCHAR(255)  NOT NULL,
   status        VARCHAR(255)  NOT NULL,
   in_use        BOOLEAN       NOT NULL,
+  disabled      BOOLEAN       NOT NULL,
   update_user   INTEGER       NULL
 );
 
