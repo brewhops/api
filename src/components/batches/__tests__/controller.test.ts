@@ -111,6 +111,7 @@ describe("BatchesController ", () => {
       tank_id: 2,
       update_user: 2,
       volume: 2,
+      client_id: 2
     };
 
     request.body = batch;
@@ -131,6 +132,7 @@ describe("BatchesController ", () => {
       tank_id: 2,
       update_user: 2,
       volume: 2,
+      client_id: 2
     };
 
     request.body = batch;

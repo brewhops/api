@@ -64,6 +64,7 @@ async function insertCSVTestData() {
               status: "available",
               in_use: false,
               update_user: 1,
+              client_id: 1
             };
             tankIndexes[row.Tank] = Object.keys(tankIndexes).length + 1;
           }
@@ -78,6 +79,7 @@ async function insertCSVTestData() {
                 ratio: 3,
               }]),
               update_user: 1,
+              client_id: 1
             };
             recipeIndexes[row.Recipe] = Object.keys(recipeIndexes).length + 1;
           }
@@ -93,6 +95,7 @@ async function insertCSVTestData() {
               recipe_id: recipeIndexes[row.Recipe],
               tank_id: tankIndexes[row.Tank],
               update_user: 1,
+              client_id: 1
             };
             batchIndexes[row.Batch] = Object.keys(batchIndexes).length + 1;
           }
@@ -243,6 +246,7 @@ async function insertDevAdmin() {
     phone: "555-867-5309",
     admin: true,
     password: encryptPassword("password"),
+    client_id: 1
   };
 
   try {
@@ -274,6 +278,7 @@ async function insertDevTanks() {
       status: "brewing",
       in_use: true,
       update_user: 1,
+      client_id: 1
     };
     if (i > 9) {
       tank.status = "available";
@@ -302,6 +307,7 @@ async function insertDevRecipes() {
         ingredient: "hops",
         ratio: `${i}`,
       }]),
+      client_id: 1
     };
     if (rows.length === 0) {
       const { keys, values, escapes } = recipeController.splitObjectKeyVals(recipe);
@@ -333,6 +339,7 @@ async function insertDevBatches() {
       recipe_id: i,
       tank_id: i,
       update_user: 1,
+      client_id: 1
     };
 
     if (batchResult.rows.length === 0) {
@@ -382,7 +389,7 @@ async function insertDevTasks() {
       action_id: (i % 9) + 1,
       employee_id: 1,
       added_on: new Date().toUTCString(),
-      update_user: 1,
+      update_user: 1
     };
 
     if (tasksResult.rows.length === 0) {

@@ -120,6 +120,7 @@ export class BatchesController extends PostgresController implements IBatchesCon
       tank_id: Number(input.tank_id),
       update_user: Number(input.update_user),
       volume: Number(input.volume),
+      client_id: Number('client_id' in input ? input.client_id : 1)
     };
     let { keys, values, escapes } = this.splitObjectKeyVals(batch);
 

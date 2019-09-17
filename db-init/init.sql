@@ -11,6 +11,16 @@
 --    tasks
 
 --
+-- Table structure for table `clients`
+--
+
+CREATE TABLE IF NOT EXISTS clients (
+  id          SERIAL        NOT NULL    PRIMARY KEY,
+  name        VARCHAR(255)  NOT NULL,
+  active      BOOLEAN       NOT NULL    DEFAULT 't'
+);
+
+--
 -- Table structure for table `employees`
 --
 
@@ -21,7 +31,8 @@ CREATE TABLE IF NOT EXISTS employees (
   username    VARCHAR(255)  NOT NULL    UNIQUE,
   password    VARCHAR(255)  NOT NULL,
   phone       CHAR(12)      NULL,
-  admin       BOOLEAN       NOT NULL
+  admin       BOOLEAN       NOT NULL,
+  client_id   INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 --
@@ -32,7 +43,8 @@ CREATE TABLE IF NOT EXISTS actions (
   id          SERIAL        NOT NULL    PRIMARY KEY,
   name        VARCHAR(255)  NOT NULL,
   description TEXT          NULL,
-  classname   VARCHAR(20)   NOT NULL
+  classname   VARCHAR(20)   NOT NULL,
+  client_id   INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 --
@@ -44,7 +56,8 @@ CREATE TABLE IF NOT EXISTS tanks (
   name          VARCHAR(255)  NOT NULL,
   status        VARCHAR(255)  NOT NULL,
   in_use        BOOLEAN       NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 CREATE TABLE IF NOT EXISTS tanks_audit (
@@ -56,7 +69,8 @@ CREATE TABLE IF NOT EXISTS tanks_audit (
   name          VARCHAR(255)  NOT NULL,
   status        VARCHAR(255)  NOT NULL,
   in_use        BOOLEAN       NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL
 );
 
 --
@@ -69,7 +83,8 @@ CREATE TABLE IF NOT EXISTS recipes (
   airplane_code VARCHAR(50)   NOT NULL,
   yeast         INT           NULL,
   instructions  JSONB         NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 CREATE TABLE IF NOT EXISTS recipes_audit (
@@ -82,7 +97,8 @@ CREATE TABLE IF NOT EXISTS recipes_audit (
   airplane_code VARCHAR(50)   NOT NULL,
   yeast         INT           NULL,
   instructions  JSONB         NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL
 );
 
 --
@@ -99,7 +115,8 @@ CREATE TABLE IF NOT EXISTS batches (
   completed_on  TIMESTAMPTZ   NULL,
   recipe_id     INTEGER       NOT NULL    REFERENCES recipes(id) ,
   tank_id       INTEGER       NOT NULL    REFERENCES tanks(id),
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL    REFERENCES clients(id)
 );
 
 CREATE TABLE IF NOT EXISTS batches_audit (
@@ -116,7 +133,8 @@ CREATE TABLE IF NOT EXISTS batches_audit (
   completed_on  TIMESTAMPTZ   NULL,
   recipe_id     INTEGER       NOT NULL,
   tank_id       INTEGER       NOT NULL,
-  update_user   INTEGER       NULL
+  update_user   INTEGER       NULL,
+  client_id     INTEGER       NOT NULL
 );
 
 --
@@ -356,18 +374,20 @@ $tasks_audit_trigger$ LANGUAGE plpgsql;
 CREATE TRIGGER tasks_audit_t AFTER INSERT OR UPDATE OR DELETE ON tasks 
     FOR EACH ROW EXECUTE PROCEDURE tasks_audit_function();
 
+INSERT INTO clients (name, active) VALUES
+    ('Ninkasi', 't');
 
-INSERT INTO actions (name, description, classname) VALUES 
-    ('Primary Fermentation', 'Primary Fermentation', 'primary-fermentation'),
-    ('Primary Adjuct Added', 'Primary Adjuct Added', 'primary-adjunct-add'),
-    ('Free Rise', 'Free Rise', 'free-rise'),
-    ('Cap', 'Cap', 'cap'),
-    ('Adjunct Added', 'Adjunct Added', 'adjunct-add'),
-    ('Exception', 'Exception', 'exception'),
-    ('Waiting for Diacetyl', 'Waiting for Diacetyl', 'wait-for-diacetyl'),
-    ('Crashed', 'Crashed', 'crashed'),
-    ('Yeast Pull', 'Yeast Pull', 'yeast-pull'),
-    ('No Action', 'No Action', 'no-action');
+INSERT INTO actions (name, description, classname, client_id) VALUES 
+    ('Primary Fermentation', 'Primary Fermentation', 'primary-fermentation', 1),
+    ('Primary Adjuct Added', 'Primary Adjuct Added', 'primary-adjunct-add', 1),
+    ('Free Rise', 'Free Rise', 'free-rise', 1),
+    ('Cap', 'Cap', 'cap', 1),
+    ('Adjunct Added', 'Adjunct Added', 'adjunct-add', 1),
+    ('Exception', 'Exception', 'exception', 1),
+    ('Waiting for Diacetyl', 'Waiting for Diacetyl', 'wait-for-diacetyl', 1),
+    ('Crashed', 'Crashed', 'crashed', 1),
+    ('Yeast Pull', 'Yeast Pull', 'yeast-pull', 1),
+    ('No Action', 'No Action', 'no-action', 1);
 
 
 

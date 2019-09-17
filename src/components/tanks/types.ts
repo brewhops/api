@@ -4,4 +4,5 @@ export interface Tank {
     status: string;
     in_use: boolean;
     update_user?: number;
+    client_id: number;
 }
