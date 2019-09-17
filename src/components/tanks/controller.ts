@@ -155,9 +155,6 @@ export class TankController extends PostgresController implements ITankControlle
   public async deleteTank(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-      // delete batches associated with the tank
-      const response = await this.deleteInTable();
-      // delete the tank
       const { rowCount } = await this.deleteById(id);
       if (rowCount > 0) {
         res.status(200).json(`Successfully deleted tank (id=${id})`);
