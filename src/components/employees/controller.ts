@@ -98,14 +98,11 @@ export class EmployeeController extends PostgresController implements IEmployeeC
       if (prevUser.rows.length === 0) {
         res.status(401).send(Boom.unauthorized("Not authorized"));
       } else {
-        const id = prevUser.rows[0].id;
-        const client_id = prevUser.rows[0].client_id;
-        const username = prevUser.rows[0].username;
-        const stored = prevUser.rows[0].password;
+        const { id, client_id, username: user, stored } = prevUser.rows[0];
         // tslint:disable-next-line:possible-timing-attack
         const match = password === stored;
         if (match) {
-          const token = await generateAuthToken(username, client_id);
+          const token = await generateAuthToken(user, client_id);
           res.status(200).json({
             id,
             token,
