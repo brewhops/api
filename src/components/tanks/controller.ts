@@ -81,6 +81,8 @@ export class TankController extends PostgresController implements ITankControlle
      * action
      * temperature
      */
+
+     // TODO: update this query with correct values
     const query = `
     SELECT action_name, open_tasks.batch_id, batch_name,
     tank_name, tank_id, beer_name, pressure, temperature
