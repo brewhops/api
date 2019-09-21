@@ -52,11 +52,12 @@ CREATE TABLE IF NOT EXISTS tanks_audit (
   id            SERIAL        NOT NULL    PRIMARY KEY,
   operation     VARCHAR(6)    NOT NULL,
   time_stamp    TIMESTAMPTZ   NOT NULL,
-  
+
   tanks_id      INTEGER       NOT NULL,
   name          VARCHAR(255)  NOT NULL,
   status        VARCHAR(255)  NOT NULL,
   in_use        BOOLEAN       NOT NULL,
+  disabled      BOOLEAN       NOT NULL,
   update_user   INTEGER       NULL
 );
 
@@ -214,7 +215,8 @@ SELECT  batches.name AS batch_name,
 FROM batches, tanks, recipes
 WHERE batches.tank_id=tanks.id AND
       batches.completed_on IS NULL AND
-      recipes.id=batches.recipe_id;
+      recipes.id=batches.recipe_id AND
+      tanks.disabled=false;
 -- EXAMPLE:
 --  batch_name | batch_id | tank_name | tank_id | beer_name
 -- ------------+----------+-----------+---------+-----------
@@ -223,7 +225,7 @@ WHERE batches.tank_id=tanks.id AND
 
 -- Gets the most recent info for each batch
 CREATE VIEW most_recent_batch_info AS
-SELECT pressure, temperature, SG, PH, ABV, batch_id
+SELECT DISTINCT pressure, temperature, SG, PH, ABV, batch_id
 FROM versions
 INNER JOIN (
   SELECT Max(measured_on)

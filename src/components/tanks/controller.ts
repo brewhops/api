@@ -81,10 +81,8 @@ export class TankController extends PostgresController implements ITankControlle
      * action
      * temperature
      */
-
-     // TODO: update this query with correct values
     const query = `
-    SELECT action_name, open_tasks.batch_id, batch_name,
+    SELECT DISTINCT ON (tank_id) action_name, open_tasks.batch_id, batch_name,
     tank_name, tank_id, beer_name, pressure, temperature
     FROM (
       (
@@ -96,8 +94,8 @@ export class TankController extends PostgresController implements ITankControlle
       ON open_tasks.batch_id = tank_open_batch.batch_id
     )`;
     try {
-      const results = await this.pool.query(query);
-      res.status(200).json(results.rows);
+      const { rows } = await this.pool.query(query);
+      res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
