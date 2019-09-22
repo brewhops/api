@@ -25,6 +25,5 @@ jobs:
           command: npm test
       - store_artifacts:
           path: coverage
-          prefix: coverage
       - codecov/upload:
-        file: coverage/coverage-final.json
+          file: coverage/coverage-final.json

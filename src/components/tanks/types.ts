@@ -3,5 +3,6 @@ export interface Tank {
     name: string;
     status: string;
     in_use: boolean;
+    disabled?: boolean;
     update_user?: number;
 }

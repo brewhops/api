@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS tanks (
   name          VARCHAR(255)  NOT NULL,
   status        VARCHAR(255)  NOT NULL,
   in_use        BOOLEAN       NOT NULL,
+  disabled      BOOLEAN       NOT NULL,
   update_user   INTEGER       NULL
 );
 
@@ -51,11 +52,12 @@ CREATE TABLE IF NOT EXISTS tanks_audit (
   id            SERIAL        NOT NULL    PRIMARY KEY,
   operation     VARCHAR(6)    NOT NULL,
   time_stamp    TIMESTAMPTZ   NOT NULL,
-  
+
   tanks_id      INTEGER       NOT NULL,
   name          VARCHAR(255)  NOT NULL,
   status        VARCHAR(255)  NOT NULL,
   in_use        BOOLEAN       NOT NULL,
+  disabled      BOOLEAN       NOT NULL,
   update_user   INTEGER       NULL
 );
 
@@ -191,10 +193,14 @@ CREATE TABLE IF NOT EXISTS tasks_audit (
 
 -- the batch ID and action name of all open tasks
 CREATE VIEW open_tasks AS
-SELECT  actions.name AS action_name,
-        tasks.batch_id
-FROM actions, tasks
-WHERE tasks.action_id=actions.id AND
+SELECT 
+  actions.name AS action_name,
+  actions.classname,
+  tasks.batch_id,
+  tasks.action_id
+  FROM actions,
+      tasks
+WHERE tasks.action_id = actions.id AND 
       tasks.completed_on IS NULL;
 -- EXAMPLE:
 --  action_name | batch_id
@@ -222,7 +228,7 @@ WHERE batches.tank_id=tanks.id AND
 
 -- Gets the most recent info for each batch
 CREATE VIEW most_recent_batch_info AS
-SELECT pressure, temperature, SG, PH, ABV, batch_id
+SELECT DISTINCT pressure, temperature, SG, PH, ABV, batch_id
 FROM versions
 INNER JOIN (
   SELECT Max(measured_on)

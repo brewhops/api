@@ -21,6 +21,7 @@ export const TankValidator = {
     return {
       body: Joi.object()
         .keys({
+          disabled: Joi.boolean(),
           in_use: Joi.boolean(),
           name: Joi.string(),
           status: Joi.string(),
