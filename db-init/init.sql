@@ -193,10 +193,14 @@ CREATE TABLE IF NOT EXISTS tasks_audit (
 
 -- the batch ID and action name of all open tasks
 CREATE VIEW open_tasks AS
-SELECT  actions.name AS action_name,
-        tasks.batch_id
-FROM actions, tasks
-WHERE tasks.action_id=actions.id AND
+SELECT 
+  actions.name AS action_name,
+  actions.classname,
+  tasks.batch_id,
+  tasks.action_id
+  FROM actions,
+      tasks
+WHERE tasks.action_id = actions.id AND 
       tasks.completed_on IS NULL;
 -- EXAMPLE:
 --  action_name | batch_id
@@ -215,8 +219,7 @@ SELECT  batches.name AS batch_name,
 FROM batches, tanks, recipes
 WHERE batches.tank_id=tanks.id AND
       batches.completed_on IS NULL AND
-      recipes.id=batches.recipe_id AND
-      tanks.disabled=false;
+      recipes.id=batches.recipe_id;
 -- EXAMPLE:
 --  batch_name | batch_id | tank_name | tank_id | beer_name
 -- ------------+----------+-----------+---------+-----------

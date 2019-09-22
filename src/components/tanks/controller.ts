@@ -82,17 +82,31 @@ export class TankController extends PostgresController implements ITankControlle
      * temperature
      */
     const query = `
-    SELECT DISTINCT ON (tank_id) action_name, open_tasks.batch_id, batch_name,
-    tank_name, tank_id, beer_name, pressure, temperature
-    FROM (
+    SELECT DISTINCT ON (tanks.id)
+    tanks.id,
+    tanks.status,
+    tanks.name,
+    action_name,
+    action_id,
+    classname,
+    open_tasks.batch_id,
+    batch_name,
+    beer_name,
+    pressure,
+    temperature
+    FROM
+    (
       (
-        most_recent_batch_info RIGHT JOIN
-        open_tasks
-        ON open_tasks.batch_id = most_recent_batch_info.batch_id
-      )
-      RIGHT JOIN tank_open_batch
-      ON open_tasks.batch_id = tank_open_batch.batch_id
-    )`;
+        (
+        most_recent_batch_info RIGHT JOIN open_tasks ON
+        open_tasks.batch_id = most_recent_batch_info.batch_id
+        )
+        RIGHT JOIN tank_open_batch ON
+        open_tasks.batch_id = tank_open_batch.batch_id
+      ) RIGHT JOIN tanks ON
+        tanks.id=tank_id
+    ) WHERE tanks.disabled=false
+    `;
     try {
       const { rows } = await this.pool.query(query);
       res.status(200).json(rows);
