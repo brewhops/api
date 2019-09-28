@@ -6,6 +6,8 @@ import { IPostgresController, PostgresController } from "../../dal/postgres";
 
 export interface IVersionController extends IPostgresController {
   getVersionsByBatch: RequestHandler;
+  patchVersion: RequestHandler;
+  deleteVersion: RequestHandler;
 }
 
 /**
@@ -22,7 +24,7 @@ export class VersionController extends PostgresController implements IVersionCon
   }
 
   /**
-   * Returns all versions from the cooresponding batch
+   * Returns all versions from the coresponding batch
    * @param {Request} req
    * @param {Response} res
    * @param {NextFunction} next
@@ -34,6 +36,63 @@ export class VersionController extends PostgresController implements IVersionCon
       const { rows } = await this.pool.query(`SELECT * FROM versions WHERE batch_id = ${batchId}`);
 
       res.status(200).json(rows);
+    } catch (err) {
+      res.status(500).send(Boom.badImplementation(err));
+    }
+  }
+
+  /**
+   * Patches an existing version.
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof VersionController
+   */
+  public async patchVersion(req: Request, res: Response, next: NextFunction) {
+    // Find current entity
+    const results = await this.readById(req.params.id);
+
+    const { keys, values, escapes } = this.splitObjectKeyVals(req.body);
+
+    // if the item does not exist
+    if (results.rowCount === 0) {
+      res.status(404).end();
+    } else {
+      try {
+        // set an update
+        const { query, idx } = await this.buildUpdateString(keys);
+        values.push(req.params.id);
+        
+        // update the entity
+        await this.update(query, `id = \$${idx}`, values);
+
+        res.status(204).end();
+      } catch (err) {
+        res.status(400).send(Boom.badRequest(err));
+      }
+    }
+  }
+
+  /**
+   * Deletes a version.
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @memberof VersionController
+   */
+  public async deleteVersion(req: Request, res: Response, next: NextFunction) {
+    try {
+      // remove the version
+      const version = await this.deleteById(req.params.id);
+
+      if (version.rowCount > 0) {
+        res.status(200).json({
+          deletedVersions: version.rowCount,
+          msg: "Success",
+        });
+      } else {
+        next();
+      }
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }

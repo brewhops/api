@@ -1,6 +1,7 @@
 import Boom from "boom";
 import { NextFunction, Request, Response, Router } from "express";
 import { IVersionController, VersionController } from "./controller";
+import { requireAuthentication } from "../../middleware/auth";
 
 // tslint:disable: no-unsafe-any
 
@@ -18,6 +19,12 @@ export function routes(): Router {
 
   // [GET] section
   router.get("/batch/:batchId", async (req, res, next) => controller.getVersionsByBatch(req, res, next));
+
+  // [PATCH] section
+  router.patch("/id/:id", requireAuthentication, async (req, res, next) => controller.patchVersion(req, res, next));
+
+  // [DELETE] section
+  router.delete("/id/:id", requireAuthentication, async (req, res, next) => controller.deleteVersion(req, res, next));
 
   router.use(
     "*",
