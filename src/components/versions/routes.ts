@@ -28,7 +28,7 @@ export function routes(): Router {
 
   router.use(
     "*",
-    (req: Request, res: Response) => res.status(400).send(Boom.badRequest(`${req.originalUrl} doesn't exist`)),
+    (req: Request, res: Response) => res.status(404).send(Boom.badRequest(`${req.originalUrl} doesn't exist`)),
   );
 
   return router;
