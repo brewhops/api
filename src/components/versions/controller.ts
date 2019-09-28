@@ -62,13 +62,13 @@ export class VersionController extends PostgresController implements IVersionCon
         // set an update
         const { query, idx } = await this.buildUpdateString(keys);
         values.push(req.params.id);
-        
+
         // update the entity
         await this.update(query, `id = \$${idx}`, values);
 
         res.status(204).end();
       } catch (err) {
-        res.status(400).send(Boom.badRequest(err));
+        res.status(500).send(Boom.badRequest(err));
       }
     }
   }
