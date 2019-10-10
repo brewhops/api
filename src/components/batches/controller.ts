@@ -1,10 +1,12 @@
-import { PostgresController, IPostgresController } from '../../dal/postgres';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Boom from 'boom';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { PostgresController, IPostgresController } from '../../dal/postgres';
+import { pool } from '../../dal/db';
 import { Batch, Version } from './types';
 
 export interface IBatchesController extends IPostgresController {
   getBatches: RequestHandler;
+  getBatchHistory: RequestHandler;
   getBatchesByTank: RequestHandler;
   getBatchesByRecipe: RequestHandler;
   getBatch: RequestHandler;
@@ -38,6 +40,22 @@ export class BatchesController extends PostgresController implements IBatchesCon
     try {
       const { rows } = await this.read('*', '$1', [true]);
       res.status(200).json(rows);
+    } catch (err) {
+      res.status(500).send(Boom.badImplementation(err));
+    }
+  }
+
+  async getBatchHistory(req: Request, res: Response) {
+    const query = `
+    SELECT SG, PH, ABV, temperature, measured_on AS date
+    FROM versions
+    WHERE batch_id = $1
+    ORDER BY measured_on DESC`;
+
+    try {
+      const { params: { batchId } } = req;
+      const { rows } = await pool.query(query, [batchId]);
+      return res.status(200).json(rows);
     } catch (err) {
       res.status(500).send(Boom.badImplementation(err));
     }
