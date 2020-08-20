@@ -72,7 +72,7 @@
     "@types/jest": "^24.0.11",
     "@types/papaparse": "^4.5.9",
     "@types/pg-pool": "0.0.3",
-    "bcrypt": "^3.0.3",
+    "bcrypt": "^5.0.0",
     "boom": "^7.2.0",
     "chai-as-promised": "^7.1.1",
     "command-line-args": "^5.0.2",
